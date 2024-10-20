@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  KOAS
+  PASIEN
+
+  @@map("role")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+
+  @@map("gender")
+}
+
+enum Status {
+  OPEN
+  CLOSE
+
+  @@map("status")
+}
+
+model Users {
+  id             String          @id @default(uuid())
+  firstname      String
+  lastname       String
+  email          String          @unique
+  password       String
+  phone_number   String          @db.VarChar(13) // Batas maksimum 15 karakter
+  role           Role
+  created_at     DateTime        @default(now())
+  update_at      DateTime        @updatedAt
+  koas_profile   KoasProfile?
+  pasien_profile PasienProfile?
+  notifications  Notifications[]
+  likes          Likes[]
+  Postss         Posts[]
+
+  @@map("users")
+}
+
+model KoasProfile {
+  id            String   @id @default(uuid())
+  user_id       String   @unique
+  nomor_koas    String
+  faculty       String
+  bio           String?
+  whatsapp_link String?
+  update_at     DateTime @updatedAt
+
+  user  Users   @relation(fields: [user_id], references: [id])
+  Posts Posts[]
+
+  @@map("koas_profiles")
+}
+
+model PasienProfile {
+  id        String   @id @default(uuid())
+  user_id   String   @unique
+  name      String
+  age       Int
+  gender    Gender // enum dapat ditambahkan jika ada daftar nilai yang terbatas
+  update_at DateTime @updatedAt
+
+  user Users @relation(fields: [user_id], references: [id])
+
+  @@map("pasien_profiles")
+}
+
+model Posts {
+  id                 String   @id @default(uuid())
+  user_id            String?
+  koas_id            String
+  type_id            String
+  title              String
+  desc               String
+  patien_requirement String?
+  status             Status // enum dapat ditambahkan jika ada daftar nilai yang terbatas
+  published          Boolean  @default(false)
+  created_at         DateTime @default(now())
+  update_at          DateTime @updatedAt
+
+  likes Likes[]
+  koas  KoasProfile @relation(fields: [koas_id], references: [id])
+  Users Users?      @relation(fields: [user_id], references: [id])
+
+  @@map("Posts")
+}
+
+model Likes {
+  id         String   @id @default(uuid())
+  Posts_id   String
+  user_id    String
+  created_at DateTime @default(now())
+
+  user  Users  @relation(fields: [user_id], references: [id])
+  Posts Posts? @relation(fields: [Posts_id], references: [id])
+
+  @@map("likes")
+}
+
+model Notifications {
+  id         String   @id @default(uuid())
+  user_id    String
+  message    String
+  is_read    Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  user Users @relation(fields: [user_id], references: [id])
+
+  @@map("notifications")
+}
+
+model TreatmentType {
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
+  update_at  DateTime @updatedAt
+
+  @@map("treatment_types")
+}
