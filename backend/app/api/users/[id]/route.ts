@@ -21,9 +21,9 @@ export async function GET(
     }
 
     const user = await db.users.findUnique({
-       where: { id: String(userId) }, 
-       include: {koas_profile: true, pasien_profile: true}
-      })
+      where: { id: String(userId) },
+      include: { koasProfile: true, pasienProfile: true },
+    })
 
     return NextResponse.json(user, { status: 200 })
   } catch (error) {
@@ -35,12 +35,15 @@ export async function GET(
   }
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { searchParams } = new URL(req.url)
   const userId = searchParams.get("id") || params.id
 
   const body = await req.json()
-  const { firstname, lastname, email, password, phone_number, role } = body
+  const { firstname, lastname, email, password, phone, role } = body
 
   try {
     if (!userId) {
@@ -61,9 +64,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         lastname,
         email,
         password: hash,
-        phone_number,
+        phone,
         role,
-      },
+      } as Prisma.UsersUpdateInput,
     })
 
     return NextResponse.json(updatedUser, { status: 200 })
@@ -76,12 +79,15 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { searchParams } = new URL(req.url)
   const userId = searchParams.get("id") || params.id
 
   const body = await req.json()
-  const { firstname, lastname, email, password, phone_number, role } = body
+  const { firstname, lastname, email, password, phone, role } = body
 
   try {
     if (!userId) {
@@ -93,7 +99,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     const user = await db.users.findUnique({
       where: { id: String(userId) },
-      include: { koas_profile: true, pasien_profile: true },
+      include: { koasProfile: true, pasienProfile: true },
     })
 
     if (!user) {
@@ -102,56 +108,16 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     const hash = await getPassword(password, user.password)
 
-    let userUpdate: Prisma.UsersUpdateInput = {
-      firstname: firstname || user.firstname,
-      lastname: lastname || user.lastname,
-      email: email || user.email,
-      password: hash,
-      phone_number: phone_number || user.phone_number,
-      role: role || user.role,
-    }
-
-    if (user.role === "KOAS") {
-      userUpdate.koas_profile = {
-        upsert: {
-          create: {
-            nomor_koas: body.nomor_koas || user.koas_profile?.nomor_koas,
-            faculty: body.faculty || user.koas_profile?.faculty,
-            bio: body.bio || user.koas_profile?.bio,
-            whatsapp_link:
-              body.whatsapp_link || user.koas_profile?.whatsapp_link,
-          },
-          update: {
-            nomor_koas: body.nomor_koas || user.koas_profile?.nomor_koas,
-            faculty: body.faculty || user.koas_profile?.faculty,
-            bio: body.bio || user.koas_profile?.bio,
-            whatsapp_link:
-              body.whatsapp_link || user.koas_profile?.whatsapp_link,
-          },
-        },
-      }
-    }
-
-    if (user.role === "PASIEN") {
-      userUpdate.pasien_profile = {
-        upsert: {
-          create: {
-            name: body.nomor_pasien || user.pasien_profile?.name,
-            age: body.age || user.pasien_profile?.age,
-            gender: body.gender || user.pasien_profile?.gender,
-          },
-          update: {
-            name: body.nomor_pasien || user.pasien_profile?.name,
-            age: body.age || user.pasien_profile?.age,
-            gender: body.gender || user.pasien_profile?.gender,
-          },
-        },
-      }
-    }
-
     const updatedUser = await db.users.update({
       where: { id: String(userId) },
-      data: userUpdate,
+      data: {
+        firstname: firstname || user.firstname,
+        lastname: lastname || user.lastname,
+        email: email || user.email,
+        password: hash,
+        phone: phone || user.phone,
+        role: role || user.role
+      } as Prisma.UsersUpdateInput,
     })
 
     return NextResponse.json(updatedUser, { status: 200 })
@@ -164,7 +130,10 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { searchParams } = new URL(req.url)
   const userId = searchParams.get("id") || params.id
 
