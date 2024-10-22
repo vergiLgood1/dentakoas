@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { ZodError } from "zod"
+import { NextResponse } from 'next/server';
 
 // Skema reusable untuk validasi email
 const valEmail = z.string().email({ message: "Invalid email format" })
@@ -47,4 +48,22 @@ export const validateData = <T>(schema: z.ZodSchema<T>, data: T) => {
     // Optional: handle other types of errors if necessary
     return { success: false, errors: [{ message: "Unknown error occurred" }] }
   }
+}
+
+// Reusable dynamic function to validate if a property exists in the user object
+export function valProps(
+  user: any,
+  properties: string[]
+) {
+  // Loop through each property in the list
+  for (const prop of properties) {
+    if (!user || !user[prop]) {
+      return NextResponse.json(
+        { error: `${prop} not found` },
+        { status: 404 }
+      );
+    }
+  }
+
+  return true; // return true if all validations pass
 }
