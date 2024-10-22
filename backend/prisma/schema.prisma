@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["tracing"]
 }
 
 datasource db {
@@ -18,14 +19,14 @@ enum Role {
   KOAS
   PASIEN
 
-  @@map("role")
+  @@map("roles")
 }
 
 enum Gender {
   MALE
   FEMALE
 
-  @@map("gender")
+  @@map("genders")
 }
 
 enum Status {
@@ -36,101 +37,112 @@ enum Status {
 }
 
 model Users {
-  id             String          @id @default(uuid())
-  firstname      String
-  lastname       String
-  email          String          @unique
-  password       String
-  phone_number   String          @db.VarChar(13) // Batas maksimum 15 karakter
-  role           Role
-  created_at     DateTime        @default(now())
-  update_at      DateTime        @updatedAt
-  koas_profile   KoasProfile?
-  pasien_profile PasienProfile?
-  notifications  Notifications[]
-  likes          Likes[]
-  Postss         Posts[]
+  id            String          @id @default(uuid())
+  firstname     String
+  lastname      String
+  username      String          @unique @db.VarChar(50) // Batas maksimum 20 karakter
+  email         String          @unique
+  password      String
+  phone         String          @db.VarChar(13) // Batas maksimum 15 karakter
+  img           String?
+  role          Role
+  koasProfile   KoasProfile?
+  pasienProfile PasienProfile?
+  posts         Posts[]
+  notifications Notifications[]
+  likes         Likes[]
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
 
   @@map("users")
 }
 
 model KoasProfile {
-  id            String   @id @default(uuid())
-  user_id       String   @unique
-  nomor_koas    String
-  faculty       String
-  bio           String?
-  whatsapp_link String?
-  update_at     DateTime @updatedAt
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  koasNumber   String?
+  faculty      String?
+  bio          String?
+  whatsappLink String?
+  createdAt    DateTime @default(now())
+  updateAt     DateTime @updatedAt
 
-  user  Users   @relation(fields: [user_id], references: [id])
-  Posts Posts[]
+  user  Users   @relation(fields: [userId], references: [id])
+  posts Posts[]
 
-  @@map("koas_profiles")
+  @@map("koas-profile")
 }
 
 model PasienProfile {
   id        String   @id @default(uuid())
-  user_id   String   @unique
-  name      String
-  age       Int
-  gender    Gender // enum dapat ditambahkan jika ada daftar nilai yang terbatas
-  update_at DateTime @updatedAt
+  userId    String   @unique
+  age       Int?
+  gender    Gender? // enum dapat ditambahkan jika ada daftar nilai yang terbatas
+  bio       String?
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
 
-  user Users @relation(fields: [user_id], references: [id])
+  user Users @relation(fields: [userId], references: [id])
 
-  @@map("pasien_profiles")
+  @@map("pasien-profile")
 }
 
 model Posts {
   id                 String   @id @default(uuid())
-  user_id            String?
-  koas_id            String
-  type_id            String
+  userId             String
+  koasId             String
+  treatmentId        String
   title              String
   desc               String
-  patien_requirement String?
+  patientRequirement String?
   status             Status // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   published          Boolean  @default(false)
-  created_at         DateTime @default(now())
-  update_at          DateTime @updatedAt
+  likes              Likes[]
+  createdAt          DateTime @default(now())
+  updateAt           DateTime @updatedAt
 
-  likes Likes[]
-  koas  KoasProfile @relation(fields: [koas_id], references: [id])
-  Users Users?      @relation(fields: [user_id], references: [id])
+  koas  KoasProfile @relation(fields: [koasId], references: [id])
+  users Users       @relation(fields: [userId], references: [id])
 
-  @@map("Posts")
+  @@index([userId], name: "userId")
+  @@index([koasId], name: "koasId")
+  @@index([treatmentId], name: "treatmentId")
+  @@map("posts")
 }
 
 model Likes {
-  id         String   @id @default(uuid())
-  Posts_id   String
-  user_id    String
-  created_at DateTime @default(now())
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
 
-  user  Users  @relation(fields: [user_id], references: [id])
-  Posts Posts? @relation(fields: [Posts_id], references: [id])
+  user  Users @relation(fields: [userId], references: [id])
+  posts Posts @relation(fields: [postId], references: [id])
 
+  @@index([postId], name: "postId")
+  @@index([userId], name: "userId")
   @@map("likes")
 }
 
 model Notifications {
-  id         String   @id @default(uuid())
-  user_id    String
-  message    String
-  is_read    Boolean  @default(false)
-  created_at DateTime @default(now())
+  id        String   @id @default(uuid())
+  userId    String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  user Users @relation(fields: [user_id], references: [id])
+  user Users @relation(fields: [userId], references: [id])
 
+  @@index([userId], name: "userId")
   @@map("notifications")
 }
 
 model TreatmentType {
-  id         String   @id @default(uuid())
-  name       String
-  created_at DateTime @default(now())
-  update_at  DateTime @updatedAt
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
 
-  @@map("treatment_types")
+  @@map("treatment-types")
 }
