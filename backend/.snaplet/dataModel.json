@@ -1,0 +1,1061 @@
+{
+  "models": {
+    "koas-profile": {
+      "id": "db_dentakoas.koas-profile",
+      "schemaName": "db_dentakoas",
+      "tableName": "koas-profile",
+      "fields": [
+        {
+          "id": "db_dentakoas.koas-profile.bio",
+          "name": "bio",
+          "columnName": "bio",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.koas-profile.createdAt",
+          "name": "createdAt",
+          "columnName": "createdAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.koas-profile.faculty",
+          "name": "faculty",
+          "columnName": "faculty",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.koas-profile.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.koas-profile.nomor_koas",
+          "name": "nomor_koas",
+          "columnName": "nomor_koas",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.koas-profile.updateAt",
+          "name": "updateAt",
+          "columnName": "updateAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.koas-profile.userId",
+          "name": "userId",
+          "columnName": "userId",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.koas-profile.whatsapp_link",
+          "name": "whatsapp_link",
+          "columnName": "whatsapp_link",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "name": "users",
+          "type": "users",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "koas-profileTousers",
+          "relationFromFields": [
+            "userId"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "posts",
+          "type": "posts",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "postsTokoas-profile",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "db_dentakoas.koas-profile.userId",
+          "fields": [
+            "userId"
+          ]
+        },
+        {
+          "name": "db_dentakoas.koas-profile.id",
+          "fields": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "likes": {
+      "id": "db_dentakoas.likes",
+      "schemaName": "db_dentakoas",
+      "tableName": "likes",
+      "fields": [
+        {
+          "id": "db_dentakoas.likes.createdAt",
+          "name": "createdAt",
+          "columnName": "createdAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.likes.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.likes.postId",
+          "name": "postId",
+          "columnName": "postId",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.likes.userId",
+          "name": "userId",
+          "columnName": "userId",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "name": "posts",
+          "type": "posts",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "likesToposts",
+          "relationFromFields": [
+            "postId"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "users",
+          "type": "users",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "likesTousers",
+          "relationFromFields": [
+            "userId"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "db_dentakoas.likes.id",
+          "fields": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "notifications": {
+      "id": "db_dentakoas.notifications",
+      "schemaName": "db_dentakoas",
+      "tableName": "notifications",
+      "fields": [
+        {
+          "id": "db_dentakoas.notifications.createdAt",
+          "name": "createdAt",
+          "columnName": "createdAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.notifications.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.notifications.isRead",
+          "name": "isRead",
+          "columnName": "isRead",
+          "type": "tinyint",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.notifications.message",
+          "name": "message",
+          "columnName": "message",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.notifications.userId",
+          "name": "userId",
+          "columnName": "userId",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "name": "users",
+          "type": "users",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "notificationsTousers",
+          "relationFromFields": [
+            "userId"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "db_dentakoas.notifications.id",
+          "fields": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "pasien-profile": {
+      "id": "db_dentakoas.pasien-profile",
+      "schemaName": "db_dentakoas",
+      "tableName": "pasien-profile",
+      "fields": [
+        {
+          "id": "db_dentakoas.pasien-profile.age",
+          "name": "age",
+          "columnName": "age",
+          "type": "int",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.pasien-profile.createdAt",
+          "name": "createdAt",
+          "columnName": "createdAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.pasien-profile.gender",
+          "name": "gender",
+          "columnName": "gender",
+          "type": "enum_db_dentakoas_pasien_profile_gender",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 6
+        },
+        {
+          "id": "db_dentakoas.pasien-profile.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.pasien-profile.name",
+          "name": "name",
+          "columnName": "name",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.pasien-profile.updateAt",
+          "name": "updateAt",
+          "columnName": "updateAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.pasien-profile.userId",
+          "name": "userId",
+          "columnName": "userId",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "name": "users",
+          "type": "users",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "pasien-profileTousers",
+          "relationFromFields": [
+            "userId"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "db_dentakoas.pasien-profile.userId",
+          "fields": [
+            "userId"
+          ]
+        },
+        {
+          "name": "db_dentakoas.pasien-profile.id",
+          "fields": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "posts": {
+      "id": "db_dentakoas.posts",
+      "schemaName": "db_dentakoas",
+      "tableName": "posts",
+      "fields": [
+        {
+          "id": "db_dentakoas.posts.createdAt",
+          "name": "createdAt",
+          "columnName": "createdAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.posts.desc",
+          "name": "desc",
+          "columnName": "desc",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.posts.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.posts.koasId",
+          "name": "koasId",
+          "columnName": "koasId",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.posts.patientRequirement",
+          "name": "patientRequirement",
+          "columnName": "patientRequirement",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.posts.published",
+          "name": "published",
+          "columnName": "published",
+          "type": "tinyint",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.posts.status",
+          "name": "status",
+          "columnName": "status",
+          "type": "enum_db_dentakoas_posts_status",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 5
+        },
+        {
+          "id": "db_dentakoas.posts.title",
+          "name": "title",
+          "columnName": "title",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.posts.treatmentId",
+          "name": "treatmentId",
+          "columnName": "treatmentId",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.posts.updateAt",
+          "name": "updateAt",
+          "columnName": "updateAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.posts.userId",
+          "name": "userId",
+          "columnName": "userId",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "name": "koas-profile",
+          "type": "koas-profile",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "postsTokoas-profile",
+          "relationFromFields": [
+            "koasId"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "users",
+          "type": "users",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "postsTousers",
+          "relationFromFields": [
+            "userId"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "likes",
+          "type": "likes",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "likesToposts",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "db_dentakoas.posts.id",
+          "fields": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "treatment-types": {
+      "id": "db_dentakoas.treatment-types",
+      "schemaName": "db_dentakoas",
+      "tableName": "treatment-types",
+      "fields": [
+        {
+          "id": "db_dentakoas.treatment-types.createdAt",
+          "name": "createdAt",
+          "columnName": "createdAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.treatment-types.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.treatment-types.name",
+          "name": "name",
+          "columnName": "name",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.treatment-types.updateAt",
+          "name": "updateAt",
+          "columnName": "updateAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "db_dentakoas.treatment-types.id",
+          "fields": [
+            "id"
+          ]
+        }
+      ]
+    },
+    "users": {
+      "id": "db_dentakoas.users",
+      "schemaName": "db_dentakoas",
+      "tableName": "users",
+      "fields": [
+        {
+          "id": "db_dentakoas.users.createdAt",
+          "name": "createdAt",
+          "columnName": "createdAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "db_dentakoas.users.email",
+          "name": "email",
+          "columnName": "email",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.users.firstname",
+          "name": "firstname",
+          "columnName": "firstname",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.users.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.users.lastname",
+          "name": "lastname",
+          "columnName": "lastname",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.users.password",
+          "name": "password",
+          "columnName": "password",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 191
+        },
+        {
+          "id": "db_dentakoas.users.phone",
+          "name": "phone",
+          "columnName": "phone",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 13
+        },
+        {
+          "id": "db_dentakoas.users.role",
+          "name": "role",
+          "columnName": "role",
+          "type": "enum_db_dentakoas_users_role",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 6
+        },
+        {
+          "id": "db_dentakoas.users.updateAt",
+          "name": "updateAt",
+          "columnName": "updateAt",
+          "type": "datetime",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "koas-profile",
+          "type": "koas-profile",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "koas-profileTousers",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "likes",
+          "type": "likes",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "likesTousers",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "notifications",
+          "type": "notifications",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "notificationsTousers",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "pasien-profile",
+          "type": "pasien-profile",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "pasien-profileTousers",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "posts",
+          "type": "posts",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "postsTousers",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "db_dentakoas.users.id",
+          "fields": [
+            "id"
+          ]
+        },
+        {
+          "name": "db_dentakoas.users.email",
+          "fields": [
+            "email"
+          ]
+        }
+      ]
+    }
+  },
+  "enums": {
+    "enum_db_dentakoas_pasien_profile_gender": {
+      "schemaName": "db_dentakoas",
+      "values": [
+        {
+          "name": "MALE"
+        },
+        {
+          "name": "FEMALE"
+        }
+      ]
+    },
+    "enum_db_dentakoas_users_role": {
+      "schemaName": "db_dentakoas",
+      "values": [
+        {
+          "name": "ADMIN"
+        },
+        {
+          "name": "KOAS"
+        },
+        {
+          "name": "PASIEN"
+        }
+      ]
+    },
+    "enum_db_dentakoas_posts_status": {
+      "schemaName": "db_dentakoas",
+      "values": [
+        {
+          "name": "OPEN"
+        },
+        {
+          "name": "CLOSE"
+        }
+      ]
+    }
+  }
+}
