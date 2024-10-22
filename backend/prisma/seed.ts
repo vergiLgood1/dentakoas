@@ -1,48 +1,53 @@
-import { PrismaClient } from "@prisma/client"
-import bcrypt from "bcryptjs"
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
+import { users } from "@/data/users"; // Ensure this contains an array of user objects
+import { createSeedClient } from "@snaplet/seed";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function main() {
-  const passwordHash = await bcrypt.hash("password123", 12)
+  // Truncate all tables in the database
+  const seed = await createSeedClient();
+  await seed.$resetDatabase();
 
-  await prisma.users.createMany({
-    data: [
-      {
-        firstname: "John",
-        lastname: "Doe",
-        email: "john.doe@example.com",
-        password: passwordHash,
-        phone_number: "123456789",
-        role: "PASIEN",
-      },
-      {
-        firstname: "Jane",
-        lastname: "Doe",
-        email: "jane.doe@example.com",
-        password: passwordHash,
-        phone_number: "987654321",
-        role: "PASIEN",
-      },
-      {
-        firstname: "Admin",
-        lastname: "User",
-        email: "admin@example.com",
-        password: passwordHash,
-        phone_number: "1122334455",
-        role: "KOAS",
-      },
-    ],
-  })
+  for (const user of users) {
+    const hash = await bcrypt.hash(user.password, 10);
 
-  console.log("Seed data created successfully!")
+    // Create user
+    const createdUser = await prisma.users.create({
+      data: {
+        ...user,
+        username: `${user.firstname}.${user.lastname}`,
+        password: hash,
+      }
+    });
+
+    if (user.role === "KOAS") {
+      // Create koas
+      await prisma.koasProfile.create({
+        data: {
+          userId: createdUser.id,
+        }
+        
+      });
+    } else if (user.role === "PASIEN") {
+      // Create pasien
+      await prisma.pasienProfile.create({
+        data: {
+          userId: createdUser.id,
+        }
+      });
+    }
+  }
+
+  console.log('Data seed added:', users);
 }
 
 main()
   .catch((e) => {
-    console.error(e)
-    process.exit(1)
+    console.error(e);
+    process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });
