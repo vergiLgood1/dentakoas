@@ -4,12 +4,43 @@ import bcrypt from "bcryptjs"
 import { userValidation, validateData } from "@/utils/validation"
 import { Prisma } from "@prisma/client"
 
+import { UserQueryParams } from "@/config/types"
+import { parseSearchParams } from "@/helper/user_helper"
+
 export async function GET(req: Request) {
-  try {
+  const { searchParams } = new URL(req.url)
+  const query: UserQueryParams = parseSearchParams(searchParams)
+
+  try { 
     const users = await db.users.findMany({
-      include: {koas_profile: true, pasien_profile: true}
+      where: {
+        ...query,
+      } as Prisma.UsersWhereInput,
+      include: { koasProfile: true, pasienProfile: true },
     })
-    return NextResponse.json(users, { status: 200 })
+
+    const filteredUsers = users.map((user) => {
+      if (user.role === "KOAS") {
+        return {
+          ...user,
+          pasienProfile: undefined, // sembunyikan pasien profile
+        }
+      } else if (user.role === "PASIEN") {
+        return {
+          ...user,
+          koasProfile: undefined, // sembunyikan koas profile
+        }
+      } else {
+        return {
+          ...user,
+          koasProfile: undefined,
+          pasienProfile: undefined,
+        }
+      }
+      // return user
+    })
+
+    return NextResponse.json(filteredUsers, { status: 200 })
   } catch (error) {
     console.error("Error fetching users", error)
     return NextResponse.json(
@@ -21,7 +52,10 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json()
-  const { firstname, lastname, email, password, phone_number, role, profile } = body
+
+  const { firstname, lastname, email, password, phone, role, profile } = body
+  const { koasProfile, pasienProfile } = profile || {}
+
   const hash = await bcrypt.hash(password, 12)
 
   const resValidation = validateData(userValidation, body)
@@ -42,16 +76,36 @@ export async function POST(req: Request) {
   }
 
   try {
+    const username = `${firstname.toLowerCase()}.${lastname.toLowerCase()}`
+
     const newUser = await db.users.create({
       data: {
         firstname,
         lastname,
+        username,
         email,
         password: hash,
-        phone_number,
+        phone,
         role,
-      },
+      } as Prisma.UsersCreateInput,
     })
+
+    if (newUser.role === "KOAS") {
+      await db.koasProfile.create({
+        data: {
+          ...profile,
+          userId: newUser.id,
+        },
+      })
+    } else if (newUser.role === "PASIEN") {
+      await db.pasienProfile.create({
+        data: {
+          ...profile,
+          userId: newUser.id,
+        },
+      })
+    }
+
     return NextResponse.json(newUser, { status: 201 })
   } catch (error) {
     console.error("Error creating user", error)
