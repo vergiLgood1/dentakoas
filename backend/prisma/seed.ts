@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { users } from "@/data/users"; // Ensure this contains an array of user objects
 import { createSeedClient } from "@snaplet/seed";
+import { Role } from "@/config/types";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +23,7 @@ async function main() {
       }
     });
 
-    if (user.role === "KOAS") {
+    if (user.role === Role.Koas) {
       // Create koas
       await prisma.koasProfile.create({
         data: {
@@ -30,7 +31,7 @@ async function main() {
         }
         
       });
-    } else if (user.role === "PASIEN") {
+    } else if (user.role === Role.Pasien) {
       // Create pasien
       await prisma.pasienProfile.create({
         data: {
