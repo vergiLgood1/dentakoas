@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
-import { getUserId, getPassword } from "@/helper/user_helper"
-
 import db from "@/lib/db"
-import bcrypt from "bcryptjs"
+
+import { getUserId, getPassword } from "@/helper/user_helper"
+import { Role } from "@/config/types"
 
 export async function GET(
   req: Request,
@@ -25,7 +25,32 @@ export async function GET(
       include: { koasProfile: true, pasienProfile: true },
     })
 
-    return NextResponse.json(user, { status: 200 })
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 })
+    }
+
+    // Filter profile berdasarkan role
+    const filteredUser = (() => {
+      if (user.role === Role.Koas) {
+        return {
+          ...user,
+          pasienProfile: undefined, // Sembunyikan pasienProfile jika role KOAS
+        };
+      } else if (user.role === Role.Pasien) {
+        return {
+          ...user,
+          koasProfile: undefined, // Sembunyikan koasProfile jika role PASIEN
+        };
+      } else {
+        return {
+          ...user,
+          koasProfile: undefined,
+          pasienProfile: undefined,
+        };
+      }
+    })();
+    
+    return NextResponse.json(filteredUser, { status: 200 })
   } catch (error) {
     console.error("Error fetching user", error)
     return NextResponse.json(
