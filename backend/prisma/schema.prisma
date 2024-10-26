@@ -15,23 +15,23 @@ datasource db {
 }
 
 enum Role {
-  ADMIN
-  KOAS
-  PASIEN
+  Admin
+  Koas
+  Pasien
 
   @@map("roles")
 }
 
 enum Gender {
-  MALE
-  FEMALE
+  Male
+  Female
 
   @@map("genders")
 }
 
-enum Status {
-  OPEN
-  CLOSE
+enum StatusPost {
+  Open
+  Close
 
   @@map("status")
 }
@@ -96,7 +96,7 @@ model Posts {
   title              String
   desc               String
   patientRequirement String?
-  status             Status // enum dapat ditambahkan jika ada daftar nilai yang terbatas
+  status             StatusPost // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   published          Boolean  @default(false)
   likes              Likes[]
   createdAt          DateTime @default(now())
