@@ -4,14 +4,14 @@ import bcrypt from "bcryptjs"
 import { userValidation, validateData } from "@/utils/validation"
 import { Prisma } from "@prisma/client"
 
-import { UserQueryParams } from "@/config/types"
+import { Role, UserQueryParams } from "@/config/types"
 import { parseSearchParams } from "@/helper/user_helper"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const query: UserQueryParams = parseSearchParams(searchParams)
 
-  try { 
+  try {
     const users = await db.users.findMany({
       where: {
         ...query,
@@ -23,12 +23,12 @@ export async function GET(req: Request) {
     })
 
     const filteredUsers = users.map((user) => {
-      if (user.role === "KOAS") {
+      if (user.role === Role.Koas) {
         return {
           ...user,
           pasienProfile: undefined, // sembunyikan pasien profile
         }
-      } else if (user.role === "PASIEN") {
+      } else if (user.role === Role.Pasien) {
         return {
           ...user,
           koasProfile: undefined, // sembunyikan koas profile
@@ -93,14 +93,14 @@ export async function POST(req: Request) {
       } as Prisma.UsersCreateInput,
     })
 
-    if (newUser.role === "KOAS") {
+    if (newUser.role === Role.Koas) {
       await db.koasProfile.create({
         data: {
           ...profile,
           userId: newUser.id,
         },
       })
-    } else if (newUser.role === "PASIEN") {
+    } else if (newUser.role === Role.Pasien) {
       await db.pasienProfile.create({
         data: {
           ...profile,
