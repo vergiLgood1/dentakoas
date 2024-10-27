@@ -55,12 +55,9 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json()
-
   const { firstname, lastname, email, password, phone, role, profile } = body
-  const { koasProfile, pasienProfile } = profile || {}
 
   const hash = await bcrypt.hash(password, 12)
-
   const resValidation = validateData(userValidation, body)
 
   if (!resValidation.success) {
@@ -79,6 +76,7 @@ export async function POST(req: Request) {
   }
 
   try {
+    
     const username = `${firstname.toLowerCase()}.${lastname.toLowerCase()}`
 
     const newUser = await db.users.create({
