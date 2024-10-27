@@ -30,10 +30,19 @@ enum Gender {
 }
 
 enum StatusPost {
+  Pending
   Open
   Close
 
-  @@map("status")
+  @@map("status-post")
+}
+
+enum StatusKoas {
+  Rejected
+  Pending
+  Approved
+
+  @@map("status-koas")
 }
 
 model Users {
@@ -44,6 +53,7 @@ model Users {
   email         String          @unique
   password      String
   phone         String          @db.VarChar(13) // Batas maksimum 15 karakter
+  address       String?
   img           String?
   role          Role
   koasProfile   KoasProfile?
@@ -59,14 +69,15 @@ model Users {
 }
 
 model KoasProfile {
-  id           String   @id @default(uuid())
-  userId       String   @unique
+  id           String     @id @default(uuid())
+  userId       String     @unique
   koasNumber   String?
   faculty      String?
   bio          String?
   whatsappLink String?
-  createdAt    DateTime @default(now())
-  updateAt     DateTime @updatedAt
+  status       StatusKoas @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
+  createdAt    DateTime   @default(now())
+  updateAt     DateTime   @updatedAt
 
   user  Users   @relation(fields: [userId], references: [id])
   posts Posts[]
@@ -89,18 +100,18 @@ model PasienProfile {
 }
 
 model Posts {
-  id                 String   @id @default(uuid())
+  id                 String     @id @default(uuid())
   userId             String
   koasId             String
   treatmentId        String
   title              String
   desc               String
-  patientRequirement String?
-  status             StatusPost // enum dapat ditambahkan jika ada daftar nilai yang terbatas
-  published          Boolean  @default(false)
+  patientRequirement Json?
+  status             StatusPost @default(Pending)// enum dapat ditambahkan jika ada daftar nilai yang terbatas
+  published          Boolean    @default(false)
   likes              Likes[]
-  createdAt          DateTime @default(now())
-  updateAt           DateTime @updatedAt
+  createdAt          DateTime   @default(now())
+  updateAt           DateTime   @updatedAt
 
   koas  KoasProfile @relation(fields: [koasId], references: [id])
   users Users       @relation(fields: [userId], references: [id])
