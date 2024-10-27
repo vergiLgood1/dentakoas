@@ -104,6 +104,7 @@ export async function PATCH(req: Request, {params}: {params: {userId: string}}) 
         faculty: body.faculty || user.koasProfile.faculty,
         bio: body.bio || user.koasProfile.bio,
         whatsappLink: body.whatsappLink || user.koasProfile.whatsappLink, 
+        status: body.status || user.koasProfile.status,
       } as Prisma.KoasProfileUpdateInput,
     })
 
@@ -153,6 +154,7 @@ export async function PUT(
         faculty: body.faculty,
         bio: body.bio,
         whatsappLink: body.whatsappLink,
+        status: body.status,
       } as Prisma.KoasProfileUpdateInput,
     })
 
