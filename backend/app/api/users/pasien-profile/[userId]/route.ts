@@ -73,9 +73,9 @@ export async function PATCH(
     const updateProfile = await db.pasienProfile.update({
       where: { userId: String(userId) },
       data: {
-        age: body.age || user.pasienProfile.age,
-        gender: body.gender || user.pasienProfile.gender,
-        bio: body.bio || user.pasienProfile.bio,
+        age: body.age ?? user.pasienProfile.age,
+        gender: body.gender ?? user.pasienProfile.gender,
+        bio: body.bio ?? user.pasienProfile.bio,
       } as Prisma.PasienProfileUpdateInput,
     })
 
@@ -128,9 +128,9 @@ export async function PUT(
     const updateProfile = await db.pasienProfile.update({
       where: { userId: String(userId) },
       data: {
-        age: body.age || user.pasienProfile.age,
-        gender: body.gender || user.pasienProfile.gender,
-        bio: body.bio || user.pasienProfile.bio,
+        age: body.age,
+        gender: body.gender,
+        bio: body.bio,
       } as Prisma.PasienProfileUpdateInput,
     })
 
