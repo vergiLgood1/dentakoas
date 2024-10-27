@@ -100,11 +100,11 @@ export async function PATCH(req: Request, {params}: {params: {userId: string}}) 
     const updatedProfile = await db.koasProfile.update({
       where: { userId: String(userId) },
       data: {
-        koasNumber: body.koasNumber || user.koasProfile.koasNumber,
-        faculty: body.faculty || user.koasProfile.faculty,
-        bio: body.bio || user.koasProfile.bio,
-        whatsappLink: body.whatsappLink || user.koasProfile.whatsappLink, 
-        status: body.status || user.koasProfile.status,
+        koasNumber: body.koasNumber ?? user.koasProfile.koasNumber,
+        faculty: body.faculty ?? user.koasProfile.faculty,
+        bio: body.bio ?? user.koasProfile.bio,
+        whatsappLink: body.whatsappLink ?? user.koasProfile.whatsappLink, 
+        status: body.status ?? user.koasProfile.status,
       } as Prisma.KoasProfileUpdateInput,
     })
 
