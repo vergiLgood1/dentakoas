@@ -7,21 +7,21 @@ import { Role } from "@/config/types"
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { userId: string } }
 ) {
   const { searchParams } = new URL(req.url)
-  const userId = searchParams.get("id") || params.id
+  const userId = searchParams.get("userId") || params.userId
 
   try {
     if (!userId) {
       return NextResponse.json(
-        { error: "User ID is required" },
+        { error: "User userId is required" },
         { status: 400 }
       )
     }
 
     const user = await db.users.findUnique({
-      where: { id: String(userId) },
+      where: { id: userId },
       include: { koasProfile: true, pasienProfile: true },
     })
 
@@ -35,21 +35,21 @@ export async function GET(
         return {
           ...user,
           pasienProfile: undefined, // Sembunyikan pasienProfile jika role KOAS
-        };
+        }
       } else if (user.role === Role.Pasien) {
         return {
           ...user,
           koasProfile: undefined, // Sembunyikan koasProfile jika role PASIEN
-        };
+        }
       } else {
         return {
           ...user,
           koasProfile: undefined,
           pasienProfile: undefined,
-        };
+        }
       }
-    })();
-    
+    })()
+
     return NextResponse.json(filteredUser, { status: 200 })
   } catch (error) {
     console.error("Error fetching user", error)
@@ -62,10 +62,10 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { userId: string } }
 ) {
   const { searchParams } = new URL(req.url)
-  const userId = searchParams.get("id") || params.id
+  const userId = searchParams.get("userId") || params.userId
 
   const body = await req.json()
   const { firstname, lastname, email, password, phone, role } = body
@@ -73,7 +73,7 @@ export async function PUT(
   try {
     if (!userId) {
       return NextResponse.json(
-        { error: "User ID is required" },
+        { error: "User userId is required" },
         { status: 400 }
       )
     }
@@ -106,10 +106,10 @@ export async function PUT(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { userId: string } }
 ) {
   const { searchParams } = new URL(req.url)
-  const userId = searchParams.get("id") || params.id
+  const userId = searchParams.get("userId") || params.userId
 
   const body = await req.json()
   const { firstname, lastname, email, password, phone, role } = body
@@ -117,13 +117,13 @@ export async function PATCH(
   try {
     if (!userId) {
       return NextResponse.json(
-        { error: "User ID is required" },
+        { error: "User userId is required" },
         { status: 400 }
       )
     }
 
     const user = await db.users.findUnique({
-      where: { id: String(userId) },
+      where: { id: userId },
       include: { koasProfile: true, pasienProfile: true },
     })
 
@@ -134,14 +134,14 @@ export async function PATCH(
     const hash = await getPassword(password, user.password)
 
     const updatedUser = await db.users.update({
-      where: { id: String(userId) },
+      where: { id: userId },
       data: {
         firstname: firstname || user.firstname,
         lastname: lastname || user.lastname,
         email: email || user.email,
         password: hash,
         phone: phone || user.phone,
-        role: role || user.role
+        role: role || user.role,
       } as Prisma.UsersUpdateInput,
     })
 
@@ -157,15 +157,15 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { userId: string } }
 ) {
   const { searchParams } = new URL(req.url)
-  const userId = searchParams.get("id") || params.id
+  const userId = searchParams.get("userId") || params.userId
 
   try {
     if (!userId) {
       return NextResponse.json(
-        { error: "User ID is required" },
+        { error: "User userId is required" },
         { status: 400 }
       )
     }
@@ -173,7 +173,7 @@ export async function DELETE(
     await getUserId(userId)
 
     await db.users.delete({
-      where: { id: String(userId) },
+      where: { id: userId },
     })
 
     return NextResponse.json(
