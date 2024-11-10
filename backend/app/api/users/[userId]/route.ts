@@ -2,8 +2,8 @@ import { NextResponse } from "next/server"
 import { Prisma } from "@prisma/client"
 import db from "@/lib/db"
 
-import { getUserId, getPassword } from "@/helper/user_helper"
-import { Role } from "@/config/types"
+import { getUserId, getPassword } from "@/helper/userHelper"
+import { Role } from "@/config/enum"
 
 export async function GET(
   req: Request,
@@ -80,7 +80,7 @@ export async function PUT(
 
     const user = await getUserId(userId)
 
-    const hash = await getPassword(password, user.password)
+    const hash = await getPassword(password, user.password ?? "")
 
     const updatedUser = await db.users.update({
       where: { id: String(userId) },
@@ -131,7 +131,7 @@ export async function PATCH(
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const hash = await getPassword(password, user.password)
+    const hash = await getPassword(password, user.password ?? "")
 
     const updatedUser = await db.users.update({
       where: { id: userId },
