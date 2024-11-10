@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server"
 import db from "@/lib/db"
-import { StatusKoas } from "@/config/types"
-import { Prisma } from "@prisma/client"
 
 export async function GET(req: Request) {
   try {
@@ -29,4 +27,3 @@ export async function GET(req: Request) {
     )
   }
 }
-
