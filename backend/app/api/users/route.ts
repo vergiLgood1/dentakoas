@@ -1,11 +1,13 @@
 import db from "@/lib/db"
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
-import { userValidation, validateData } from "@/utils/validation"
+import { SignUpSchema } from "@/lib/zod"
 import { Prisma } from "@prisma/client"
 
-import { Role, UserQueryParams } from "@/config/types"
-import { parseSearchParams } from "@/helper/user_helper"
+import { Role } from "@/config/enum"
+import { UserQueryParams } from "@/config/types"
+import { parseSearchParams } from "@/helper/userHelper"
+import { redirect } from "next/navigation"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -56,12 +58,12 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json()
   const { firstname, lastname, email, password, phone, role, profile } = body
-
   const hash = await bcrypt.hash(password, 12)
-  const resValidation = validateData(userValidation, body)
 
-  if (!resValidation.success) {
-    return NextResponse.json({ error: resValidation.errors }, { status: 400 })
+  const validateFields = SignUpSchema.safeParse(body)
+
+  if (!validateFields.success) {
+    return NextResponse.json({ error: validateFields.error }, { status: 400 })
   }
 
   const existingUser = await db.users.findUnique({
@@ -76,7 +78,6 @@ export async function POST(req: Request) {
   }
 
   try {
-    
     const username = `${firstname.toLowerCase()}.${lastname.toLowerCase()}`
 
     const newUser = await db.users.create({
