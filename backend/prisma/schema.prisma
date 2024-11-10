@@ -47,12 +47,12 @@ enum StatusKoas {
 
 model Users {
   id            String          @id @default(uuid())
-  firstname     String
-  lastname      String
-  username      String          @unique @db.VarChar(50) // Batas maksimum 20 karakter
-  email         String          @unique
-  password      String
-  phone         String          @db.VarChar(13) // Batas maksimum 15 karakter
+  firstname     String?
+  lastname      String?
+  username      String?         @unique @db.VarChar(50) // Batas maksimum 20 karakter
+  email         String?         @unique
+  password      String?
+  phone         String?         @db.VarChar(13) // Batas maksimum 15 karakter
   address       String?
   img           String?
   role          Role
@@ -61,11 +61,49 @@ model Users {
   posts         Posts[]
   notifications Notifications[]
   likes         Likes[]
+  accounts      Account[]
+  sessions      Session[]
 
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 
   @@map("users")
+}
+
+model Account {
+  id                    String  @id @default(cuid())
+  userId                String  @unique
+  type                  String
+  provider              String
+  providerAccountId     String
+  refreshToken          String? @db.Text
+  accessToken           String? @db.Text
+  expiresAt             Int?
+  tokenType             String?
+  scope                 String?
+  idToken               String? @db.Text
+  sessionState          String?
+  refreshTokenExpiresIn Int?
+  user                  Users?  @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         Users    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model KoasProfile {
@@ -107,14 +145,14 @@ model Posts {
   title              String
   desc               String
   patientRequirement Json?
-  status             StatusPost @default(Pending)// enum dapat ditambahkan jika ada daftar nilai yang terbatas
+  status             StatusPost @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   published          Boolean    @default(false)
   likes              Likes[]
   createdAt          DateTime   @default(now())
   updateAt           DateTime   @updatedAt
 
-  koas  KoasProfile @relation(fields: [koasId], references: [id])
-  users Users       @relation(fields: [userId], references: [id])
+  koas KoasProfile @relation(fields: [koasId], references: [id])
+  user Users       @relation(fields: [userId], references: [id])
 
   @@index([userId], name: "userId")
   @@index([koasId], name: "koasId")
