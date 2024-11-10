@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import db from "@/lib/db"
-import { StatusKoas } from "@/config/types"
+import { StatusKoas } from "@/config/enum"
 import { Prisma } from "@prisma/client"
 
 export async function GET(
@@ -16,7 +16,7 @@ export async function GET(
         id: postId,
       },
       include: {
-        users: true,
+        user: true,
         koas: true,
         likes: true,
       },
@@ -37,12 +37,15 @@ export async function GET(
       likeCount,
     }
 
-    return NextResponse.json({ message: "Get spesific post successfully", postWithLikeCount}, { status: 200 })
+    return NextResponse.json(
+      { message: "Get spesific post successfully", postWithLikeCount },
+      { status: 200 }
+    )
   } catch (error) {
     console.error(error)
     return NextResponse.json(
       { error: "An error occurred while fetching the post" },
-      { status: 500 }   
+      { status: 500 }
     )
   }
 }
@@ -99,7 +102,7 @@ export async function POST(
         patientRequirement,
         status,
         published,
-        users: { connect: { id: String(userId) } },
+        user: { connect: { id: String(userId) } },
         koas: { connect: { id: String(koasId) } },
         treatmentId: String(treatmentId), // Assuming this is a relation as well
       } as Prisma.PostsCreateInput,
