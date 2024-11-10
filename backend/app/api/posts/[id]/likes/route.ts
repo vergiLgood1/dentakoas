@@ -12,7 +12,15 @@ export async function GET(
     const likes = await db.likes.findMany({
       where: { postId: postId },
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            img: true,
+            createdAt: true,
+          },
+        },
       },
       orderBy: {
         userId: "asc",
@@ -56,8 +64,8 @@ export async function POST(
 
     const existingLike = await db.likes.findFirst({
       where: {
-        postId: postId,
-        userId: userId,
+        postId,
+        userId,
       },
     })
 
@@ -70,8 +78,8 @@ export async function POST(
     } else {
       like = await db.likes.create({
         data: {
-          userId: userId,
-          postId: postId,
+          userId,
+          postId,
         },
       })
     }
