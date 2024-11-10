@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import db from "@/lib/db"
-import { Role } from "@/config/types"
+import { Role } from "@/config/enum"
 import { Prisma } from "@prisma/client"
 
 export async function GET(
