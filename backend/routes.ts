@@ -23,5 +23,16 @@ export const apiAuthPrefix = "/api/auth";
  * The default redirect path after loginng in.
  * @type {string}
  */
-
 export const DEFAULT_LOGIN_REDIRECT = "/settings";
+
+/**
+ * The default redirect path after logging out.
+ * @type {string}
+ */
+export const DEFAULT_LOGOUT_REDIRECT = "/auth/signin";
+
+/**
+ * The default redirect path if user access an protected routes.
+ * @type {string}
+ */
+export const DEFAULT_PROTECTED_REDIRECT = "/auth/signin";
