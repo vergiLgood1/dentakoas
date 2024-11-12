@@ -29,10 +29,10 @@ export const DEFAULT_LOGIN_REDIRECT = "/settings";
  * The default redirect path after logging out.
  * @type {string}
  */
-export const DEFAULT_LOGOUT_REDIRECT = "/auth/signin";
+export const DEFAULT_LOGOUT_REDIRECT = "/api/auth/signin";
 
 /**
  * The default redirect path if user access an protected routes.
  * @type {string}
  */
-export const DEFAULT_PROTECTED_REDIRECT = "/auth/signin";
+export const DEFAULT_PROTECTED_REDIRECT = "/api/auth/signin";
