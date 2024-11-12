@@ -4,7 +4,7 @@ import db from "@/lib/db";
 import bcrypt from "bcryptjs";
 
 import { Role } from "@/config/enum";
-import { SignUpSchema } from "@/lib/zod";
+import { SignUpSchema } from "@/lib/schemas";
 import { UserQueryParams } from "@/config/types";
 import { getUserByEmail, parseSearchParams } from "@/helpers/user";
 
