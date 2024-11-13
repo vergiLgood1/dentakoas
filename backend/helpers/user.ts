@@ -2,7 +2,11 @@ import { UserQueryParams } from "@/config/types";
 import db from "@/lib/db";
 import bcrpyt from "bcryptjs";
 
-export const getUserByEmail = async (email: string, include?: object, select?: object) => {
+export const getUserByEmail = async (
+  email: string,
+  include?: object,
+  select?: object
+) => {
   try {
     const user = await db.users.findUnique({
       where: {
@@ -17,7 +21,11 @@ export const getUserByEmail = async (email: string, include?: object, select?: o
   }
 };
 
-export const getUserById = async (id: string, include?: object, select?: object) => {
+export const getUserById = async (
+  id: string,
+  include?: object,
+  select?: object
+) => {
   try {
     const user = await db.users.findUnique({
       where: {
@@ -50,4 +58,9 @@ export async function setHashPassword(
   existingHash: string
 ) {
   return password ? await bcrpyt.hash(password, 12) : existingHash;
+}
+
+export async function setUsername(firstname: string | null, lastname: string | null) {
+  const rand = Math.floor(Math.random() * 1000);
+  return `${firstname?.toLowerCase()}.${lastname?.toLowerCase()}${rand}`;
 }
