@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import authConfig from "./auth.config";
-import { getUserById } from "./helpers/user";
+import { getUserById, genUsername } from "./helpers/user";
 import { Role } from "@/config/enum";
 
 const prisma = new PrismaClient();
@@ -28,8 +28,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       if (!existingUser) return token;
 
+      const username = await genUsername(
+        existingUser.firstname,
+        existingUser.lastname
+      );
+
       if (existingUser) {
         token.role = existingUser.role;
+      }
+
+      if (token.isNewUser && !existingUser.username) {
+        token.name = username;
+      } else {
         token.name = existingUser.username;
       }
 
