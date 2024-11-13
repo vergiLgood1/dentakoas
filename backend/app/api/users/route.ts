@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import { Role } from "@/config/enum";
 import { SignUpSchema } from "@/lib/schemas";
 import { UserQueryParams } from "@/config/types";
-import { getUserByEmail, parseSearchParams } from "@/helpers/user";
+import { getUserByEmail, parseSearchParams, genUsername } from "@/helpers/user";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -44,7 +44,14 @@ export async function GET(req: Request) {
       // return user
     });
 
-    return NextResponse.json(filteredUsers, { status: 200 });
+    return NextResponse.json(
+      {
+        status: "Success",
+        message: "User retrived successfully",
+        data: { user: filteredUsers },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error fetching users", error);
     return NextResponse.json(
@@ -57,7 +64,6 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json();
   const { firstname, lastname, email, password, phone, role, profile } = body;
-  const hash = await bcrypt.hash(password, 12);
 
   const validateFields = SignUpSchema.safeParse(body);
 
@@ -75,7 +81,8 @@ export async function POST(req: Request) {
   }
 
   try {
-    const username = `${firstname.toLowerCase()}.${lastname.toLowerCase()}`;
+    const username = await genUsername(firstname, lastname);
+    const hash = await bcrypt.hash(password, 10);
 
     const newUser = await db.users.create({
       data: {
@@ -105,7 +112,14 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json(newUser, { status: 201 });
+    return NextResponse.json(
+      {
+        status: "Success",
+        message: "User created successfully",
+        data: { user: newUser },
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating user", error);
     return NextResponse.json(
