@@ -18,7 +18,7 @@ export async function GET(req: Request) {
         ...query,
       } as Prisma.UserWhereInput,
       orderBy: {
-        username: "asc",
+        name: "asc",
       },
       include: { koasProfile: true, pasienProfile: true },
     });
@@ -63,7 +63,8 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { firstname, lastname, email, password, phone, role, profile } = body;
+  const { given_name, family_name, email, password, phone, role, profile } =
+    body;
 
   const validateFields = SignUpSchema.safeParse(body);
 
@@ -81,14 +82,14 @@ export async function POST(req: Request) {
   }
 
   try {
-    const username = await genUsername(firstname, lastname);
+    const name = await genUsername(given_name, family_name);
     const hash = await bcrypt.hash(password, 10);
 
     const newUser = await db.user.create({
       data: {
-        firstname,
-        lastname,
-        username,
+        given_name,
+        family_name,
+        name,
         email,
         password: hash,
         phone,

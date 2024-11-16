@@ -47,15 +47,15 @@ enum StatusKoas {
 
 model User {
   id            String          @id @default(cuid())
-  firstname     String?
-  lastname      String?
-  username      String?         @unique @db.VarChar(50) // Batas maksimum 20 karakter
+  given_name    String?
+  family_name   String?
+  name          String?         @unique @db.VarChar(50) // Batas maksimum 20 karakter
   email         String?         @unique
   emailVerified DateTime?       @map("email_verified")
   password      String?
   phone         String?         @db.VarChar(13) // Batas maksimum 13 karakter
   address       String?
-  img           String?
+  image         String?
   role          Role?
   koasProfile   KoasProfile?
   pasienProfile PasienProfile?
@@ -68,7 +68,7 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updateAt  DateTime @updatedAt @map("updated_at")
 
-  @@map("user")
+  @@map("users")
 }
 
 model Account {

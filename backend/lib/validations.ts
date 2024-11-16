@@ -21,11 +21,11 @@ const valPhone = z.string().min(10, { message: "Invalid phone number" });
 
 // Skema validasi untuk User
 export const userValidation = z.object({
-  firstname: z
+  given_name: z
     .string()
     .min(1, { message: "First name is required" })
     .max(255, { message: "Firs name is too long" }),
-  lastname: z
+  family_name: z
     .string()
     .min(1, { message: "Last name is required" })
     .max(255, { message: "Last name is too long" }),

@@ -32,13 +32,13 @@ export interface SessionInfo {
 // Type for user
 export interface User {
   id: string;
-  firstname: string;
-  lastname: string;
-  username: string;
+  given_name: string;
+  family_name: string;
+  name: string;
   email: string;
   password: string;
   phone: string;
-  img?: string | null; // Optional field
+  image?: string | null; // Optional field
   role: Role;
   koasProfile?: KoasProfile | null; // Optional field
   pasienProfile?: PasienProfile | null; // Optional field
@@ -118,8 +118,8 @@ export type TreatmentType = {
 
 // Interface for user input validation
 export interface UserInput {
-  firstname: string;
-  lastname: string;
+  given_name: string;
+  family_name: string;
   email: string;
   password: string;
   phone_number: string;
@@ -133,9 +133,9 @@ export interface ValidationResult {
 }
 
 export type UserQueryParams = {
-  firstname?: string;
-  lastname?: string;
-  username?: string;
+  given_name?: string;
+  family_name?: string;
+  name?: string;
   email?: string;
   phone?: string;
   role?: string;

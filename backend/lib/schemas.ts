@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 
 export const SignUpSchema = z
   .object({
-    firstname: z.string().min(1, "Firstname must be more than 1 character"),
-    lastname: z.string().min(1, "Lastname must be more than 1 character"),
+    given_name: z.string().min(1, "given_name must be more than 1 character"),
+    family_name: z.string().min(1, "family_name must be more than 1 character"),
     email: z.string().email({
       message: "Invalid email format",
     }),

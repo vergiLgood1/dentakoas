@@ -33,19 +33,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       if (!existingUser) return token;
 
-      const username = await genUsername(
-        existingUser.firstname,
-        existingUser.lastname
+      const name = await genUsername(
+        existingUser.given_name,
+        existingUser.family_name
       );
 
       if (existingUser) {
         token.role = existingUser.role;
       }
 
-      if (token.isNewUser && !existingUser.username) {
-        token.name = username;
+      if (token.isNewUser && !existingUser.name) {
+        token.name = name;
       } else {
-        token.name = existingUser.username;
+        token.name = existingUser.name;
       }
 
       console.log("token", token);

@@ -69,7 +69,7 @@ export async function PUT(
   const userId = searchParams.get("userId") || params.userId;
 
   const body = await req.json();
-  const { firstname, lastname, email, password, phone, role } = body;
+  const { given_name, family_name, email, password, phone, role } = body;
 
   try {
     if (!userId) {
@@ -92,13 +92,13 @@ export async function PUT(
     const updatedUser = await db.user.update({
       where: { id: String(userId) },
       data: {
-        firstname,
-        lastname,
+        given_name,
+        family_name,
         email,
         password: hash,
         phone,
         role,
-      } as Prisma.userUpdateInput,
+      } as Prisma.UserUpdateInput,
     });
 
     return NextResponse.json(updatedUser, { status: 200 });
@@ -119,7 +119,7 @@ export async function PATCH(
   const userId = searchParams.get("userId") || params.userId;
 
   const body = await req.json();
-  const { firstname, lastname, email, password, phone, role } = body;
+  const { given_name, family_name, email, password, phone, role } = body;
 
   try {
     if (!userId) {
@@ -143,13 +143,13 @@ export async function PATCH(
     const updatedUser = await db.user.update({
       where: { id: userId },
       data: {
-        firstname: firstname || user.firstname,
-        lastname: lastname || user.lastname,
+        given_name: given_name || user.given_name,
+        family_name: family_name || user.family_name,
         email: email || user.email,
         password: hash,
         phone: phone || user.phone,
         role: role || user.role,
-      } as Prisma.userUpdateInput,
+      } as Prisma.UserUpdateInput,
     });
 
     return NextResponse.json(updatedUser, { status: 200 });

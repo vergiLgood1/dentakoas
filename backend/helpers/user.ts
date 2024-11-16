@@ -86,15 +86,15 @@ export async function setHashPassword(
 
 /**
  * Generate a username based on the user's first and last name
- * @param firstname
- * @param lastname
+ * @param given_name
+ * @param family_name
  * @type {string | null}
  * @returns
  */
 export async function genUsername(
-  firstname: string | null,
-  lastname: string | null
+  given_name: string | null,
+  family_name: string | null
 ) {
   const rand = Math.floor(Math.random() * 1000);
-  return `${firstname?.toLowerCase()}.${lastname?.toLowerCase()}${rand}`;
+  return `${given_name?.toLowerCase()}.${family_name?.toLowerCase()}${rand}`;
 }

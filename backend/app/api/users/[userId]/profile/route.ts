@@ -20,11 +20,11 @@ export async function GET(
       where: { id: userId },
       select: {
         id: true,
-        username: true,
+        name: true,
         email: true,
         phone: true,
         address: true,
-        img: true,
+        image: true,
         role: true,
       },
     });
