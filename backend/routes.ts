@@ -3,11 +3,11 @@
  * These route do not require authentication.
  * @type {string[]}
  */
-export const publicRoutes = ["/", "/api/users"];
+export const publicRoutes = ["/", "/api/user"];
 
 /**
  * An array of routes that are used for authentication.
- * These routes will redirect logged in users to /settings.
+ * These routes will redirect logged in user to /settings.
  * @type {string[]}
  */
 export const authRoutes = ["/api/auth/signin", "/api/auth/signout"];
@@ -24,7 +24,7 @@ export const apiAuthPrefix = "/api/auth";
  * These routes do not require authentication.
  * @type {string[]}
  */
-export const apiPublicRoutes = ["/api/users"];
+export const apiPublicRoutes = ["/api/user"];
 
 /**
  * The default redirect path after loginng in.

@@ -13,17 +13,17 @@ export async function GET(req: Request) {
   const query: UserQueryParams = parseSearchParams(searchParams);
 
   try {
-    const users = await db.users.findMany({
+    const user = await db.user.findMany({
       where: {
         ...query,
-      } as Prisma.UsersWhereInput,
+      } as Prisma.UserWhereInput,
       orderBy: {
         username: "asc",
       },
       include: { koasProfile: true, pasienProfile: true },
     });
 
-    const filteredUsers = users.map((user) => {
+    const filtereduser = user.map((user) => {
       if (user.role === Role.Koas) {
         return {
           ...user,
@@ -48,12 +48,12 @@ export async function GET(req: Request) {
       {
         status: "Success",
         message: "User retrived successfully",
-        data: { user: filteredUsers },
+        data: { user: filtereduser },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching users", error);
+    console.error("Error fetching user", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -84,7 +84,7 @@ export async function POST(req: Request) {
     const username = await genUsername(firstname, lastname);
     const hash = await bcrypt.hash(password, 10);
 
-    const newUser = await db.users.create({
+    const newUser = await db.user.create({
       data: {
         firstname,
         lastname,
@@ -93,7 +93,7 @@ export async function POST(req: Request) {
         password: hash,
         phone,
         role,
-      } as Prisma.UsersCreateInput,
+      } as Prisma.UserCreateInput,
     });
 
     if (newUser.role === Role.Koas) {

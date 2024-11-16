@@ -45,153 +45,162 @@ enum StatusKoas {
   @@map("status-koas")
 }
 
-model Users {
-  id            String          @id @default(uuid())
+model User {
+  id            String          @id @default(cuid())
   firstname     String?
   lastname      String?
   username      String?         @unique @db.VarChar(50) // Batas maksimum 20 karakter
   email         String?         @unique
+  emailVerified DateTime?       @map("email_verified")
   password      String?
-  phone         String?         @db.VarChar(13) // Batas maksimum 15 karakter
+  phone         String?         @db.VarChar(13) // Batas maksimum 13 karakter
   address       String?
   img           String?
-  role          Role
+  role          Role?
   koasProfile   KoasProfile?
   pasienProfile PasienProfile?
+  Account       Account[]
   posts         Posts[]
   notifications Notifications[]
   likes         Likes[]
-  accounts      Account[]
   sessions      Session[]
 
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("updated_at")
 
-  @@map("users")
+  @@map("user")
 }
 
 model Account {
-  id                    String  @id @default(cuid())
-  userId                String  @unique
-  type                  String
-  provider              String
-  providerAccountId     String
-  refreshToken          String? @db.Text
-  accessToken           String? @db.Text
-  expiresAt             Int?
-  tokenType             String?
-  scope                 String?
-  idToken               String? @db.Text
-  sessionState          String?
-  refreshTokenExpiresIn Int?
-  user                  Users?  @relation(fields: [userId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String   @id @default(cuid())
+  userId            String   @map("user_id")
+  type              String?
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  token_type        String?
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  scope             String?
+  id_token          String?  @db.Text
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@index([userId])
+  @@map("accounts")
 }
 
 model Session {
   id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
+  userId       String?  @map("user_id")
+  sessionToken String   @map("session_token") @db.Text
+  accessToken  String?  @map("access_token") @db.Text
   expires      DateTime
-  user         Users    @relation(fields: [userId], references: [id])
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("sessions")
+}
 
-  @@index([userId])
+model VerificationRequest {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, token])
 }
 
 model KoasProfile {
-  id           String     @id @default(uuid())
-  userId       String     @unique
-  koasNumber   String?
+  id           String     @id @default(cuid())
+  userId       String     @unique @map("user_id")
+  koasNumber   String?    @unique @map("koas_number")
   faculty      String?
   bio          String?
-  whatsappLink String?
+  whatsappLink String?    @map("whatsapp_link")
   status       StatusKoas @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
-  createdAt    DateTime   @default(now())
-  updateAt     DateTime   @updatedAt
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updateAt     DateTime   @updatedAt @map("updated_at")
 
-  user  Users   @relation(fields: [userId], references: [id])
+  user  User    @relation(fields: [userId], references: [id])
   posts Posts[]
 
   @@map("koas-profile")
 }
 
 model PasienProfile {
-  id        String   @id @default(uuid())
-  userId    String   @unique
+  id        String   @id @default(cuid())
+  userId    String   @unique @map("user_id")
   age       Int?
   gender    Gender? // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   bio       String?
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("updated_at")
 
-  user Users @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
   @@map("pasien-profile")
 }
 
 model Posts {
-  id                 String     @id @default(uuid())
-  userId             String
-  koasId             String
-  treatmentId        String
+  id                 String     @id @default(cuid())
+  userId             String     @map("user_id")
+  koasId             String     @map("koas_id")
+  treatmentId        String     @map("treatment_id")
   title              String
   desc               String
-  patientRequirement Json?
+  patientRequirement Json?      @map("patient_requirement")
   status             StatusPost @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   published          Boolean    @default(false)
   likes              Likes[]
-  createdAt          DateTime   @default(now())
-  updateAt           DateTime   @updatedAt
+  createdAt          DateTime   @default(now()) @map("created_at")
+  updateAt           DateTime   @updatedAt @map("updated_at")
 
   koas KoasProfile @relation(fields: [koasId], references: [id])
-  user Users       @relation(fields: [userId], references: [id])
+  user User        @relation(fields: [userId], references: [id])
 
-  @@index([userId], name: "userId")
-  @@index([koasId], name: "koasId")
-  @@index([treatmentId], name: "treatmentId")
+  @@index([userId], name: "user_id")
+  @@index([koasId], name: "koas_id")
+  @@index([treatmentId], name: "treatment_id")
   @@map("posts")
 }
 
 model Likes {
-  id        String   @id @default(uuid())
-  postId    String
-  userId    String
-  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  postId    String   @map("post_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  user  Users @relation(fields: [userId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
   posts Posts @relation(fields: [postId], references: [id])
 
-  @@index([postId], name: "postId")
-  @@index([userId], name: "userId")
+  @@index([postId], name: "post_id")
+  @@index([userId], name: "user_id")
   @@map("likes")
 }
 
 model Notifications {
-  id        String   @id @default(uuid())
-  userId    String
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
   message   String
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  user Users @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
-  @@index([userId], name: "userId")
+  @@index([userId], name: "user_id")
   @@map("notifications")
 }
 
 model TreatmentType {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   name      String
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("updated_at")
 
   @@map("treatment-types")
 }

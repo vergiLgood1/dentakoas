@@ -15,7 +15,7 @@ export const getUserByEmail = async (
   select?: object
 ) => {
   try {
-    const user = await db.users.findUnique({
+    const user = await db.user.findUnique({
       where: {
         email,
       },
@@ -41,7 +41,7 @@ export const getUserById = async (
   select?: object
 ) => {
   try {
-    const user = await db.users.findUnique({
+    const user = await db.user.findUnique({
       where: {
         id,
       },
@@ -88,6 +88,7 @@ export async function setHashPassword(
  * Generate a username based on the user's first and last name
  * @param firstname
  * @param lastname
+ * @type {string | null}
  * @returns
  */
 export async function genUsername(

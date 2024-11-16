@@ -21,7 +21,7 @@ export async function GET(
       );
     }
 
-    const user = await db.users.findUnique({
+    const user = await db.user.findUnique({
       where: { id: userId },
       include: { koasProfile: true, pasienProfile: true },
     });
@@ -89,7 +89,7 @@ export async function PUT(
 
     const hash = await setHashPassword(password, user.password ?? "");
 
-    const updatedUser = await db.users.update({
+    const updatedUser = await db.user.update({
       where: { id: String(userId) },
       data: {
         firstname,
@@ -98,7 +98,7 @@ export async function PUT(
         password: hash,
         phone,
         role,
-      } as Prisma.UsersUpdateInput,
+      } as Prisma.userUpdateInput,
     });
 
     return NextResponse.json(updatedUser, { status: 200 });
@@ -140,7 +140,7 @@ export async function PATCH(
 
     const hash = await setHashPassword(password, user.password ?? "");
 
-    const updatedUser = await db.users.update({
+    const updatedUser = await db.user.update({
       where: { id: userId },
       data: {
         firstname: firstname || user.firstname,
@@ -149,7 +149,7 @@ export async function PATCH(
         password: hash,
         phone: phone || user.phone,
         role: role || user.role,
-      } as Prisma.UsersUpdateInput,
+      } as Prisma.userUpdateInput,
     });
 
     return NextResponse.json(updatedUser, { status: 200 });
@@ -179,7 +179,7 @@ export async function DELETE(
 
     await getUserById(userId);
 
-    await db.users.delete({
+    await db.user.delete({
       where: { id: userId },
     });
 

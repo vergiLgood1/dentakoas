@@ -2,18 +2,23 @@ import type { NextAuthConfig } from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import db from "./lib/db";
+import db from "@/lib/db";
 
 import { compare } from "bcryptjs";
-import { Role } from "./config/enum";
-import { SignInSchema } from "./lib/schemas";
-import { getUserByEmail } from "./helpers/user";
+import { Role } from "@/config/enum";
+import { SignInSchema } from "@/lib/schemas";
+import { getUserByEmail } from "@/helpers/user";
 
 export default {
+  session: { strategy: "jwt" },
   providers: [
     Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
     Credentials({
       name: "Credentials",
@@ -37,6 +42,7 @@ export default {
 
         return null;
       },
+      
     }),
   ],
 } satisfies NextAuthConfig;
