@@ -9,7 +9,7 @@ export async function GET(
   const postId = searchParams.get("id") || params.id;
 
   try {
-    const Like = await db.Like.findMany({
+    const Like = await db.like.findMany({
       where: { postId: postId },
       include: {
         user: {
@@ -62,7 +62,7 @@ export async function POST(
       );
     }
 
-    const existingLike = await db.Like.findFirst({
+    const existingLike = await db.like.findFirst({
       where: {
         postId,
         userId,
@@ -70,13 +70,13 @@ export async function POST(
     });
 
     if (existingLike) {
-      like = await db.Like.delete({
+      like = await db.like.delete({
         where: {
           id: existingLike.id,
         },
       });
     } else {
-      like = await db.Like.create({
+      like = await db.like.create({
         data: {
           userId,
           postId,

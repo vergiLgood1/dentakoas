@@ -11,14 +11,14 @@ export async function GET(
   const postId = searchParams.get("id") || params.id;
 
   try {
-    const post = await db.Post.findUnique({
+    const post = await db.post.findUnique({
       where: {
         id: postId,
       },
       include: {
         user: true,
         koas: true,
-        Like: true,
+        likes: true,
       },
     });
 
@@ -26,7 +26,7 @@ export async function GET(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const likeCount = await db.Like.count({
+    const likeCount = await db.like.count({
       where: {
         postId,
       },
@@ -95,7 +95,7 @@ export async function POST(
       );
     }
 
-    const post = await db.Post.create({
+    const post = await db.post.create({
       data: {
         title,
         desc,
@@ -138,7 +138,7 @@ export async function PATCH(
   } = body;
 
   try {
-    const post = await db.Post.findUnique({
+    const post = await db.post.findUnique({
       where: { id: postId },
     });
 
@@ -146,7 +146,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const updatedPost = await db.Post.update({
+    const updatedPost = await db.post.update({
       where: { id: postId },
       data: {
         title: title ?? post.title, // Jika title ada di body, ganti, jika tidak gunakan data lama
@@ -197,7 +197,7 @@ export async function PUT(
   } = body;
 
   try {
-    const post = await db.Post.findUnique({
+    const post = await db.post.findUnique({
       where: { id: postId },
     });
 
@@ -205,7 +205,7 @@ export async function PUT(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const updatedPost = await db.Post.update({
+    const updatedPost = await db.post.update({
       where: { id: postId },
       data: {
         title,
@@ -237,7 +237,7 @@ export async function DELETE(
   const postId = searchParams.get("id") || params.id;
 
   try {
-    const post = await db.Post.findUnique({
+    const post = await db.post.findUnique({
       where: { id: postId },
     });
 
@@ -245,7 +245,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    await db.Post.delete({
+    await db.post.delete({
       where: { id: postId },
     });
 
