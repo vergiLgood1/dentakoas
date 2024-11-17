@@ -22,20 +22,20 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-  if (isApiAuthRoute || isApiPublicRoute) {
-    return;
-  }
+  // if (isApiAuthRoute || isApiPublicRoute) {
+  //   return;
+  // }
 
-  if (isAuthRoute) {
-    if (isLoggedIn) {
-      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
-    }
-    return;
-  }
+  // if (isAuthRoute) {
+  //   if (isLoggedIn) {
+  //     return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+  //   }
+  //   return;
+  // }
 
-  if (!isLoggedIn && !isPublicRoute && !isApiPublicRoute) {
-    return NextResponse.redirect(new URL(DEFAULT_PROTECTED_REDIRECT, nextUrl));
-  }
+  // if (!isLoggedIn && !isPublicRoute && !isApiPublicRoute) {
+  //   return NextResponse.redirect(new URL(DEFAULT_PROTECTED_REDIRECT, nextUrl));
+  // }
 
   return;
 });

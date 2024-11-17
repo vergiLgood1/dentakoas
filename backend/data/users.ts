@@ -1,9 +1,9 @@
 import { Role } from "@prisma/client";
 
-export const user = [
+export const users = [
   {
-    given_name: "John",
-    family_name: "Doe",
+    givenName: "John",
+    familyName: "Doe",
     email: "john.doe@example.com",
     password: "password123", // hashed nanti di seed script
     phone: "1234567890123",
@@ -12,8 +12,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Jane",
-    family_name: "Smith",
+    givenName: "Jane",
+    familyName: "Smith",
     email: "jane.smith@example.com",
     password: "password123",
     phone: "2345678901234",
@@ -22,8 +22,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Emily",
-    family_name: "Jones",
+    givenName: "Emily",
+    familyName: "Jones",
     email: "emily.jones@example.com",
     password: "password123",
     phone: "3456789012345",
@@ -32,8 +32,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Michael",
-    family_name: "Brown",
+    givenName: "Michael",
+    familyName: "Brown",
     email: "michael.brown@example.com",
     password: "password123",
     phone: "4567890123456",
@@ -42,8 +42,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Sarah",
-    family_name: "Wilson",
+    givenName: "Sarah",
+    familyName: "Wilson",
     email: "sarah.wilson@example.com",
     password: "password123",
     phone: "5678901234567",
@@ -52,8 +52,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Tom",
-    family_name: "Taylor",
+    givenName: "Tom",
+    familyName: "Taylor",
     email: "tom.taylor@example.com",
     password: "password123",
     phone: "6789012345678",
@@ -62,8 +62,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Lisa",
-    family_name: "Anderson",
+    givenName: "Lisa",
+    familyName: "Anderson",
     email: "lisa.anderson@example.com",
     password: "password123",
     phone: "7890123456789",
@@ -72,8 +72,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "David",
-    family_name: "Thomas",
+    givenName: "David",
+    familyName: "Thomas",
     email: "david.thomas@example.com",
     password: "password123",
     phone: "8901234567890",
@@ -82,8 +82,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Karen",
-    family_name: "White",
+    givenName: "Karen",
+    familyName: "White",
     email: "karen.white@example.com",
     password: "password123",
     phone: "9012345678901",
@@ -92,8 +92,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Chris",
-    family_name: "Martinez",
+    givenName: "Chris",
+    familyName: "Martinez",
     email: "chris.martinez@example.com",
     password: "password123",
     phone: "0123456789012",
@@ -102,8 +102,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Anna",
-    family_name: "Garcia",
+    givenName: "Anna",
+    familyName: "Garcia",
     email: "anna.garcia@example.com",
     password: "password123",
     phone: "1234567890123",
@@ -112,8 +112,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Robert",
-    family_name: "Martins",
+    givenName: "Robert",
+    familyName: "Martins",
     email: "robert.martins@example.com",
     password: "password123",
     phone: "2345678901234",
@@ -122,8 +122,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Sophia",
-    family_name: "Lopez",
+    givenName: "Sophia",
+    familyName: "Lopez",
     email: "sophia.lopez@example.com",
     password: "password123",
     phone: "3456789012345",
@@ -132,8 +132,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Daniel",
-    family_name: "Gonzalez",
+    givenName: "Daniel",
+    familyName: "Gonzalez",
     email: "daniel.gonzalez@example.com",
     password: "password123",
     phone: "4567890123456",
@@ -142,8 +142,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Natalie",
-    family_name: "Perez",
+    givenName: "Natalie",
+    familyName: "Perez",
     email: "natalie.perez@example.com",
     password: "password123",
     phone: "5678901234567",
@@ -152,8 +152,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "James",
-    family_name: "Rodriguez",
+    givenName: "James",
+    familyName: "Rodriguez",
     email: "james.rodriguez@example.com",
     password: "password123",
     phone: "6789012345678",
@@ -162,8 +162,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Evelyn",
-    family_name: "Hernandez",
+    givenName: "Evelyn",
+    familyName: "Hernandez",
     email: "evelyn.hernandez@example.com",
     password: "password123",
     phone: "7890123456789",
@@ -172,8 +172,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Mark",
-    family_name: "Moore",
+    givenName: "Mark",
+    familyName: "Moore",
     email: "mark.moore@example.com",
     password: "password123",
     phone: "8901234567890",
@@ -182,8 +182,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Chloe",
-    family_name: "Evans",
+    givenName: "Chloe",
+    familyName: "Evans",
     email: "chloe.evans@example.com",
     password: "password123",
     phone: "9012345678901",
@@ -192,8 +192,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Henry",
-    family_name: "Green",
+    givenName: "Henry",
+    familyName: "Green",
     email: "henry.green@example.com",
     password: "password123",
     phone: "0123456789012",
@@ -202,8 +202,8 @@ export const user = [
     updateAt: new Date(),
   },
   {
-    given_name: "Admin",
-    family_name: "User",
+    givenName: "Admin",
+    familyName: "User",
     email: "admin@example.com",
     password: "password123",
     phone: "0000000000000",

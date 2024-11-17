@@ -11,14 +11,14 @@ export async function GET(
   const postId = searchParams.get("id") || params.id;
 
   try {
-    const post = await db.posts.findUnique({
+    const post = await db.Post.findUnique({
       where: {
         id: postId,
       },
       include: {
         user: true,
         koas: true,
-        likes: true,
+        Like: true,
       },
     });
 
@@ -26,7 +26,7 @@ export async function GET(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const likeCount = await db.likes.count({
+    const likeCount = await db.Like.count({
       where: {
         postId,
       },
@@ -95,7 +95,7 @@ export async function POST(
       );
     }
 
-    const post = await db.posts.create({
+    const post = await db.Post.create({
       data: {
         title,
         desc,
@@ -105,7 +105,7 @@ export async function POST(
         user: { connect: { id: String(userId) } },
         koas: { connect: { id: String(koasId) } },
         treatmentId: String(treatmentId), // Assuming this is a relation as well
-      } as Prisma.PostsCreateInput,
+      } as Prisma.PostCreateInput,
     });
 
     return NextResponse.json(post, { status: 201 });
@@ -138,7 +138,7 @@ export async function PATCH(
   } = body;
 
   try {
-    const post = await db.posts.findUnique({
+    const post = await db.Post.findUnique({
       where: { id: postId },
     });
 
@@ -146,7 +146,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const updatedPost = await db.posts.update({
+    const updatedPost = await db.Post.update({
       where: { id: postId },
       data: {
         title: title ?? post.title, // Jika title ada di body, ganti, jika tidak gunakan data lama
@@ -157,7 +157,7 @@ export async function PATCH(
         treatmentId: treatmentId ?? post.treatmentId,
         user: userId ? { connect: { id: String(userId) } } : undefined,
         koas: koasId ? { connect: { id: String(koasId) } } : undefined,
-      } as Prisma.PostsUpdateInput,
+      } as Prisma.PostUpdateInput,
     });
 
     if (!title && !desc && !patientRequirement) {
@@ -197,7 +197,7 @@ export async function PUT(
   } = body;
 
   try {
-    const post = await db.posts.findUnique({
+    const post = await db.Post.findUnique({
       where: { id: postId },
     });
 
@@ -205,7 +205,7 @@ export async function PUT(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const updatedPost = await db.posts.update({
+    const updatedPost = await db.Post.update({
       where: { id: postId },
       data: {
         title,
@@ -216,7 +216,7 @@ export async function PUT(
         treatmentId: String(treatmentId),
         user: { connect: { id: String(userId) } },
         koas: { connect: { id: String(koasId) } },
-      } as Prisma.PostsUpdateInput,
+      } as Prisma.PostUpdateInput,
     });
 
     return NextResponse.json(updatedPost, { status: 200 });
@@ -237,7 +237,7 @@ export async function DELETE(
   const postId = searchParams.get("id") || params.id;
 
   try {
-    const post = await db.posts.findUnique({
+    const post = await db.Post.findUnique({
       where: { id: postId },
     });
 
@@ -245,7 +245,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    await db.posts.delete({
+    await db.Post.delete({
       where: { id: postId },
     });
 

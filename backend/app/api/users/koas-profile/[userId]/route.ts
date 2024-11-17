@@ -15,7 +15,7 @@ export async function GET(
         id: userId,
       },
       include: {
-        koasProfile: true,
+        KoasProfile: true,
       },
     });
 
@@ -51,7 +51,7 @@ export async function POST(
       );
     }
 
-    const koasProfile = await db.koasProfile.create({
+    const KoasProfile = await db.koasProfile.create({
       data: {
         koasNumber,
         faculty,
@@ -61,7 +61,7 @@ export async function POST(
       } as Prisma.KoasProfileCreateInput,
     });
 
-    return NextResponse.json(koasProfile, { status: 201 });
+    return NextResponse.json(KoasProfile, { status: 201 });
   } catch (error) {
     console.error("Error creating KOAS profile:", error); // Log error
     return NextResponse.json(
@@ -89,10 +89,10 @@ export async function PATCH(
 
     const user = await db.user.findUnique({
       where: { id: String(userId) },
-      include: { koasProfile: true },
+      include: { KoasProfile: true },
     });
 
-    if (!user || !user.koasProfile) {
+    if (!user || !user.KoasProfile) {
       return NextResponse.json(
         { error: "KOAS profile not found" },
         { status: 404 }
@@ -102,11 +102,11 @@ export async function PATCH(
     const updatedProfile = await db.koasProfile.update({
       where: { userId: String(userId) },
       data: {
-        koasNumber: body.koasNumber ?? user.koasProfile.koasNumber,
-        faculty: body.faculty ?? user.koasProfile.faculty,
-        bio: body.bio ?? user.koasProfile.bio,
-        whatsappLink: body.whatsappLink ?? user.koasProfile.whatsappLink,
-        status: body.status ?? user.koasProfile.status,
+        koasNumber: body.koasNumber ?? user.KoasProfile.koasNumber,
+        faculty: body.faculty ?? user.KoasProfile.faculty,
+        bio: body.bio ?? user.KoasProfile.bio,
+        whatsappLink: body.whatsappLink ?? user.KoasProfile.whatsappLink,
+        status: body.status ?? user.KoasProfile.status,
       } as Prisma.KoasProfileUpdateInput,
     });
 
@@ -141,10 +141,10 @@ export async function PUT(
 
     const user = await db.user.findUnique({
       where: { id: String(userId) },
-      include: { koasProfile: true },
+      include: { KoasProfile: true },
     });
 
-    if (!user || !user.koasProfile) {
+    if (!user || !user.KoasProfile) {
       return NextResponse.json(
         { error: "KOAS profile not found" },
         { status: 404 }
@@ -193,11 +193,11 @@ export async function DELETE(
         id: userId,
       },
       include: {
-        koasProfile: true,
+        KoasProfile: true,
       },
     });
 
-    if (!user || !user.koasProfile) {
+    if (!user || !user.KoasProfile) {
       return NextResponse.json(
         { error: "Koas profile not found" },
         { status: 404 }
@@ -205,7 +205,7 @@ export async function DELETE(
     }
 
     if (reset) {
-      //   Jika reset = true, reset koasProfile menjadi null
+      //   Jika reset = true, reset KoasProfile menjadi null
       const deletedProfile = await db.koasProfile.update({
         where: {
           userId: userId,
@@ -226,7 +226,7 @@ export async function DELETE(
         { status: 200 }
       );
     } else {
-      // Jika reset = false, hapus seluruh record koasProfile
+      // Jika reset = false, hapus seluruh record KoasProfile
       const deletedProfile = await db.koasProfile.delete({
         where: {
           userId: userId,

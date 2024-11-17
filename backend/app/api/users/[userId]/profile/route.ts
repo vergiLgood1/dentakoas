@@ -2,12 +2,19 @@ import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { Role } from "@/config/enum";
 import { Prisma } from "@prisma/client";
+import { getUserById } from "@/helpers/user";
+import {
+  getKoasProfileByUserId,
+  getPasienProfileByUserId,
+} from "@/helpers/profile";
 
 export async function GET(
   req: Request,
   { params }: { params: { userId: string } }
 ) {
-  const userId = params.userId;
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("userId") || params.userId;
+
   let profile;
 
   if (!userId) {
@@ -15,48 +22,38 @@ export async function GET(
   }
 
   try {
-    // Fetch the user, including the role and relevant profiles
-    const user = await db.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        address: true,
-        image: true,
-        role: true,
-      },
+    const existingUser = await getUserById(userId, undefined, {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      address: true,
+      image: true,
+      role: true,
     });
 
-    if (!user) {
+    if (!existingUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Check user role and respond with the appropriate profile
-    if (user.role === Role.Koas) {
-      profile = await db.koasProfile.findUnique({
-        where: { userId },
-        select: {
-          id: true,
-          userId: true,
-          koasNumber: true,
-          faculty: true,
-          bio: true,
-          whatsappLink: true,
-          status: true,
-        },
+    if (existingUser.role === Role.Koas) {
+      profile = await getKoasProfileByUserId(userId, undefined, {
+        id: true,
+        userId: true,
+        koasNumber: true,
+        faculty: true,
+        bio: true,
+        whatsappLink: true,
+        status: true,
       });
-    } else if (user.role === Role.Pasien) {
-      profile = await db.pasienProfile.findUnique({
-        where: { userId },
-        select: {
-          id: true,
-          userId: true,
-          age: true,
-          gender: true,
-          bio: true,
-        },
+    } else if (existingUser.role === Role.Pasien) {
+      profile = await getPasienProfileByUserId(userId, undefined, {
+        id: true,
+        userId: true,
+        age: true,
+        gender: true,
+        bio: true,
       });
     } else {
       return NextResponse.json({ error: "Invalid user role" }, { status: 400 });
@@ -66,13 +63,17 @@ export async function GET(
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    const userWithProfile = {
-      ...user,
+    const user = {
+      ...existingUser,
       profile,
     };
 
     return NextResponse.json(
-      { message: "Fetch user profile successfully", user: userWithProfile },
+      {
+        status: "Success",
+        message: "Fetch user profile successfully",
+        data: { user },
+      },
       { status: 200 }
     );
   } catch (error) {
@@ -98,21 +99,17 @@ export async function PATCH(
   }
 
   try {
-    // Fetch the user to check the role
-    const user = await db.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        role: true,
-      },
+    const existingUser = await getUserById(userId, undefined, {
+      id: true,
+      role: true,
     });
 
-    if (!user) {
+    if (!existingUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Create the profile based on the user role
-    if (user.role === Role.Koas) {
+    if (existingUser.role === Role.Koas) {
       profile = await db.koasProfile.update({
         where: { userId },
         data: {
@@ -120,7 +117,7 @@ export async function PATCH(
           user: { connect: { id: userId } },
         } as Prisma.KoasProfileUpdateInput,
       });
-    } else if (user.role === Role.Pasien) {
+    } else if (existingUser.role === Role.Pasien) {
       profile = await db.pasienProfile.update({
         where: { userId },
         data: {
@@ -132,8 +129,17 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid user role" }, { status: 400 });
     }
 
+    const user = {
+      ...existingUser,
+      profile,
+    };
+
     return NextResponse.json(
-      { message: "Profile updated successfully", profile },
+      {
+        status: "Success",
+        message: "Profile updated successfully",
+        data: { user },
+      },
       { status: 201 }
     );
   } catch (error) {
@@ -161,20 +167,17 @@ export async function DELETE(
 
   try {
     // Fetch the user to check the role
-    const user = await db.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        role: true,
-      },
+    const existingUser = await getUserById(userId, undefined, {
+      id: true,
+      role: true,
     });
 
-    if (!user) {
+    if (!existingUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     if (reset) {
-      if (user.role === Role.Koas) {
+      if (existingUser.role === Role.Koas) {
         profile = await db.koasProfile.update({
           where: { userId },
           data: {
@@ -187,7 +190,7 @@ export async function DELETE(
             updateAt: new Date(),
           } as Prisma.KoasProfileUpdateInput,
         });
-      } else if (user.role === Role.Pasien) {
+      } else if (existingUser.role === Role.Pasien) {
         profile = await db.pasienProfile.update({
           where: { userId },
           data: {
@@ -203,11 +206,11 @@ export async function DELETE(
 
     if (!reset) {
       // Delete the profile based on the user role
-      if (user.role === Role.Koas) {
+      if (existingUser.role === Role.Koas) {
         profile = await db.koasProfile.delete({
           where: { userId },
         });
-      } else if (user.role === Role.Pasien) {
+      } else if (existingUser.role === Role.Pasien) {
         profile = await db.pasienProfile.delete({
           where: { userId },
         });
@@ -219,12 +222,18 @@ export async function DELETE(
       }
     }
 
+    const user = {
+      ...existingUser,
+      profile,
+    };
+
     return NextResponse.json(
       {
+        status: "Success",
         message: reset
           ? "Profile reset successfully"
           : "Profile delete successfully",
-        profile,
+        data: { user },
       },
       { status: 200 }
     );

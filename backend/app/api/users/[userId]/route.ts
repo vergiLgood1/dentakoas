@@ -4,7 +4,6 @@ import db from "@/lib/db";
 
 import { Role } from "@/config/enum";
 import { getUserById, setHashPassword } from "@/helpers/user";
-import { koasProfile } from "@/data/koas-profile";
 
 export async function GET(
   req: Request,
@@ -21,37 +20,44 @@ export async function GET(
       );
     }
 
-    const user = await db.user.findUnique({
-      where: { id: userId },
-      include: { koasProfile: true, pasienProfile: true },
+    const existingUser = await getUserById(userId, {
+      KoasProfile: true,
+      PasienProfile: true,
     });
 
-    if (!user) {
+    if (!existingUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Filter profile berdasarkan role
-    const filteredUser = (() => {
-      if (user.role === Role.Koas) {
+    const user = (() => {
+      if (existingUser.role === Role.Koas) {
         return {
-          ...user,
+          ...existingUser,
           pasienProfile: undefined, // Sembunyikan pasienProfile jika role KOAS
         };
-      } else if (user.role === Role.Pasien) {
+      } else if (existingUser.role === Role.Pasien) {
         return {
-          ...user,
-          koasProfile: undefined, // Sembunyikan koasProfile jika role PASIEN
+          ...existingUser,
+          KoasProfile: undefined, // Sembunyikan KoasProfile jika role PASIEN
         };
       } else {
         return {
-          ...user,
-          koasProfile: undefined,
+          ...existingUser,
+          KoasProfile: undefined,
           pasienProfile: undefined,
         };
       }
     })();
 
-    return NextResponse.json(filteredUser, { status: 200 });
+    return NextResponse.json(
+      {
+        status: "Success",
+        message: "Retrived user successfully",
+        data: { user },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error fetching user", error);
     return NextResponse.json(
@@ -69,31 +75,31 @@ export async function PUT(
   const userId = searchParams.get("userId") || params.userId;
 
   const body = await req.json();
-  const { given_name, family_name, email, password, phone, role } = body;
+  const { givenName, familyName, email, password, phone, role } = body;
 
   try {
     if (!userId) {
       return NextResponse.json(
-        { error: "User userId is required" },
+        { error: "User Id is required" },
         { status: 400 }
       );
     }
 
-    const user = await getUserById(userId, {
-      koasProfile: true,
-      pasienProfile: true,
+    const existingUser = await getUserById(userId, {
+      KoasProfile: true,
+      PasienProfile: true,
     });
 
-    if (!user)
+    if (!existingUser)
       return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    const hash = await setHashPassword(password, user.password ?? "");
+    const hash = await setHashPassword(password, existingUser.password ?? "");
 
-    const updatedUser = await db.user.update({
+    const user = await db.user.update({
       where: { id: String(userId) },
       data: {
-        given_name,
-        family_name,
+        givenName,
+        familyName,
         email,
         password: hash,
         phone,
@@ -101,7 +107,14 @@ export async function PUT(
       } as Prisma.UserUpdateInput,
     });
 
-    return NextResponse.json(updatedUser, { status: 200 });
+    return NextResponse.json(
+      {
+        status: "Success",
+        message: "Update user successfully",
+        data: { user },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error updating user", error);
     return NextResponse.json(
@@ -119,40 +132,47 @@ export async function PATCH(
   const userId = searchParams.get("userId") || params.userId;
 
   const body = await req.json();
-  const { given_name, family_name, email, password, phone, role } = body;
+  const { givenName, familyName, email, password, phone, role } = body;
 
   try {
     if (!userId) {
       return NextResponse.json(
-        { error: "User userId is required" },
+        { error: "User id is required" },
         { status: 400 }
       );
     }
 
-    const user = await getUserById(userId, {
-      koasProfile: true,
-      pasienProfile: true,
+    const existingUser = await getUserById(userId, {
+      KoasProfile: true,
+      PasienProfile: true,
     });
 
-    if (!user) {
+    if (!existingUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const hash = await setHashPassword(password, user.password ?? "");
+    const hash = await setHashPassword(password, existingUser.password ?? "");
 
-    const updatedUser = await db.user.update({
-      where: { id: userId },
+    const user = await db.user.update({
+      where: { id: String(userId) },
       data: {
-        given_name: given_name || user.given_name,
-        family_name: family_name || user.family_name,
-        email: email || user.email,
+        givenName: givenName || existingUser.givenName,
+        familyName: familyName || existingUser.familyName,
+        email: email || existingUser.email,
         password: hash,
-        phone: phone || user.phone,
-        role: role || user.role,
+        phone: phone || existingUser.phone,
+        role: role || existingUser.role,
       } as Prisma.UserUpdateInput,
     });
 
-    return NextResponse.json(updatedUser, { status: 200 });
+    return NextResponse.json(
+      {
+        status: "Success",
+        message: "Update user successfully",
+        data: { user },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error updating user", error);
     return NextResponse.json(
@@ -172,12 +192,10 @@ export async function DELETE(
   try {
     if (!userId) {
       return NextResponse.json(
-        { error: "User userId is required" },
+        { error: "user Id is required" },
         { status: 400 }
       );
     }
-
-    await getUserById(userId);
 
     await db.user.delete({
       where: { id: userId },

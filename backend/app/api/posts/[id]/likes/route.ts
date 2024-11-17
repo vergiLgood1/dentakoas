@@ -9,7 +9,7 @@ export async function GET(
   const postId = searchParams.get("id") || params.id;
 
   try {
-    const likes = await db.likes.findMany({
+    const Like = await db.Like.findMany({
       where: { postId: postId },
       include: {
         user: {
@@ -27,16 +27,16 @@ export async function GET(
       },
     });
 
-    if (!likes) {
-      return NextResponse.json({ error: "Likes not found" }, { status: 404 });
+    if (!Like) {
+      return NextResponse.json({ error: "Like not found" }, { status: 404 });
     }
 
-    const user = likes.map((like) => like.user);
+    const user = Like.map((like) => like.user);
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: "An error occurred while fetching likes" },
+      { error: "An error occurred while fetching Like" },
       { status: 500 }
     );
   }
@@ -62,7 +62,7 @@ export async function POST(
       );
     }
 
-    const existingLike = await db.likes.findFirst({
+    const existingLike = await db.Like.findFirst({
       where: {
         postId,
         userId,
@@ -70,13 +70,13 @@ export async function POST(
     });
 
     if (existingLike) {
-      like = await db.likes.delete({
+      like = await db.Like.delete({
         where: {
           id: existingLike.id,
         },
       });
     } else {
-      like = await db.likes.create({
+      like = await db.Like.create({
         data: {
           userId,
           postId,

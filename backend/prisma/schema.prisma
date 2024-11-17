@@ -46,23 +46,23 @@ enum StatusKoas {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  given_name    String?
-  family_name   String?
-  name          String?         @unique @db.VarChar(50) // Batas maksimum 20 karakter
-  email         String?         @unique
-  emailVerified DateTime?       @map("email_verified")
+  id            String         @id @default(cuid())
+  givenName     String?
+  familyName    String?
+  name          String?        @unique @db.VarChar(50) // Batas maksimum 20 karakter
+  email         String?        @unique
+  emailVerified DateTime?      @map("email_verified")
   password      String?
-  phone         String?         @db.VarChar(13) // Batas maksimum 13 karakter
+  phone         String?        @db.VarChar(13) // Batas maksimum 13 karakter
   address       String?
   image         String?
   role          Role?
-  koasProfile   KoasProfile?
-  pasienProfile PasienProfile?
+  KoasProfile   KoasProfile?
+  PasienProfile PasienProfile?
   Account       Account[]
-  posts         Posts[]
-  notifications Notifications[]
-  likes         Likes[]
+  Post          Post[]
+  Notification  Notification[]
+  Like          Like[]
   sessions      Session[]
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -126,8 +126,8 @@ model KoasProfile {
   createdAt    DateTime   @default(now()) @map("created_at")
   updateAt     DateTime   @updatedAt @map("updated_at")
 
-  user  User    @relation(fields: [userId], references: [id])
-  posts Posts[]
+  user User   @relation(fields: [userId], references: [id])
+  Post Post[]
 
   @@map("koas-profile")
 }
@@ -146,7 +146,7 @@ model PasienProfile {
   @@map("pasien-profile")
 }
 
-model Posts {
+model Post {
   id                 String     @id @default(cuid())
   userId             String     @map("user_id")
   koasId             String     @map("koas_id")
@@ -156,7 +156,7 @@ model Posts {
   patientRequirement Json?      @map("patient_requirement")
   status             StatusPost @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   published          Boolean    @default(false)
-  likes              Likes[]
+  likes              Like[]
   createdAt          DateTime   @default(now()) @map("created_at")
   updateAt           DateTime   @updatedAt @map("updated_at")
 
@@ -166,24 +166,24 @@ model Posts {
   @@index([userId], name: "user_id")
   @@index([koasId], name: "koas_id")
   @@index([treatmentId], name: "treatment_id")
-  @@map("posts")
+  @@map("post")
 }
 
-model Likes {
+model Like {
   id        String   @id @default(cuid())
   postId    String   @map("post_id")
   userId    String   @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
 
-  user  User  @relation(fields: [userId], references: [id])
-  posts Posts @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  Post Post @relation(fields: [postId], references: [id])
 
   @@index([postId], name: "post_id")
   @@index([userId], name: "user_id")
   @@map("likes")
 }
 
-model Notifications {
+model Notification {
   id        String   @id @default(cuid())
   userId    String   @map("user_id")
   message   String

@@ -32,22 +32,22 @@ export interface SessionInfo {
 // Type for user
 export interface User {
   id: string;
-  given_name: string;
-  family_name: string;
+  givenName: string;
+  familyName: string;
   name: string;
   email: string;
   password: string;
   phone: string;
   image?: string | null; // Optional field
   role: Role;
-  koasProfile?: KoasProfile | null; // Optional field
-  pasienProfile?: PasienProfile | null; // Optional field
+  koasProfile?: koasProfile | null; // Optional field
+  PasienProfile?: PasienProfile | null; // Optional field
   createdAt: Date;
   updateAt: Date;
 }
 
-// Type for KoasProfile
-export interface KoasProfile {
+// Type for koasProfile
+export interface koasProfile {
   id: string;
   userId: string;
   koasNumber?: string | null; // Optional field
@@ -70,7 +70,7 @@ export interface PasienProfile {
   updateAt: Date;
 }
 
-// Type for Posts
+// Type for Post
 export type Post = {
   id: string;
   userId: string;
@@ -83,22 +83,22 @@ export type Post = {
   published: boolean;
   createdAt: Date;
   updateAt: Date;
-  koas?: KoasProfile;
+  koas?: koasProfile;
   user?: User;
-  likes?: Like[];
+  Like?: Like[];
 };
 
-// Type for Likes
+// Type for Like
 export type Like = {
   id: string;
   postId: string;
   userId: string;
   createdAt: Date;
   user?: User;
-  posts?: Post;
+  Post?: Post;
 };
 
-// Type for Notifications
+// Type for Notification
 export type Notification = {
   id: string;
   userId: string;
@@ -118,8 +118,8 @@ export type TreatmentType = {
 
 // Interface for user input validation
 export interface UserInput {
-  given_name: string;
-  family_name: string;
+  givenName: string;
+  familyName: string;
   email: string;
   password: string;
   phone_number: string;
@@ -133,8 +133,8 @@ export interface ValidationResult {
 }
 
 export type UserQueryParams = {
-  given_name?: string;
-  family_name?: string;
+  givenName?: string;
+  familyName?: string;
   name?: string;
   email?: string;
   phone?: string;

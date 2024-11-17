@@ -1,5 +1,1 @@
-export const koasProfile = [
-    {
-        
-    }
-]
+export const KoasProfile = [{}];

@@ -20,14 +20,14 @@ export async function GET(req: Request) {
       orderBy: {
         name: "asc",
       },
-      include: { koasProfile: true, pasienProfile: true },
+      include: { KoasProfile: true, PasienProfile: true },
     });
 
     const filtereduser = user.map((user) => {
       if (user.role === Role.Koas) {
         return {
           ...user,
-          pasienProfile: undefined, // sembunyikan pasien profile
+          PasienProfile: undefined, // sembunyikan pasien profile
         };
       } else if (user.role === Role.Pasien) {
         return {
@@ -38,7 +38,7 @@ export async function GET(req: Request) {
         return {
           ...user,
           koasProfile: undefined,
-          pasienProfile: undefined,
+          PasienProfile: undefined,
         };
       }
       // return user
@@ -63,8 +63,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { given_name, family_name, email, password, phone, role, profile } =
-    body;
+  const { givenName, familyName, email, password, phone, role, profile } = body;
 
   const validateFields = SignUpSchema.safeParse(body);
 
@@ -82,13 +81,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const name = await genUsername(given_name, family_name);
+    const name = await genUsername(givenName, familyName);
     const hash = await bcrypt.hash(password, 10);
 
     const newUser = await db.user.create({
       data: {
-        given_name,
-        family_name,
+        givenName,
+        familyName,
         name,
         email,
         password: hash,

@@ -8,7 +8,7 @@ import { Role } from "@/config/enum";
 import db from "@/lib/db";
 
 const prisma = new PrismaClient({
-  log: ["query", "info", "warn", "error"],
+  log: ["error"],
 });
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
@@ -34,8 +34,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (!existingUser) return token;
 
       const name = await genUsername(
-        existingUser.given_name,
-        existingUser.family_name
+        existingUser.givenName,
+        existingUser.familyName
       );
 
       if (existingUser) {

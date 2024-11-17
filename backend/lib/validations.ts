@@ -1,41 +1,79 @@
 import { NextResponse } from "next/server";
 import * as z from "zod";
 
-// Skema reusable untuk validasi email
-const valEmail = z.string().email({ message: "Invalid email format" });
+/**
+ * Validates the given name with constraints:
+ * - Minimum length: 1 character
+ * - Maximum length: 32 characters
+ * @type {z.ZodString}
+ */
+export const valGivenName = z
+  .string()
+  .min(1, { message: "Given name must be more than 1 character" })
+  .max(32, { message: "Given name must be less than 32 characters" });
 
-// Skema reusable untuk validasi password
-const valPassword = z
+/**
+ * Validates the family name with constraints:
+ * - Minimum length: 1 character
+ * - Maximum length: 32 characters
+ * @type {z.ZodString}
+ */
+export const valFamilyName = z
+  .string()
+  .min(1, { message: "Family name must be more than 1 character" })
+  .max(32, { message: "Family name must be less than 32 characters" });
+
+/**
+ * Validates an email address.
+ * Ensures the input is a valid email format.
+ * @type {z.ZodString}
+ */
+export const valEmail = z.string().email({ message: "Invalid email format" });
+
+/**
+ * Validates a password with constraints:
+ * - Minimum length: 8 characters
+ * @type {z.ZodString}
+ */
+export const valPassword = z
   .string({ message: "Invalid password" })
-  .min(8, { message: "Password must be at least 8 characters long" })
-  .regex(/[a-z]/, {
-    message: "Password must contain at least one lowercase letter",
-  })
-  .regex(/[A-Z]/, {
-    message: "Password must contain at least one uppercase letter",
-  })
-  .regex(/[0-9]/, { message: "Password must contain at least one number" });
+  .min(8, { message: "Password must be at least 8 characters long" });
 
-// Skema untuk validasi nomor telepon (opsional, bisa disesuaikan)
-const valPhone = z.string().min(10, { message: "Invalid phone number" });
+/**
+ * Validates a confirmation password with constraints:
+ * - Minimum length: 8 characters
+ * - Maximum length: 32 characters
+ * @type {z.ZodString}
+ */
+export const valConfirmPassword = z
+  .string({ message: "Invalid confirm password" })
+  .min(8, { message: "Password must be more than 8 characters" })
+  .max(32, { message: "Password must be less than 32 characters" });
 
-// Skema validasi untuk User
-export const userValidation = z.object({
-  given_name: z
-    .string()
-    .min(1, { message: "First name is required" })
-    .max(255, { message: "Firs name is too long" }),
-  family_name: z
-    .string()
-    .min(1, { message: "Last name is required" })
-    .max(255, { message: "Last name is too long" }),
-  email: valEmail,
-  password: valPassword,
-  phone_number: valPhone.optional(),
-  role: z.enum(["KOAS", "PASIEN", "ADMIN"], { message: "Invalid role" }),
-});
+/**
+ * Validates the user role.
+ * Accepted values: "Koas", "Pasien", "Admin".
+ * @type {z.ZodEnum}
+ */
+export const valRole = z.enum(["Koas", "Pasien", "Admin"]);
 
-// Fungsi reusable untuk validasi berdasarkan schema yang diberikan
+/**
+ * Validates a phone number (optional field).
+ * Ensures the number has at least 10 characters if provided.
+ * @type {z.ZodString | z.ZodOptional}
+ */
+export const valPhone = z
+  .string()
+  .min(10, { message: "Invalid phone number" })
+  .optional();
+
+/**
+ * Generic reusable function to validate data against a given Zod schema.
+ * @template T
+ * @param {z.ZodSchema<T>} schema - The Zod schema to validate against.
+ * @param {T} data - The data object to validate.
+ * @returns {{ success: boolean; errors: any }} Validation result.
+ */
 export const validateData = <T>(schema: z.ZodSchema<T>, data: T) => {
   try {
     schema.parse(data);
@@ -49,7 +87,12 @@ export const validateData = <T>(schema: z.ZodSchema<T>, data: T) => {
   }
 };
 
-// Reusable dynamic function to validate if a property exists in the user object
+/**
+ * Validates if the given properties exist in the user object.
+ * @param {object} user - The object to validate.
+ * @param {string[]} properties - Array of property names to check.
+ * @returns {boolean | NextResponse} Returns true if all properties exist, otherwise returns a NextResponse error.
+ */
 export function valProps(user: any, properties: string[]) {
   // Loop through each property in the list
   for (const prop of properties) {

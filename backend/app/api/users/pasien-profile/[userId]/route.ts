@@ -19,7 +19,7 @@ export async function GET(
         id: userId,
       },
       include: {
-        pasienProfile: true,
+        PasienProfile: true,
       },
     });
 
@@ -59,11 +59,11 @@ export async function PATCH(
         id: userId,
       },
       include: {
-        pasienProfile: true,
+        PasienProfile: true,
       },
     });
 
-    if (!user || !user.pasienProfile) {
+    if (!user || !user.PasienProfile) {
       return NextResponse.json(
         { error: "Pasien profile not found" },
         { status: 404 }
@@ -73,9 +73,9 @@ export async function PATCH(
     const updateProfile = await db.pasienProfile.update({
       where: { userId: String(userId) },
       data: {
-        age: body.age ?? user.pasienProfile.age,
-        gender: body.gender ?? user.pasienProfile.gender,
-        bio: body.bio ?? user.pasienProfile.bio,
+        age: body.age ?? user.PasienProfile.age,
+        gender: body.gender ?? user.PasienProfile.gender,
+        bio: body.bio ?? user.PasienProfile.bio,
       } as Prisma.PasienProfileUpdateInput,
     });
 
@@ -114,11 +114,11 @@ export async function PUT(
         id: userId,
       },
       include: {
-        pasienProfile: true,
+        PasienProfile: true,
       },
     });
 
-    if (!user || !user.pasienProfile) {
+    if (!user || !user.PasienProfile) {
       return NextResponse.json(
         { error: "Pasien profile not found" },
         { status: 404 }
@@ -168,11 +168,11 @@ export async function DELETE(
         id: userId,
       },
       include: {
-        pasienProfile: true,
+        PasienProfile: true,
       },
     });
 
-    if (!user || !user.pasienProfile) {
+    if (!user || !user.PasienProfile) {
       return NextResponse.json(
         { error: "Pasien profile not found" },
         { status: 404 }

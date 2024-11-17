@@ -15,11 +15,19 @@ export const getUserByEmail = async (
   select?: object
 ) => {
   try {
+    // Validasi: Tidak boleh menggunakan `select` dan `include` bersamaan
+    if (select && include) {
+      throw new Error(
+        "Cannot use both `select` and `include` at the same time"
+      );
+    }
+
     const user = await db.user.findUnique({
       where: {
         email,
       },
-      include,
+      ...(include ? { include } : {}), // Gunakan include jika ada
+      ...(select ? { select } : {}), // Gunakan select jika ada
     });
 
     return user;
@@ -41,11 +49,19 @@ export const getUserById = async (
   select?: object
 ) => {
   try {
+    // Validasi: Tidak boleh menggunakan `select` dan `include` bersamaan
+    if (select && include) {
+      throw new Error(
+        "Cannot use both `select` and `include` at the same time"
+      );
+    }
+
     const user = await db.user.findUnique({
       where: {
         id,
       },
-      include,
+      ...(include ? { include } : {}), // Gunakan include jika ada
+      ...(select ? { select } : {}), // Gunakan select jika ada
     });
 
     return user;
@@ -86,15 +102,15 @@ export async function setHashPassword(
 
 /**
  * Generate a username based on the user's first and last name
- * @param given_name
- * @param family_name
+ * @param givenName
+ * @param familyName
  * @type {string | null}
  * @returns
  */
 export async function genUsername(
-  given_name: string | null,
-  family_name: string | null
+  givenName: string | null,
+  familyName: string | null
 ) {
   const rand = Math.floor(Math.random() * 1000);
-  return `${given_name?.toLowerCase()}.${family_name?.toLowerCase()}${rand}`;
+  return `${givenName?.toLowerCase()}.${familyName?.toLowerCase()}${rand}`;
 }
