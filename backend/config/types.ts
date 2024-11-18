@@ -132,7 +132,7 @@ export interface ValidationResult {
   error?: string;
 }
 
-export type UserQueryParams = {
+export type UserQueryString = {
   givenName?: string;
   familyName?: string;
   name?: string;
@@ -142,4 +142,18 @@ export type UserQueryParams = {
   createdAt?: string;
   updateAt?: string;
   [key: string]: string | undefined; // Tambahkan tipe yang lebih spesifik
+};
+
+export type PostQueryString = {
+  userId?: string;
+  koasId?: string;
+  treatmentId?: string;
+  title?: string;
+  desc?: string;
+  status?: string;
+  published?: boolean;
+  likes?: number;
+  createdAt?: string;
+  updateAt?: string;
+  [key: string]: string | number | boolean | undefined; // Tambahkan tipe yang lebih spesifik
 };
