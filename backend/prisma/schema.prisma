@@ -166,7 +166,7 @@ model Post {
   @@index([userId], name: "user_id")
   @@index([koasId], name: "koas_id")
   @@index([treatmentId], name: "treatment_id")
-  @@map("post")
+  @@map("posts")
 }
 
 model Like {

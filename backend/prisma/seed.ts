@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-// import { createSeedClient } from "@snaplet/seed";
+import { createSeedClient } from "@snaplet/seed";
 import { Role } from "@/config/enum";
 import { users } from "@/data/users";
 
@@ -25,14 +25,14 @@ async function main() {
 
     if (user.role === Role.Koas) {
       // Create koas
-      await prisma.KoasProfile.create({
+      await prisma.koasProfile.create({
         data: {
           userId: createdUser.id,
         },
       });
     } else if (user.role === Role.Pasien) {
       // Create pasien
-      await prisma.PasienProfile.create({
+      await prisma.pasienProfile.create({
         data: {
           userId: createdUser.id,
         },

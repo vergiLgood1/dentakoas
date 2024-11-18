@@ -104,7 +104,7 @@ export async function POST(
         published,
         user: { connect: { id: String(userId) } },
         koas: { connect: { id: String(koasId) } },
-        treatmentId: String(treatmentId), // Assuming this is a relation as well
+        treatmentId: String(treatmentId),
       } as Prisma.PostCreateInput,
     });
 

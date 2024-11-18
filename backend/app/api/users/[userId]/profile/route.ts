@@ -92,6 +92,7 @@ export async function PATCH(
   const userId = params.userId;
   const body = await req.json();
 
+  const { koasNumber, faculty, bio, whatsappLink, status, age, gender } = body;
   let profile;
 
   if (!userId) {
@@ -108,12 +109,28 @@ export async function PATCH(
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Get the existing profile from the database
+    // let existingProfile;
+    // if (existingUser.role === Role.Koas) {
+    //   existingProfile = await db.koasProfile.findUnique({
+    //     where: { userId },
+    //   });
+    // } else if (existingUser.role === Role.Pasien) {
+    //   existingProfile = await db.pasienProfile.findUnique({
+    //     where: { userId },
+    //   });
+    // }
+
     // Create the profile based on the user role
     if (existingUser.role === Role.Koas) {
       profile = await db.koasProfile.update({
         where: { userId },
         data: {
-          ...body,
+          koasNumber: koasNumber,
+          faculty: faculty,
+          bio: bio,
+          whatsappLink: whatsappLink,
+          status: status,
           user: { connect: { id: userId } },
         } as Prisma.KoasProfileUpdateInput,
       });
@@ -121,7 +138,9 @@ export async function PATCH(
       profile = await db.pasienProfile.update({
         where: { userId },
         data: {
-          ...body,
+          age: age,
+          gender: gender,
+          bio: bio,
           user: { connect: { id: userId } },
         } as Prisma.PasienProfileUpdateInput,
       });
