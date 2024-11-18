@@ -5,12 +5,12 @@ import bcrypt from "bcryptjs";
 
 import { Role } from "@/config/enum";
 import { SignUpSchema } from "@/lib/schemas";
-import { UserQueryParams } from "@/config/types";
+import { UserQueryString } from "@/config/types";
 import { getUserByEmail, parseSearchParams, genUsername } from "@/helpers/user";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const query: UserQueryParams = parseSearchParams(searchParams);
+  const query: UserQueryString = parseSearchParams(searchParams);
 
   try {
     const user = await db.user.findMany({

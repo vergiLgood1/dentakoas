@@ -1,4 +1,4 @@
-import { UserQueryParams } from "@/config/types";
+import { UserQueryString } from "@/config/types";
 import db from "@/lib/db";
 import bcrpyt from "bcryptjs";
 
@@ -77,8 +77,8 @@ export const getUserById = async (
  */
 export function parseSearchParams(
   searchParams: URLSearchParams
-): UserQueryParams {
-  const query: UserQueryParams = {};
+): UserQueryString {
+  const query: UserQueryString = {};
 
   searchParams.forEach((value, key) => {
     query[key] = value; // Simpan setiap parameter ke dalam objek query
