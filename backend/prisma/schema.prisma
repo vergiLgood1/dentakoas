@@ -65,8 +65,11 @@ model User {
   Like          Like[]
   sessions      Session[]
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updateAt  DateTime @updatedAt @map("updated_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updateAt    DateTime      @updatedAt @map("updated_at")
+  Schedule    Schedule[]
+  Review      Review[]
+  Participant Participant[]
 
   @@map("users")
 }
@@ -147,18 +150,21 @@ model PasienProfile {
 }
 
 model Post {
-  id                 String     @id @default(cuid())
-  userId             String     @map("user_id")
-  koasId             String     @map("koas_id")
-  treatmentId        String     @map("treatment_id")
-  title              String
-  desc               String
-  patientRequirement Json?      @map("patient_requirement")
-  status             StatusPost @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
-  published          Boolean    @default(false)
-  likes              Like[]
-  createdAt          DateTime   @default(now()) @map("created_at")
-  updateAt           DateTime   @updatedAt @map("updated_at")
+  id                  String     @id @default(cuid())
+  userId              String     @map("user_id")
+  koasId              String     @map("koas_id")
+  treatmentId         String     @map("treatment_id")
+  title               String
+  desc                String
+  patientRequirement  Json?      @map("patient_requirement")
+  requiredParticipant Int?       @map("required_participant")
+  status              StatusPost @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
+  published           Boolean    @default(false)
+  Schedule            Schedule[]
+  Review              Review[]
+  likes               Like[]
+  createdAt           DateTime   @default(now()) @map("created_at")
+  updateAt            DateTime   @updatedAt @map("updated_at")
 
   koas KoasProfile @relation(fields: [koasId], references: [id])
   user User        @relation(fields: [userId], references: [id])
@@ -203,4 +209,55 @@ model TreatmentType {
   updateAt  DateTime @updatedAt @map("updated_at")
 
   @@map("treatment-types")
+}
+
+model Schedule {
+  id               String   @id @default(cuid())
+  postId           String   @map("post_id")
+  userId           String?  @map("user_id")
+  date             DateTime @map("date")
+  startTime        String   @map("start_time")
+  endTime          String   @map("end_time")
+  participantCount Int      @default(0) @map("participant_count")
+  maxParticipants  Int      @default(3) @map("max_participants")
+  isAvailable      Boolean  @default(true) @map("is_available")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  post        Post          @relation(fields: [postId], references: [id])
+  User        User?         @relation(fields: [userId], references: [id])
+  Participant Participant[]
+
+  @@unique([postId, date, startTime, endTime], name: "unique_schedule") // Unik per kombinasi post, tanggal, dan rentang waktu
+  @@index([postId], name: "post_id")
+  @@map("schedules")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  postId    String   @map("post_id")
+  userId    String   @map("user_id")
+  rating    Int      @default(0) // Skala 1-5
+  comment   String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([postId], name: "post_id")
+  @@index([userId], name: "user_id")
+  @@map("reviews")
+}
+
+model Participant {
+  id         String   @id @default(cuid())
+  scheduleId String   @map("schedule_id") // Ganti postId dengan scheduleId
+  userId     String   @map("user_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  schedule Schedule @relation(fields: [scheduleId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@index([scheduleId], name: "schedule_id") // Index berdasarkan scheduleId
+  @@index([userId], name: "user_id")
+  @@map("participants")
 }
