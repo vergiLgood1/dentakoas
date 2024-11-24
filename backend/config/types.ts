@@ -1,4 +1,5 @@
 import { Gender, Role, StatusKoas, StatusPost } from "@/config/enum";
+import { prismaModels } from "./const";
 
 //  Type for authentication
 export interface LoginResponse {
@@ -144,7 +145,7 @@ export type UserQueryString = {
   [key: string]: string | undefined; // Tambahkan tipe yang lebih spesifik
 };
 
-export type PostQueryString = {
+export interface PostQueryString {
   userId?: string;
   koasId?: string;
   treatmentId?: string;
@@ -153,7 +154,14 @@ export type PostQueryString = {
   status?: string;
   published?: boolean;
   likes?: number;
-  createdAt?: string;
-  updateAt?: string;
-  [key: string]: string | number | boolean | undefined; // Tambahkan tipe yang lebih spesifik
-};
+  createdAt?: { gte: string; lte: string }; // Izinkan objek filter
+  updatedAt?: { gte: string; lte: string }; // Izinkan objek filter
+  [key: string]:
+    | string
+    | { gte: string; lte: string }
+    | number
+    | boolean
+    | undefined;
+}
+
+export type TableName = keyof typeof prismaModels;
