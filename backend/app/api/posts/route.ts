@@ -9,35 +9,37 @@ export async function GET(req: Request) {
   const queStr = parseSearchParamsPost(searchParams);
 
   try {
-    const existingPost = await db.post.findMany({
+    const posts = await db.post.findMany({
       where: {
         ...queStr,
       } as Prisma.PostWhereInput,
+      include: {
+        _count: {
+          select: { likes: true }, // Menghitung jumlah likes untuk setiap post
+        },
+      },
     });
 
-    if (!existingPost) {
+    if (!posts.length) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const likeCount = await db.like.count();
-
-    const posts = existingPost.map((post) => {
-      return {
-        ...post,
-        likeCount,
-      };
-    });
+    // Map hanya untuk menambahkan properti `likeCount` tanpa `_count`
+    const postsWithLikeCount = posts.map(({ _count, ...post }) => ({
+      ...post,
+      likes: _count.likes,
+    }));
 
     return NextResponse.json(
       {
         status: "Success",
-        message: "Post retrived successfully",
-        data: { posts },
+        message: "Posts retrieved successfully",
+        data: { posts: postsWithLikeCount },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching Post", error);
+    console.error("Error fetching Posts", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
