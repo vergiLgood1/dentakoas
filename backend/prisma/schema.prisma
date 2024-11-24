@@ -46,7 +46,7 @@ enum StatusKoas {
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id            String         @id
   givenName     String?
   familyName    String?
   name          String?        @unique @db.VarChar(50) // Batas maksimum 20 karakter
@@ -116,7 +116,7 @@ model VerificationRequest {
 }
 
 model KoasProfile {
-  id           String     @id @default(cuid())
+  id           String     @id
   userId       String     @unique @map("user_id")
   koasNumber   String?    @unique @map("koas_number")
   faculty      String?
@@ -133,7 +133,7 @@ model KoasProfile {
 }
 
 model PasienProfile {
-  id        String   @id @default(cuid())
+  id        String   @id
   userId    String   @unique @map("user_id")
   age       Int?
   gender    Gender? // enum dapat ditambahkan jika ada daftar nilai yang terbatas
@@ -147,7 +147,7 @@ model PasienProfile {
 }
 
 model Post {
-  id                 String     @id @default(cuid())
+  id                 String     @id
   userId             String     @map("user_id")
   koasId             String     @map("koas_id")
   treatmentId        String     @map("treatment_id")
@@ -170,7 +170,7 @@ model Post {
 }
 
 model Like {
-  id        String   @id @default(cuid())
+  id        String   @id
   postId    String   @map("post_id")
   userId    String   @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
@@ -197,7 +197,7 @@ model Notification {
 }
 
 model TreatmentType {
-  id        String   @id @default(cuid())
+  id        String   @id
   name      String
   createdAt DateTime @default(now()) @map("created_at")
   updateAt  DateTime @updatedAt @map("updated_at")
