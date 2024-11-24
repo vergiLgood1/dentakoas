@@ -1,20 +1,18 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { PostQueryString } from "@/config/types";
-import { parseSearchParams } from "@/helpers/user";
+import { parseSearchParamsPost } from "@/helpers/post";
+import { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const queStr = parseSearchParams(searchParams);
+  const queStr = parseSearchParamsPost(searchParams);
 
   try {
     const existingPost = await db.post.findMany({
       where: {
         ...queStr,
-        createdAt: queStr.createdAt
-          ? JSON.stringify(queStr.createdAt)
-          : undefined,
-      },
+      } as Prisma.PostWhereInput,
     });
 
     if (!existingPost) {
