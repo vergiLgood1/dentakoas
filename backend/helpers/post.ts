@@ -1,7 +1,7 @@
 import { PostQueryString } from "@/config/types";
 import { getDateRange } from "@/utils/date";
 
-export function parseSearchParams(
+export function parseSearchParamsPost(
   searchParams: URLSearchParams
 ): PostQueryString {
   const queStr: PostQueryString = {};
@@ -10,9 +10,7 @@ export function parseSearchParams(
     if (key === "createdAt" || key === "updatedAt") {
       const dateRange = getDateRange(value);
 
-      if (dateRange) {
-        queStr[key] = JSON.stringify(dateRange);
-      }
+      if (dateRange) queStr[key] = dateRange; // Gunakan objek langsung, bukan string
     } else {
       queStr[key] = value;
     }
