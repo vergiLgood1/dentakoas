@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import { createSeedClient } from "@snaplet/seed";
 import { Role } from "@/config/enum";
 import { users } from "@/data/users";
-import { genId } from "@/utils/common";
 
 const prisma = new PrismaClient();
 
@@ -14,33 +13,27 @@ async function main() {
 
   for (const user of users) {
     const hash = await bcrypt.hash(user.password, 10);
-    const newId = await genId("USR", "users");
+
     // Create user
     const createdUser = await prisma.user.create({
       data: {
         ...user,
-        id: newId,
         name: `${user.givenName}.${user.familyName}`,
         password: hash,
       },
     });
 
     if (user.role === Role.Koas) {
-      const newId = await genId("KPS", "koasProfiles");
       // Create koas
       await prisma.koasProfile.create({
         data: {
-          id: newId,
           userId: createdUser.id,
         },
       });
     } else if (user.role === Role.Pasien) {
-      const newId = await genId("PSN", "pasienProfiles");
-
       // Create pasien
       await prisma.pasienProfile.create({
         data: {
-          id: newId,
           userId: createdUser.id,
         },
       });
