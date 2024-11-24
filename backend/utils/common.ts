@@ -1,21 +1,40 @@
-let currentCounters: Record<string, number> = {}; // Penyimpanan sementara untuk nilai otomatis
+import { prismaModels } from "@/config/const";
+import { TableName } from "@/config/types";
 
-/**
- * Fungsi untuk membuat ID dengan format tertentu
- * @param prefix - Prefix untuk ID (misalnya "U")
- * @param autoIncrement - Apakah ID harus diinkrementasi otomatis
- * @param startValue - Nilai awal untuk ID (misalnya 1)
- * @returns ID yang dihasilkan (misalnya "U001")
- */
-function genId(prefix: string, autoIncrement = true, startValue = 1): string {
-  if (!currentCounters[prefix]) {
-    currentCounters[prefix] = startValue - 1; // Set nilai awal jika belum ada
-  }
+export async function findLastRecord<T extends TableName>(
+  tableName: T,
+  prefix: string
+) {
+  const model = prismaModels[tableName];
+  return await (model as any).findFirst({
+    where: {
+      id: {
+        startsWith: prefix,
+      },
+    },
+    select: {
+      id: true,
+    },
+    orderBy: {
+      id: "desc",
+    },
+  });
+}
 
-  if (autoIncrement) {
-    currentCounters[prefix]++;
-  }
+// Fungsi untuk menghasilkan ID baru dengan prefix dan auto-increment
+export async function genId<T extends TableName>(
+  prefix: string,
+  tableName: T,
+  startValue: number = 1
+): Promise<string> {
+  const lastRecord = await findLastRecord(tableName, prefix);
 
-  const numericPart = currentCounters[prefix].toString().padStart(4, "0");
-  return `${prefix}${numericPart}`;
+  const lastId =
+    lastRecord?.id || `${prefix}${String(startValue - 1).padStart(3, "0")}`;
+  const currentNumber =
+    parseInt(lastId.replace(prefix, ""), 10) || startValue - 1;
+  const nextNumber = currentNumber + 1;
+  const formattedNumber = nextNumber.toString().padStart(4, "0");
+
+  return `${prefix}${formattedNumber}`;
 }
