@@ -1,5 +1,5 @@
 import { PostQueryString } from "@/config/types";
-import { getDateRange } from "@/utils/date";
+import { getDateRange } from "@/utils/dateTime";
 
 export function parseSearchParamsPost(
   searchParams: URLSearchParams
