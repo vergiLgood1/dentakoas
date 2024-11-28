@@ -8,4 +8,8 @@ export const prismaModels = {
   pasienProfiles: db.pasienProfile,
   treatmentTypes: db.treatmentType,
   likes: db.like,
+  schedules: db.schedule,
+  timeslots: db.timeslot,
+  appointments: db.appointment,
+  reviews: db.review,
 } as const;
