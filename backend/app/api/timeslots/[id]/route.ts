@@ -48,7 +48,7 @@ export async function PATCH(
   const id = searchParams.get("id") || params.id;
 
   const body = await req.json();
-  const { startTime, endTime, maxParticipants } = body;
+  const { startTime, endTime, maxParticipants, currentParticipants, isAvailable } = body;
 
   try {
     const existingTimeslot = await db.timeslot.findUnique({
@@ -69,9 +69,11 @@ export async function PATCH(
         id,
       } as Prisma.TimeslotWhereUniqueInput,
       data: {
-        startTime: startTime ?? existingTimeslot.startTime,
-        endTime: endTime ?? existingTimeslot.endTime,
-        maxParticipants: maxParticipants ?? existingTimeslot.maxParticipants,
+        startTime,
+        endTime,
+        maxParticipants,
+        currentParticipants,
+        isAvailable,
       } as Prisma.TimeslotUpdateInput,
     });
 
