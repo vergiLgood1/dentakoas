@@ -32,7 +32,7 @@ enum Gender {
 enum StatusPost {
   Pending
   Open
-  Close
+  Closed
 
   @@map("status-post")
 }
@@ -166,7 +166,7 @@ model Post {
   title               String
   desc                String
   patientRequirement  Json?      @map("patient_requirement")
-  requiredParticipant Int?       @map("required_participant")
+  requiredParticipant Int        @default(0) @map("required_participant")
   status              StatusPost @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   published           Boolean    @default(false)
   Schedule            Schedule[]
@@ -237,15 +237,16 @@ model Schedule {
 }
 
 model Timeslot {
-  id                  String   @id @default(cuid())
-  scheduleId          String   @map("schedule_id")
-  startTime           String @map("start_time")
-  endTime             String @map("end_time")
-  maxParticipants     Int?     @map("max_participants")
-  currentParticipants Int      @default(0) @map("current_participants")
-  isAvailable         Boolean  @default(true) @map("is_available")
+  id                  String  @id @default(cuid())
+  scheduleId          String  @map("schedule_id")
+  startTime           String  @map("start_time")
+  endTime             String  @map("end_time")
+  maxParticipants     Int?    @map("max_participants")
+  currentParticipants Int     @default(0) @map("current_participants")
+  isAvailable         Boolean @default(true) @map("is_available")
 
-  schedule Schedule @relation(fields: [scheduleId], references: [id])
+  schedule    Schedule      @relation(fields: [scheduleId], references: [id])
+  Appointment Appointment[]
 
   @@unique([scheduleId, startTime, endTime], name: "unique_timeslot")
   @@map("timeslots")
@@ -272,6 +273,7 @@ model Appointment {
   pasienId   String            @map("pasien_id")
   koasId     String            @map("koas_id")
   scheduleId String            @map("schedule_id")
+  timeslotId String            @map("timeslot_id")
   date       DateTime
   status     StatusAppointment @default(Pending)
   createdAt  DateTime          @default(now())
@@ -280,4 +282,5 @@ model Appointment {
   pasien   PasienProfile @relation(fields: [pasienId], references: [id])
   koas     KoasProfile   @relation(fields: [koasId], references: [id])
   schedule Schedule      @relation(fields: [scheduleId], references: [id])
+  timeslot Timeslot      @relation(fields: [timeslotId], references: [id])
 }
