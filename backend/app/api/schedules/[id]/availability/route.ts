@@ -59,6 +59,7 @@ export async function GET(
             const participants = await db.appointment.count({
               where: {
                 scheduleId,
+                timeslotId: slot.id,
                 date: new Date(dateString),
                 status: "Confirmed", // Only count confirmed participants
                 AND: {
