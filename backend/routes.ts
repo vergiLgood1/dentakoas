@@ -43,3 +43,81 @@ export const DEFAULT_LOGOUT_REDIRECT = "/api/auth/signin";
  * @type {string}
  */
 export const DEFAULT_PROTECTED_REDIRECT = "/api/auth/signin";
+
+/**
+ * An array of routes for admin role.
+ * @type {string[]}
+ */
+export const ADMIN_ROUTES = [
+  "/admin/dashboard",
+  "/admin/users",
+  "/admin/users/[id]",
+  "/admin/koas-profile",
+  "/admin/koas-profile/[id]",
+  "/admin/pasien-profile",
+  "/admin/pasien-profile/[id]",
+  "/admin/posts",
+  "/admin/posts/[id]",
+  "/admin/treatment-types",
+  "/admin/treatment-types/[id]",
+  "/admin/schedules",
+  "/admin/schedules/[id]",
+  "/admin/timeslots",
+  "/admin/timeslots/[id]",
+  "/admin/appointments",
+  "/admin/appointments/[id]",
+  "/admin/notifications",
+  "/admin/notifications/[id]",
+  "/admin/likes",
+  "/admin/likes/[id]",
+];
+
+/**
+ * An array of routes for pasien role.
+ * @type {string[]}
+ */
+export const PASIEN_ROUTES = [
+  "/pasien/dashboard",
+  "/pasien/profile",
+  "/pasien/profile/[id]",
+  "/pasien/posts",
+  "/pasien/posts/[id]",
+  "/pasien/appointments",
+  "/pasien/appointments/[id]",
+  "/pasien/notifications",
+  "/pasien/notifications/[id]",
+  "/pasien/likes",
+  "/pasien/likes/[id]",
+  "/pasien/treatment-types",
+  "/pasien/treatment-types/[id]",
+];
+
+/**
+ * An array of routes for koas role.
+ * @type {string[]}
+ */
+export const KOAS_ROUTES = [
+  "/koas/dashboard",
+  "/koas/profile",
+  "/koas/profile/[id]",
+  "/koas/posts",
+  "/koas/posts/[id]",
+  "/koas/appointments",
+  "/koas/appointments/[id]",
+  "/koas/notifications",
+  "/koas/notifications/[id]",
+  "/koas/likes",
+  "/koas/likes/[id]",
+  "/koas/treatment-types",
+  "/koas/treatment-types/[id]",
+];
+
+/**
+ * An object that contains all routes for each role.
+ * @type {object}
+ */
+export const ROUTE_ROLES = {
+  Admin: ADMIN_ROUTES,
+  Pasien: PASIEN_ROUTES,
+  Koas: KOAS_ROUTES,
+};
