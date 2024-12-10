@@ -7,5 +7,5 @@ class Env {
   static const String applicationType = 'application/json';
   static const String accept = 'Accept';
   static const String applicationJson = 'application/json';
-  static const Duration apiTimeOut = Duration(milliseconds: 10000);
+  static const Duration apiTimeOut = Duration(seconds: 100000);
 }

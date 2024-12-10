@@ -1,22 +1,24 @@
 import 'package:tugas_akhir/env.dart';
 
-class ApiEndpoints {
+class ApiUrls {
   // Base URL
   static const String baseUrl = Env.baseUrl;
+  static const String baseAuthUrl = '$baseUrl/auth';
+  static const String baseAuthSignin = '$baseAuthUrl/signin';
 
   // Authentication Endpoints
-  static const String login = '$baseUrl/auth/signin/credentials';
-  static const String loginGoogle = '$baseUrl/auth/signin/google';
-  static const String loginFacebook = '$baseUrl/auth/signin/facebook';
-  static const String loginApple = '$baseUrl/auth/signin/apple';
-  static const String loginGithub = '$baseUrl/auth/signin/github';
+  static const String login = '$baseAuthSignin/credentials';
+  static const String loginGoogle = '$baseAuthSignin/google';
+  static const String loginFacebook = '$baseAuthSignin/facebook';
+  static const String loginApple = '$baseAuthSignin/apple';
+  static const String loginGithub = '$baseAuthSignin/github';
 
-  static const String register = '$baseUrl/auth/signup';
+  static const String register = '$baseAuthUrl/signup';
 
-  static const String session = '$baseUrl/auth/session';
-  static const String csrf = '$baseUrl/auth/csrf';
+  static const String session = '$baseAuthUrl/session';
+  static const String token = '$baseAuthUrl/csrf';
 
-  static const String logout = '$baseUrl/auth/signout';
+  static const String logout = '$baseAuthUrl/signout';
 
   // User Endpoints
   static const String users = '$baseUrl/users';
