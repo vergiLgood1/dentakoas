@@ -114,3 +114,17 @@ export async function genUsername(
   const rand = Math.floor(Math.random() * 1000);
   return `${givenName?.toLowerCase()}.${familyName?.toLowerCase()}${rand}`;
 }
+
+export async function getCsrfToken() {
+  try {
+    const response = await fetch("http://localhost:3000/api/auth/csrf");
+    if (!response.ok) {
+      throw new Error("Failed to fetch CSRF token");
+    }
+    const data = await response.json();
+    return data.token; // Sesuaikan sesuai struktur respons API Anda
+  } catch (error) {
+    console.error("Error fetching CSRF token:", error);
+    throw new Error("Unable to retrieve CSRF token");
+  }
+}

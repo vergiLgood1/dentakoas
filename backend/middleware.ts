@@ -32,7 +32,21 @@ export default auth((req) => {
   }
 
   if (isApiAuthRoute || isApiPublicRoute) {
-    return;
+    const response = NextResponse.next();
+
+    // Tambahkan Header CORS
+    response.headers.set("Access-Control-Allow-Origin", "*"); // Gunakan domain spesifik untuk keamanan
+    response.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PATCH, OPTIONS"
+    );
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, X-Requested-With"
+    );
+    response.headers.set("Access-Control-Allow-Credentials", "true");
+
+    return response;
   }
 
   if (isAuthRoute) {

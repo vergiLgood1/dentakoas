@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir/src/features/authentication/presentation/pages/login.dart';
-import 'package:tugas_akhir/src/features/authentication/presentation/pages/register.dart';
+import 'package:tugas_akhir/src/features/authentication/presentation/pages/signup.dart';
+import 'package:tugas_akhir/src/features/authentication/presentation/pages/signin.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
       // return MaterialPageRoute(builder: (_) => const HomePage());
-      case '/login':
-        return MaterialPageRoute(builder: (_) => const LoginPage());
-      case '/register':
-        return MaterialPageRoute(builder: (_) => RegisterPage());
+      case '/signin':
+        return MaterialPageRoute(builder: (_) => SignInPage());
+      case '/signup':
+        return MaterialPageRoute(builder: (_) => SignUpPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

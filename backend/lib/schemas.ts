@@ -17,8 +17,8 @@ export const SignUpSchema = z
     email: valEmail,
     password: valPassword,
     confirmPassword: valConfirmPassword,
-    role: valRole,
-    phone: valPhone,
+    // role: valRole,
+    // phone: valPhone,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password does not match",

@@ -6,7 +6,8 @@ plugins {
 }
 
 android {
-    namespace = "com.polije.dentakoas"
+    namespace "com.polije.dentakoas"
+    testNamespace "com.polije.dentakoas.test"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
