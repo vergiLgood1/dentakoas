@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir/src/utils/constants/colors.dart';
-import 'package:tugas_akhir/src/utils/constants/sizes.dart';
+import '../../constants/colors.dart';
+import '../../constants/sizes.dart';
 
 /// Custom Class for Light & Dark Text Themes
 class TCheckboxTheme {

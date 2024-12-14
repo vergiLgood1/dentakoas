@@ -1,7 +1,6 @@
+import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir/src/utils/constants/colors.dart';
-import 'package:tugas_akhir/src/utils/constants/sizes.dart';
-
 
 /// A circular loader widget with customizable foreground and background colors.
 class TCircularLoader extends StatelessWidget {
@@ -23,9 +22,13 @@ class TCircularLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(TSizes.lg),
-      decoration: BoxDecoration(color: backgroundColor, shape: BoxShape.circle), // Circular background
+      decoration: BoxDecoration(
+          color: backgroundColor,
+          shape: BoxShape.circle), // Circular background
       child: Center(
-        child: CircularProgressIndicator(color: foregroundColor, backgroundColor: Colors.transparent), // Circular loader
+        child: CircularProgressIndicator(
+            color: foregroundColor,
+            backgroundColor: Colors.transparent), // Circular loader
       ),
     );
   }

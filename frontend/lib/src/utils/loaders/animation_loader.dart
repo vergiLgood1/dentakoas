@@ -1,8 +1,7 @@
+import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:tugas_akhir/src/utils/constants/colors.dart';
-import 'package:tugas_akhir/src/utils/constants/sizes.dart';
-
 
 /// A widget for displaying an animated loading indicator with optional text and action button.
 class TAnimationLoaderWidget extends StatelessWidget {

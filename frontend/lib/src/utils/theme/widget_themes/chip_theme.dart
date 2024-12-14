@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir/src/utils/constants/colors.dart';
+import '../../constants/colors.dart';
 
 class TChipTheme {
   TChipTheme._();

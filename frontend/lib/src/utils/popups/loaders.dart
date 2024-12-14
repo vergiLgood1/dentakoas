@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:tugas_akhir/src/utils/constants/colors.dart';
-import 'package:tugas_akhir/src/utils/helpers/helper_functions.dart';
 
+import '../constants/colors.dart';
+import '../helpers/helper_functions.dart';
 
 class TLoaders {
   static hideSnackBar() => ScaffoldMessenger.of(Get.context!).hideCurrentSnackBar();
