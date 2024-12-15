@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/features/authentication/presentasion/signin/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +25,7 @@ class OnBoardingController {
   // Update current index & jump to next page
   void nextPage() {
     if (currentPageIndex.value == 2) {
-      //  Get.to(LoginScreen());
+      Get.offAll(const SigninScreen());
     } else {
       int page = currentPageIndex.value + 1;
       pageController.animateToPage(
