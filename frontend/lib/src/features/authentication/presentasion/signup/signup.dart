@@ -38,7 +38,10 @@ class SignupScreen extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Footer
-              const DFooterSignUp()
+              const Align(
+                alignment: Alignment.center, // Mengatur DFooterSignUp ke tengah
+                child: DFooterSignUp(),
+              ),
             ],
           ),
         ),
