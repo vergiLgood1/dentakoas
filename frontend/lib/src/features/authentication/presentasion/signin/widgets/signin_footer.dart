@@ -32,7 +32,7 @@ class DFooterSignIn extends StatelessWidget {
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 // Navigasi ke halaman SignUp
-                Get.offAll(const SignupScreen());
+                Get.to(const SignupScreen());
               },
           ),
         ],
