@@ -6,8 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class DFooterSignIn extends StatelessWidget {
-  const DFooterSignIn({
+class SignInFooter extends StatelessWidget {
+  const SignInFooter({
     super.key,
   });
 

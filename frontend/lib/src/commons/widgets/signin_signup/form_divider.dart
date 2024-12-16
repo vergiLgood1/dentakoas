@@ -2,8 +2,8 @@ import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
-class DFormDivider extends StatelessWidget {
-  const DFormDivider({
+class FormDivider extends StatelessWidget {
+  const FormDivider({
     super.key,
     required this.dividerText,
   });

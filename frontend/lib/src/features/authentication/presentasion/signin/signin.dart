@@ -20,21 +20,21 @@ class SigninScreen extends StatelessWidget {
         child: Column(
           children: [
             // Logo, Tittle & Sub-Title
-            const DLoginHeader(),
+            const SignInHeader(),
 
             // Form
-            const DLoginForm(),
+            const SignInForm(),
 
             // Divider
-            DFormDivider(dividerText: TTexts.orSignInWith.capitalize!),
+            FormDivider(dividerText: TTexts.orSignInWith.capitalize!),
             const SizedBox(height: TSizes.spaceBtwSections),
 
             // Social Buttons
-            const DSocialButtons(),
+            const SocialButtons(),
             const SizedBox(height: TSizes.spaceBtwSections),
 
             // Footer
-            const DFooterSignIn()
+            const SignInFooter()
           ],
         ),
       ),

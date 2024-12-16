@@ -22,25 +22,25 @@ class SignupScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Title
-              const DSignUpHeader(),
+              const SignUpHeader(),
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Form
-              const DSignUpForm(),
+              const SignUpForm(),
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Divider
-              DFormDivider(dividerText: TTexts.orSignUpWith.capitalize!),
+              FormDivider(dividerText: TTexts.orSignUpWith.capitalize!),
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Footer Social Buttons
-              const DSocialButtons(),
+              const SocialButtons(),
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Footer
               const Align(
-                alignment: Alignment.center, // Mengatur DFooterSignUp ke tengah
-                child: DFooterSignUp(),
+                alignment: Alignment.center, // Mengatur SignUpFooter ke tengah
+                child: SignUpFooter(),
               ),
             ],
           ),

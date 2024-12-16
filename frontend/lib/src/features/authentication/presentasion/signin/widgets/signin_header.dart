@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
+import 'package:flutter/material.dart';
 
-class DLoginHeader extends StatelessWidget {
-  const DLoginHeader({
+class SignInHeader extends StatelessWidget {
+  const SignInHeader({
     super.key,
   });
 

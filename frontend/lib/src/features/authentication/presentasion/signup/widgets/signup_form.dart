@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class DSignUpForm extends StatelessWidget {
-  const DSignUpForm({
+class SignUpForm extends StatelessWidget {
+  const SignUpForm({
     super.key,
   });
 
@@ -76,7 +76,7 @@ class DSignUpForm extends StatelessWidget {
           const SizedBox(height: TSizes.spaceBtwSections),
 
           // Terms & Conditions
-          const DTermAndConditions(),
+          const TermAndConditions(),
           const SizedBox(height: TSizes.spaceBtwSections),
 
           // Sign Up Button

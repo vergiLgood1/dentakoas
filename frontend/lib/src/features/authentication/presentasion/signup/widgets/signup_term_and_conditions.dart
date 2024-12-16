@@ -4,8 +4,8 @@ import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
-class DTermAndConditions extends StatelessWidget {
-  const DTermAndConditions({
+class TermAndConditions extends StatelessWidget {
+  const TermAndConditions({
     super.key,
   });
 
@@ -34,7 +34,7 @@ class DTermAndConditions extends StatelessWidget {
                         decorationColor: dark ? TColors.white : TColors.primary,
                       )),
               TextSpan(
-                  text: '${TTexts.and} ',
+                  text: '${TTexts.and2} ',
                   style: Theme.of(context).textTheme.bodySmall),
               TextSpan(
                   text: '${TTexts.termsOfUse} ',

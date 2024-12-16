@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class DLoginForm extends StatelessWidget {
-  const DLoginForm({
+class SignInForm extends StatelessWidget {
+  const SignInForm({
     super.key,
   });
 

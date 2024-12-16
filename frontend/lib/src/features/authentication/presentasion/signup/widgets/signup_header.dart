@@ -1,16 +1,14 @@
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
-import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
-class DSignUpHeader extends StatelessWidget {
-  const DSignUpHeader({
+class SignUpHeader extends StatelessWidget {
+  const SignUpHeader({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
