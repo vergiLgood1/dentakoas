@@ -1,7 +1,9 @@
+import 'package:denta_koas/src/features/authentication/presentasion/signup/verify_email.dart';
 import 'package:denta_koas/src/features/authentication/presentasion/signup/widgets/signup_term_and_conditions.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class DSignUpForm extends StatelessWidget {
@@ -81,7 +83,7 @@ class DSignUpForm extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () => Get.to(() => const VerifyEmailScreen()),
               child: const Text(TTexts.signUp),
             ),
           ),
