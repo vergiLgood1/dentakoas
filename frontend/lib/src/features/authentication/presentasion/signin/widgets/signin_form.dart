@@ -1,6 +1,8 @@
+import 'package:denta_koas/src/features/authentication/presentasion/password_configurations/forgot_password.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class DLoginForm extends StatelessWidget {
@@ -47,7 +49,7 @@ class DLoginForm extends StatelessWidget {
 
                 // Forgot Password
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => Get.to(() => const ForgotPasswordScreen()),
                   child: const Text(TTexts.forgetPassword),
                 ),
               ],
