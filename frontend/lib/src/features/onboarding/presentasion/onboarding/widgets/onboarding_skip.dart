@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/features/authentication/controller/onboarding_controller.dart';
+import 'package:denta_koas/src/features/onboarding/controller/onboarding_controller.dart';
 import 'package:denta_koas/src/utils/device/device_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';

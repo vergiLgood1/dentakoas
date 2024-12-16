@@ -1,8 +1,8 @@
-import 'package:denta_koas/src/features/authentication/controller/onboarding_controller.dart';
-import 'package:denta_koas/src/features/authentication/presentasion/onboarding/widgets/onboarding_circular_button.dart';
-import 'package:denta_koas/src/features/authentication/presentasion/onboarding/widgets/onboarding_dot_navigation.dart';
-import 'package:denta_koas/src/features/authentication/presentasion/onboarding/widgets/onboarding_page.dart';
-import 'package:denta_koas/src/features/authentication/presentasion/onboarding/widgets/onboarding_skip.dart';
+import 'package:denta_koas/src/features/onboarding/controller/onboarding_controller.dart';
+import 'package:denta_koas/src/features/onboarding/presentasion/onboarding/widgets/onboarding_circular_button.dart';
+import 'package:denta_koas/src/features/onboarding/presentasion/onboarding/widgets/onboarding_dot_navigation.dart';
+import 'package:denta_koas/src/features/onboarding/presentasion/onboarding/widgets/onboarding_page.dart';
+import 'package:denta_koas/src/features/onboarding/presentasion/onboarding/widgets/onboarding_skip.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
