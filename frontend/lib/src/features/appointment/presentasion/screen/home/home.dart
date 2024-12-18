@@ -1,9 +1,9 @@
 import 'package:denta_koas/src/commons/styles/spacing_styles.dart';
 import 'package:denta_koas/src/features/appointment/presentasion/widgets/cards/appointment_card.dart';
-import 'package:denta_koas/src/features/appointment/presentasion/widgets/categories/category_section.dart';
 import 'package:denta_koas/src/features/appointment/presentasion/widgets/header/search_bar.dart';
 import 'package:denta_koas/src/features/appointment/presentasion/widgets/header/topbar.dart';
 import 'package:denta_koas/src/features/appointment/presentasion/widgets/upcoming/upcoming_event.dart';
+import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
@@ -23,8 +23,12 @@ class HomeScreen extends StatelessWidget {
               WelcomeCard(),
               SizedBox(height: TSizes.spaceBtwSections),
 
+              // Search Bar
+              SearchBarApp(),
+              SizedBox(height: TSizes.spaceBtwSections),
+
               AppointmentCards(
-                imgUrl: 'https://example.com/image.jpg',
+                imgUrl: TImages.user,
                 name: 'Dr. John Doe',
                 category: 'Dentist',
                 date: 'Sunday, 12 June',
@@ -32,13 +36,9 @@ class HomeScreen extends StatelessWidget {
               ),
               SizedBox(height: TSizes.spaceBtwSections),
 
-              // Search Bar
-              SearchBarApp(),
-              SizedBox(height: TSizes.spaceBtwSections),
-
               // Categories
-              CategorySection(),
-              SizedBox(height: TSizes.spaceBtwSections),
+              // CategorySection(),
+              // SizedBox(height: TSizes.spaceBtwSections),
 
               // Find Upcoming Koas
               FindUpcomingKoas(),

@@ -1,5 +1,5 @@
+import 'package:denta_koas/src/features/appointment/presentasion/screen/home/home.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class NavigationMenu extends StatelessWidget {
@@ -20,11 +20,10 @@ class NavigationMenu extends StatelessWidget {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color:
-                    Colors.grey.withOpacity(0.3), // Warna bayangan transparan
-                offset: const Offset(0, -2), // Arah bayangan ke atas
-                blurRadius: 4, // Efek blur pada bayangan
-                spreadRadius: 0, // Tidak ada penyebaran tambahan
+                color: Colors.grey.withOpacity(0.3),
+                offset: const Offset(0, -2),
+                blurRadius: 4,
+                spreadRadius: 0,
               ),
             ],
           ),
@@ -34,9 +33,14 @@ class NavigationMenu extends StatelessWidget {
               final isActive = controller.selectedIndex.value == index;
 
               return GestureDetector(
-                onTap: () => controller.selectedIndex.value = index,
+                onTap: () {
+                  // Validasi indeks sebelum memperbarui nilai
+                  if (index >= 0 && index < controller.screens.length) {
+                    controller.selectedIndex.value = index;
+                  }
+                },
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 0),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 10,
@@ -44,8 +48,8 @@ class NavigationMenu extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isActive
                         ? Colors.blue.shade50
-                        : Colors.transparent, // Warna latar aktif
-                    borderRadius: BorderRadius.circular(20),
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
@@ -53,7 +57,7 @@ class NavigationMenu extends StatelessWidget {
                         controller.icons[index],
                         color: isActive
                             ? Colors.blue
-                            : Colors.grey, // Warna ikon aktif
+                            : Colors.grey,
                         size: 24,
                       ),
                       if (isActive)
@@ -75,7 +79,21 @@ class NavigationMenu extends StatelessWidget {
           ),
         ),
       ),
-      body: Obx(() => controller.screens[controller.selectedIndex.value]),
+      body: Obx(() {
+        // Pastikan selectedIndex berada dalam rentang valid
+        final index = controller.selectedIndex.value;
+        if (index >= 0 && index < controller.screens.length) {
+          return controller.screens[index];
+        } else {
+          // Fallback jika terjadi masalah dengan indeks
+          return const Center(
+            child: Text(
+              'Invalid screen index',
+              style: TextStyle(color: Colors.red),
+            ),
+          );
+        }
+      }),
     );
   }
 }
@@ -91,27 +109,16 @@ class NavigationController extends GetxController {
   ];
 
   final List<IconData> icons = [
-    FontAwesomeIcons.house,
-    FontAwesomeIcons.calendarWeek,
-    FontAwesomeIcons.message,
-    FontAwesomeIcons.user,
+    Icons.home,
+    Icons.calendar_month,
+    Icons.medical_services_rounded,
+    Icons.person,
   ];
 
   final List<String> labels = [
     'Home',
-    'Calendar',
-    'Messages',
+    'Posts',
+    'Koas',
     'Profile',
   ];
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Home Screen')),
-    );
-  }
 }

@@ -3,6 +3,7 @@ import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class WelcomeCard extends StatelessWidget {
   const WelcomeCard({super.key});
@@ -11,17 +12,20 @@ class WelcomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(4),
-      child: const Row(
+      child: Row(
         children: [
           // Gambar Avatar
-          CircleAvatar(
-            radius: 24,
-            backgroundImage:
-                AssetImage(TImages.user), // Ganti dengan asset gambar lokal
+          GestureDetector(
+            onTap: () => Get.to(() => ()),
+            child: const CircleAvatar(
+              radius: 24,
+              backgroundImage:
+                  AssetImage(TImages.user), // Ganti dengan asset gambar lokal
+            ),
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           // Teks Welcome
-          Column(
+          const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -42,13 +46,15 @@ class WelcomeCard extends StatelessWidget {
               ),
             ],
           ),
-          Spacer(),
-          // Ikon Hati
-          FaIcon(
+          const Spacer(),
+          IconButton(
+            onPressed: () {},
+            icon: const FaIcon(
             FontAwesomeIcons.bell,
             color: TColors.textPrimary,
             size: 24,
-          ),
+            ),
+          )
         ],
       ),
     );

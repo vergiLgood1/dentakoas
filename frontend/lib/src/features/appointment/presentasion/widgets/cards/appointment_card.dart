@@ -47,15 +47,9 @@ class AppointmentCards extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Avatar Dokter
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(imgUrl), // Background ungu muda
-                      ),
-                      shape: BoxShape.circle,
-                    ),
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage(imgUrl),
                   ),
                   const SizedBox(
                     width: TSizes.spaceBtwInputFields,

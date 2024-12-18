@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,8 @@ class DoctorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(
+          bottom: TSizes.spaceBtwItems), // Add margin to create space between cards
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -92,13 +95,14 @@ class DoctorCard extends StatelessWidget {
                     // Rating Section
                     Row(
                       children: [
-                        const Icon(Icons.star, size: 18, color: Colors.orange),
+                        const Icon(Icons.star,
+                            size: TSizes.iconBase, color: TColors.secondary),
                         const SizedBox(width: 4),
                         Text(
                           '$rating ($reviewsCount Reviews)',
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Colors.orange,
+                            color: TColors.secondary,
                           ),
                         ),
                       ],
@@ -109,13 +113,13 @@ class DoctorCard extends StatelessWidget {
                     Row(
                       children: [
                         const Icon(Icons.access_time,
-                            size: 18, color: Colors.blue),
+                            size: TSizes.iconBase, color: TColors.primary),
                         const SizedBox(width: 4),
                         Text(
                           'Open at $openTime',
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Colors.blue,
+                            color: TColors.primary,
                           ),
                         ),
                       ],
