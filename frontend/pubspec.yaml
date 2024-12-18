@@ -45,10 +45,12 @@ dependencies:
   # Icons
   iconsax: ^0.0.8
   cupertino_icons: ^1.0.6
+  font_awesome_flutter: ^10.7.0
 
   # State Management
   get: ^4.6.6
   get_storage: ^2.1.1
+  google_fonts: ^6.2.1
   
 
 dev_dependencies:
