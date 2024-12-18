@@ -1,3 +1,4 @@
+import 'package:denta_koas/navigation_menu.dart';
 import 'package:denta_koas/src/features/authentication/presentasion/password_configurations/forgot_password.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
@@ -61,7 +62,7 @@ class SignInForm extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => Get.to(() => const NavigationMenu()),
                 child: const Text(TTexts.signIn),
               ),
             ),
