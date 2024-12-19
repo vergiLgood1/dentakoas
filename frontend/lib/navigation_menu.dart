@@ -1,4 +1,6 @@
-import 'package:denta_koas/src/features/appointment/presentasion/screen/home/home.dart';
+import 'package:denta_koas/src/features/appointment/screen/home/home.dart';
+import 'package:denta_koas/src/features/appointment/screen/profile/profile.dart';
+import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,7 +10,8 @@ class NavigationMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
-
+    const dark = THelperFunctions.isDarkMode;
+    
     return Scaffold(
       bottomNavigationBar: Obx(
         () => Container(
@@ -105,20 +108,20 @@ class NavigationController extends GetxController {
     const HomeScreen(),
     Container(color: Colors.red),
     Container(color: Colors.green),
-    Container(color: Colors.blue),
+    const ProfileScreen(),
   ];
 
   final List<IconData> icons = [
     Icons.home,
+    Icons.explore_rounded,
     Icons.calendar_month,
-    Icons.medical_services_rounded,
     Icons.person,
   ];
 
   final List<String> labels = [
     'Home',
-    'Posts',
-    'Koas',
+    'Explore',
+    'Bookings',
     'Profile',
   ];
 }

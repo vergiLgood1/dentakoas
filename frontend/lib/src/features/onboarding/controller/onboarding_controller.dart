@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/features/authentication/presentasion/signin/signin.dart';
+import 'package:denta_koas/src/features/authentication/screen/signin/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
