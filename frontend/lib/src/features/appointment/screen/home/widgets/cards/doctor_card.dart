@@ -29,7 +29,7 @@ class DoctorCard extends StatelessWidget {
           bottom: TSizes.spaceBtwSections), // Adjust spacing between cards
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: TColors.textWhite,
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [
           BoxShadow(
@@ -43,14 +43,14 @@ class DoctorCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Image Profile
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
-                  width: 80,
-                  height: 80,
+                  width: 100,
+                  height: 100,
                   color:
                       Colors.grey[200], // Placeholder color for missing image
                   child: Image.asset(
@@ -65,15 +65,14 @@ class DoctorCard extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Doctor Name
                     Text(
                       doctorName,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium!.apply(
+                            color: TColors.textPrimary,
+                          ),
                     ),
                     const SizedBox(height: 4),
 
@@ -83,20 +82,19 @@ class DoctorCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             specialty,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyMedium!.apply(
+                                      color: TColors.textSecondary,
+                                    ),
                           ),
                         ),
                         const Icon(Icons.location_on,
-                            size: 16, color: Colors.grey),
+                            size: TSizes.iconSm, color: TColors.primary),
                         Text(
                           distance,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.black54,
-                          ),
+                          style: Theme.of(context).textTheme.labelMedium!.apply(
+                                color: TColors.textSecondary,
+                              ),
                         ),
                       ],
                     ),
@@ -109,7 +107,15 @@ class DoctorCard extends StatelessWidget {
                         Row(
                           children: [
                             const Icon(Icons.star,
-                                size: 16, color: Colors.orange),
+                                size: TSizes.iconBase, color: Colors.orange),
+                            const Icon(Icons.star,
+                                size: TSizes.iconBase, color: Colors.orange),
+                            const Icon(Icons.star,
+                                size: TSizes.iconBase, color: Colors.orange),
+                            const Icon(Icons.star,
+                                size: TSizes.iconBase, color: Colors.orange),
+                            const Icon(Icons.star,
+                                size: TSizes.iconBase, color: Colors.orange),
                             const SizedBox(width: 4),
                             Text(
                               '$rating',
@@ -122,18 +128,21 @@ class DoctorCard extends StatelessWidget {
                         ),
                         const Spacer(),
 
+                        // Divider
+                        Container(
+                          width: 2,
+                          height: TSizes.iconBase,
+                          color: TColors.grey.withAlpha((0.4 * 255).toInt()),
+                        ),
+                        const SizedBox(width: 8),
+
                         // Open Time
-                        Row(
-                          children: [
-                            const SizedBox(width: 4),
-                            Text(
-                              '$reviewsCount Reviews',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          '$reviewsCount Reviews',
+                          style: const TextStyle(
+                            fontSize: TSizes.fontSizeSm,
+                            color: TColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -156,7 +165,8 @@ class DoctorCard extends StatelessWidget {
                   ),
                   side:
                       const BorderSide(color: TColors.transparent, width: 1.5),
-                  backgroundColor: TColors.primary.withOpacity(0.2)),
+                  backgroundColor:
+                      TColors.primary.withAlpha((0.2 * 255).toInt())),
               child: const Text(
                 'Make Appointment',
                 style: TextStyle(
@@ -169,3 +179,4 @@ class DoctorCard extends StatelessWidget {
     );
   }
 }
+
