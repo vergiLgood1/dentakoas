@@ -21,7 +21,8 @@ class FindUpcomingKoas extends StatelessWidget {
             rating: 4.8,
             reviewsCount: 120,
             openTime: '17.00',
-            doctorImageUrl: TImages.banner1, // Pastikan asset ada di folder
+            doctorImageUrl:
+                TImages.userProfileImage1, // Pastikan asset ada di folder
           ),
         ],
       ),
