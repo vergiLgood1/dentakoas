@@ -23,7 +23,7 @@ class NavigationMenu extends StatelessWidget {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
+                color: Colors.grey.withAlpha(0.3 * 255 ~/ 100),
                 offset: const Offset(0, -2),
                 blurRadius: 4,
                 spreadRadius: 0,
@@ -32,18 +32,16 @@ class NavigationMenu extends StatelessWidget {
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(controller.screens.length, (index) {
+            children: controller.screens.asMap().entries.map((entry) {
+              final index = entry.key;
               final isActive = controller.selectedIndex.value == index;
 
               return GestureDetector(
                 onTap: () {
-                  // Validasi indeks sebelum memperbarui nilai
-                  if (index >= 0 && index < controller.screens.length) {
-                    controller.selectedIndex.value = index;
-                  }
+                  controller.selectedIndex.value = index;
                 },
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 0),
+                  duration: const Duration(milliseconds: 300),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 10,
@@ -51,7 +49,7 @@ class NavigationMenu extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isActive
                         ? Colors.blue.shade50
-                        : Colors.transparent,
+                        : null,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -78,24 +76,13 @@ class NavigationMenu extends StatelessWidget {
                   ),
                 ),
               );
-            }),
+            }).toList(),
           ),
         ),
       ),
       body: Obx(() {
-        // Pastikan selectedIndex berada dalam rentang valid
         final index = controller.selectedIndex.value;
-        if (index >= 0 && index < controller.screens.length) {
-          return controller.screens[index];
-        } else {
-          // Fallback jika terjadi masalah dengan indeks
-          return const Center(
-            child: Text(
-              'Invalid screen index',
-              style: TextStyle(color: Colors.red),
-            ),
-          );
-        }
+        return controller.screens[index];
       }),
     );
   }
