@@ -1,12 +1,9 @@
 import 'package:denta_koas/src/commons/widgets/containers/search_container.dart';
-import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
-import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
-import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/appointment_card.dart';
-import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/doctor_card.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/header/home_appbar.dart';
-import 'package:denta_koas/src/features/appointment/screen/home/widgets/home_categories.dart';
-import 'package:denta_koas/src/features/appointment/screen/home/widgets/promo_slider.dart';
-import 'package:denta_koas/src/utils/constants/image_strings.dart';
+import 'package:denta_koas/src/features/appointment/screen/home/widgets/home_banner_section.dart';
+import 'package:denta_koas/src/features/appointment/screen/home/widgets/home_popular_koas.dart';
+import 'package:denta_koas/src/features/appointment/screen/home/widgets/home_popular_section.dart';
+import 'package:denta_koas/src/features/appointment/screen/home/widgets/home_upcoming_schedule_section.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
@@ -15,118 +12,36 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             Column(
               children: [
                 // Appbar
-                const HomeAppBar(),
-                const SizedBox(height: TSizes.spaceBtwSections),
+                HomeAppBar(),
+                SizedBox(height: TSizes.spaceBtwSections),
 
                 // Search Bar
-                const SearchContainer(
+                SearchContainer(
                   text: 'Search something...',
                   showBackground: false,
                 ),
-                const SizedBox(height: TSizes.spaceBtwSections),
+                SizedBox(height: TSizes.spaceBtwSections),
 
-                const Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
-                  child: Column(
-                    children: [
-                      BannerSlider(
-                        banners: [
-                          TImages.banner1,
-                          TImages.banner2,
-                          TImages.banner3,
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: TSizes.spaceBtwSections),
+                HomeBannerSection(),
+                SizedBox(height: TSizes.spaceBtwSections),
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: TSizes.defaultSpace),
-                  child: Column(
-                    // Heading
-                    children: [
-                      SectionHeading(
-                        title: 'Upcoming Schedule',
-                        showActionButton: true,
-                        onPressed: () {},
-                      ),
-                      
-                      // Upcoming Appointments
-                      const AppointmentCards(
-                        imgUrl: TImages.user,
-                        name: 'Dr. John Doe',
-                        category: 'Scaling',
-                        date: 'Sunday, 12 June',
-                        timestamp: '10:00 - 11:00 AM',
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(height: TSizes.spaceBtwSections),
+                // Upcoming Schedule
+                HomeUpcomingScheduleSection(),
+                SizedBox(height: TSizes.spaceBtwSections),
 
                 // Categories
-                const Padding(
-                  padding: EdgeInsets.only(left: TSizes.defaultSpace),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Heading
-                      SectionHeading(
-                        title: 'Popular Categories',
-                        showActionButton: false,
-                      ),
-                      SizedBox(height: TSizes.spaceBtwItems),
+                HomePopularCategoriesSection(),
+                SizedBox(height: TSizes.spaceBtwSections),
 
-                      HomeCategories()
-                    ],
-                  ),
-                ),
-                const SizedBox(height: TSizes.spaceBtwSections),
-
-                // Find Upcoming Koas
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: TSizes.defaultSpace),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Heading
-                      SectionHeading(
-                        title: 'Popular Koas',
-                        showActionButton: true,
-                        onPressed: () {},
-                      ),
-
-                      // Upcoming Koas
-                      // const FindUpcomingKoas(),
-
-                      DGridLayout(
-                        itemCount: 2,
-                        itemBuilder: (_, index) => const DoctorCard(
-                            doctorName: 'Dr. Joseph Brostito',
-                            specialty: 'Dental Specialist',
-                            distance: '1 KM',
-                            rating: 4.8,
-                            reviewsCount: 120,
-                            openTime: '17.00',
-                            doctorImageUrl: TImages.userProfileImage3),
-                        crossAxisCount: 1,
-                      )
-                    ],
-                  ),
-                ),
-
-
+                // Find Popular Koas
+                HomePopularKoasSection(),
               ],
             )
           ],
@@ -135,4 +50,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
