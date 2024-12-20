@@ -51,7 +51,8 @@ class VerticalImageText extends StatelessWidget {
                 title,
                 style: Theme.of(context).textTheme.labelMedium!.apply(
                     color:
-                        textColor ?? (dark ? TColors.error : TColors.primary)),
+                        textColor ??
+                        (dark ? TColors.textWhite : TColors.primary)),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
