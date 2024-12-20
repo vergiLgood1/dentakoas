@@ -26,7 +26,7 @@ class DoctorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(
-          bottom: TSizes.spaceBtwSections), // Adjust spacing between cards
+          bottom: TSizes.spaceBtwItems), // Adjust spacing between cards
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: TColors.textWhite,
@@ -132,9 +132,9 @@ class DoctorCard extends StatelessWidget {
                         Container(
                           width: 2,
                           height: TSizes.iconBase,
-                          color: TColors.grey.withAlpha((0.4 * 255).toInt()),
+                          color: TColors.grey,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 6),
 
                         // Open Time
                         Text(
