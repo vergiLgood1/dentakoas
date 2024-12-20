@@ -1,17 +1,18 @@
 import 'package:denta_koas/src/commons/widgets/containers/search_container.dart';
+import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/appointment_card.dart';
+import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/doctor_card.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/header/home_appbar.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/home_categories.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/promo_slider.dart';
-import 'package:denta_koas/src/features/appointment/screen/home/widgets/upcoming/upcoming_event.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +108,20 @@ class HomeScreen extends StatelessWidget {
                       ),
 
                       // Upcoming Koas
-                      const FindUpcomingKoas(),
+                      // const FindUpcomingKoas(),
+
+                      DGridLayout(
+                        itemCount: 2,
+                        itemBuilder: (_, index) => const DoctorCard(
+                            doctorName: 'Dr. Joseph Brostito',
+                            specialty: 'Dental Specialist',
+                            distance: '1 KM',
+                            rating: 4.8,
+                            reviewsCount: 120,
+                            openTime: '17.00',
+                            doctorImageUrl: TImages.userProfileImage3),
+                        crossAxisCount: 1,
+                      )
                     ],
                   ),
                 ),
