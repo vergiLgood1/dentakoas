@@ -10,7 +10,7 @@ class VerticalImageText extends StatelessWidget {
     required this.title,
     this.textColor,
     this.backgroundColor,
-    this.onTap,
+    this.onTap,  
   });
 
   final String image, title;
@@ -47,14 +47,15 @@ class VerticalImageText extends StatelessWidget {
             const SizedBox(height: TSizes.spaceBtwItems / 2),
             SizedBox(
               width: 55,
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.labelMedium!.apply(
-                    color:
-                        textColor ??
-                        (dark ? TColors.textWhite : TColors.primary)),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              child: Center(
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.labelMedium!.apply(
+                      color: textColor ??
+                          (dark ? TColors.textWhite : TColors.primary)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             )
           ],
