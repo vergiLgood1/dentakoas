@@ -25,6 +25,7 @@ class BannerSlider extends StatelessWidget {
         CarouselSlider(
           options: CarouselOptions(
             viewportFraction: 1.05,
+            autoPlay: true,
             onPageChanged: (index, _) => controller.updatePageIndicator(index),
           ),
           items: banners.map((url) => RoundedImage(imageUrl: url)).toList(),
