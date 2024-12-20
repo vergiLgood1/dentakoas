@@ -3,6 +3,7 @@ import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/appointment_card.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/header/home_appbar.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/home_categories.dart';
+import 'package:denta_koas/src/features/appointment/screen/home/widgets/promo_slider.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/upcoming/upcoming_event.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -10,46 +11,7 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return const Scaffold(
-  //     body: SingleChildScrollView(
-  //       child: Padding(
-  //         padding: DSpacingStyle.paddingWithAppBarHeight,
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             // header
-  //             WelcomeCard(),
-  //             SizedBox(height: TSizes.spaceBtwSections),
-
-  //             // Search Bar
-  //             SearchBarApp(),
-  //             SizedBox(height: TSizes.spaceBtwSections),
-
-  //             AppointmentCards(
-  //               imgUrl: TImages.user,
-  //               name: 'Dr. John Doe',
-  //               category: 'Dentist',
-  //               date: 'Sunday, 12 June',
-  //               timestamp: '10:00 - 11:00 AM',
-  //             ),
-  //             SizedBox(height: TSizes.spaceBtwSections),
-
-  //             // Categories
-  //             // CategorySection(),
-  //             // SizedBox(height: TSizes.spaceBtwSections),
-
-  //             // Find Upcoming Koas
-  //             FindUpcomingKoas(),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +28,23 @@ class HomeScreen extends StatelessWidget {
                 const SearchContainer(
                   text: 'Search something...',
                   showBackground: false,
+                ),
+                const SizedBox(height: TSizes.spaceBtwSections),
+
+                const Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
+                  child: Column(
+                    children: [
+                      BannerSlider(
+                        banners: [
+                          TImages.banner1,
+                          TImages.banner2,
+                          TImages.banner3,
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: TSizes.spaceBtwSections),
 
@@ -98,6 +77,7 @@ class HomeScreen extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.only(left: TSizes.defaultSpace),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Heading
                       SectionHeading(
@@ -117,10 +97,11 @@ class HomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: TSizes.defaultSpace),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Heading
                       SectionHeading(
-                        title: 'Find Upcoming Koas',
+                        title: 'Popular Koas',
                         showActionButton: true,
                         onPressed: () {},
                       ),
@@ -130,6 +111,8 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+
+
               ],
             )
           ],
