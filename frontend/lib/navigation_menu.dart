@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/features/appointment/screen/explore/explore.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/home.dart';
 import 'package:denta_koas/src/features/appointment/screen/profile/profile.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
@@ -93,7 +94,7 @@ class NavigationController extends GetxController {
 
   final screens = [
     const HomeScreen(),
-    Container(color: Colors.red),
+    const ExploreScreen(),
     Container(color: Colors.green),
     const ProfileScreen(),
   ];
