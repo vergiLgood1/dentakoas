@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:denta_koas/src/commons/widgets/containers/circular_container.dart';
-import 'package:denta_koas/src/commons/widgets/images/rounded_image.dart';
+import 'package:denta_koas/src/commons/widgets/images/rounded_image_container.dart';
 import 'package:denta_koas/src/features/appointment/controller/home_contrller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
