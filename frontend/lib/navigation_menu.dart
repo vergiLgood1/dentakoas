@@ -1,6 +1,6 @@
 import 'package:denta_koas/src/features/appointment/screen/explore/explore.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/home.dart';
-import 'package:denta_koas/src/features/appointment/screen/profile/profile.dart';
+import 'package:denta_koas/src/features/personalization/screen/setting/settings.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -96,7 +96,7 @@ class NavigationController extends GetxController {
     const HomeScreen(),
     const ExploreScreen(),
     Container(color: Colors.green),
-    const ProfileScreen(),
+    const SettingsScreen(),
   ];
 
   final List<IconData> icons = [
