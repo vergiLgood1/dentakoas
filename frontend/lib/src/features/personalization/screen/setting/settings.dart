@@ -59,7 +59,7 @@ class SettingsScreen extends StatelessWidget {
                     subtitle: 'Set your default address',
                   ),
                   const SettingMenuTile(
-                    icon: Iconsax.bag_tick,
+                    icon: Iconsax.calendar_1,
                     title: 'My Appointments',
                     subtitle: 'View your appointments',
                   ),
@@ -74,7 +74,7 @@ class SettingsScreen extends StatelessWidget {
                     subtitle: 'Control your privacy settings',
                   ),
                   const SettingMenuTile(
-                    icon: Iconsax.user,
+                    icon: Iconsax.user_remove,
                     title: 'Change Account',
                     subtitle: 'Change your account ',
                   ),
