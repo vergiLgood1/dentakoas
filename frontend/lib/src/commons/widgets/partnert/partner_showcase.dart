@@ -1,18 +1,23 @@
 import 'package:denta_koas/src/commons/widgets/cards/partner_card.dart';
 import 'package:denta_koas/src/commons/widgets/containers/rounded_container.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
-import 'package:denta_koas/src/utils/constants/image_strings.dart';
+import 'package:denta_koas/src/utils/constants/enums.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
-class PartnertShowcase extends StatelessWidget {
-  const PartnertShowcase({
+class CardShowcase extends StatelessWidget {
+  const CardShowcase({
     super.key,
     required this.images,
+    required this.title,
+    required this.subtitle,
+    this.prefixImage,
   });
 
   final List<String> images;
+  final String title, subtitle;
+  final String? prefixImage;
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +30,13 @@ class PartnertShowcase extends StatelessWidget {
       child: Column(
         children: [
           // Partners with koas count
-          const PartnertCard(
+          CategoryCard(
             showBorder: false,
-            title: 'Universitas Negeri Jember',
-            subtitle: '200+ Available Koas',
-            image: TImages.appleLogo,
+            showVerifiyIcon: false,
+            title: title,
+            subtitle: subtitle,
+            image: prefixImage,
+            doctorTextSize: TextSizes.large,
           ),
 
           Row(
