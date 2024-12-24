@@ -6,11 +6,13 @@ import 'package:iconsax/iconsax.dart';
 
 class FooterSection extends StatelessWidget {
   final String dateStart, dateEnd;
+  final void Function()? onPressed;
 
   const FooterSection({
     super.key,
     required this.dateStart,
     required this.dateEnd,
+    this.onPressed,
   });
 
   @override
@@ -24,9 +26,9 @@ class FooterSection extends StatelessWidget {
           Text('$dateStart - $dateEnd',
               style: Theme.of(context).textTheme.bodyMedium),
         ]),
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
+        OutlinedButton(
+          onPressed: onPressed,
+          style: OutlinedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
