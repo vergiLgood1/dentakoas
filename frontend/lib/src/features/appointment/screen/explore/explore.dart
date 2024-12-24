@@ -169,7 +169,7 @@ class TabPost extends StatelessWidget {
                   likesCount: 20,
                 ),
               ),
-              const SizedBox(height: TSizes.spaceBtwSections),
+              
             ],
           ),
         ),
