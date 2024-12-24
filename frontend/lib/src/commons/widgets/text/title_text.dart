@@ -1,8 +1,8 @@
 import 'package:denta_koas/src/utils/constants/enums.dart';
 import 'package:flutter/material.dart';
 
-class DoctorTitleText extends StatelessWidget {
-  const DoctorTitleText({
+class TitleText extends StatelessWidget {
+  const TitleText({
     super.key,
     this.color,
     required this.title,
@@ -29,7 +29,7 @@ class DoctorTitleText extends StatelessWidget {
           ? Theme.of(context).textTheme.labelMedium!.apply(color: color)
           : doctorTextSize == TextSizes.medium
               ? Theme.of(context).textTheme.titleLarge!.apply(color: color)
-              : Theme.of(context).textTheme.bodyMedium!.apply(color: color),
+              : Theme.of(context).textTheme.headlineSmall!.apply(color: color),
     );
   }
 }
