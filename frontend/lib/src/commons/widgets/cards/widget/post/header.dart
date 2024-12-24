@@ -43,7 +43,7 @@ class HeaderSection extends StatelessWidget {
         ),
         StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return LikeButton();
+            return const LikeButton();
           },
         ),
         IconButton(
