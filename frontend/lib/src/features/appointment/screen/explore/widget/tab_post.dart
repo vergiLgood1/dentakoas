@@ -2,6 +2,7 @@ import 'package:denta_koas/src/commons/widgets/cards/post_card.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/partnert/partner_showcase.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/post_detail.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/posts.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -54,7 +55,7 @@ class TabPost extends StatelessWidget {
                 itemCount: 2,
                 crossAxisCount: 1,
                 mainAxisExtent: 330,
-                itemBuilder: (_, index) => const PostCard(
+                itemBuilder: (_, index) => PostCard(
                   name: 'Dr. John Doe',
                   university: 'Politeknik Negeri Jember',
                   image: TImages.userProfileImage4,
@@ -68,6 +69,8 @@ class TabPost extends StatelessWidget {
                   dateStart: '01 Jan',
                   dateEnd: '31 Jan 2024',
                   likesCount: 20,
+                  onTap: () => Get.to(() => const PostDetailScreen()),
+                  onPressed: () => Get.to(() => const PostDetailScreen()),
                 ),
               ),
             ],
