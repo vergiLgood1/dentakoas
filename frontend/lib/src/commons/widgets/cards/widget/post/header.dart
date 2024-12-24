@@ -1,6 +1,6 @@
 import 'package:denta_koas/src/commons/controller/options.dart';
+import 'package:denta_koas/src/commons/widgets/buttons/like_button.dart';
 import 'package:denta_koas/src/commons/widgets/text/title_with_verified.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -41,7 +41,11 @@ class HeaderSection extends StatelessWidget {
             ],
           ),
         ),
-        const Icon(CupertinoIcons.heart, color: Colors.grey),
+        StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return LikeButton();
+          },
+        ),
         IconButton(
           icon: const Icon(Icons.more_vert, color: Colors.grey),
           onPressed: () => controller.showOptions(context),
@@ -50,3 +54,4 @@ class HeaderSection extends StatelessWidget {
     );
   }
 }
+  

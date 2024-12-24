@@ -65,7 +65,6 @@ class PostCard extends StatelessWidget {
                 name: name,
                 image: image,
                 university: university,
-                isNetworkImage: isNetworkImage,
               ),
               const SizedBox(height: TSizes.spaceBtwItems),
               TitleSection(

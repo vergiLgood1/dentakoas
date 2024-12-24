@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class CommonController {
-  static CommonController get instance => Get.find();
+class CommonController extends GetxController {
+  static CommonController get instance => Get.find<CommonController>();
 
   void showConfirmationDialog({
     required String title,
@@ -145,4 +145,25 @@ class CommonController {
       },
     );
   }
+
+  void likeButton() {
+    var isLiked = false.obs;
+
+    void toggleLike() {
+      isLiked.value = !isLiked.value;
+    }
+
+    Obx(
+      () => IconButton(
+        icon: Icon(
+          Iconsax.heart,
+          color: isLiked.value ? TColors.error : TColors.grey,
+        ),
+        onPressed: toggleLike,
+      ),
+    );
+  }
+  
+ 
 }
+
