@@ -5,6 +5,8 @@ class SectionHeading extends StatelessWidget {
     super.key,
     this.textColor,
     this.showActionButton = true,
+    this.isSuffixIcon = false,
+    this.suffixIcon,
     required this.title,
     this.buttonTitle = 'View all',
     this.onPressed,
@@ -12,6 +14,8 @@ class SectionHeading extends StatelessWidget {
 
   final Color? textColor;
   final bool showActionButton;
+  final bool isSuffixIcon;
+  final IconData? suffixIcon;
   final String title, buttonTitle;
   final void Function()? onPressed;
 
@@ -34,10 +38,15 @@ class SectionHeading extends StatelessWidget {
           ], 
         ),
         if (showActionButton)
-          TextButton(
-            onPressed: onPressed,
-            child: Text(buttonTitle),
-          ),
+          isSuffixIcon
+              ? IconButton(
+                  onPressed: onPressed,
+                  icon: Icon(suffixIcon),
+                )
+              : TextButton(
+                  onPressed: onPressed,
+                  child: Text(buttonTitle),
+                ),
       ],
     );
   }
