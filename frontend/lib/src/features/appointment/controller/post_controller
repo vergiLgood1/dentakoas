@@ -1,6 +1,32 @@
 import 'package:get/get.dart';
 
+class PostController extends GetxController {
+  static PostController get instance => Get.find<PostController>();
+
+  final calendarController = CalendarController();
+  final timeController = TimeController();
+
+  var koasName = ''.obs;
+  var selectedDate = ''.obs;
+  var selectedTime = ''.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    Get.put(CalendarController());
+    Get.put(TimeController());
+  }
+
+  void updatePreviewAppointment(String name, String date, String time) {
+    koasName.value = name;
+    selectedDate.value = date;
+    selectedTime.value = time;
+  }
+}
+
 class CalendarController extends GetxController {
+  static CalendarController get instance => Get.find<CalendarController>();
+
   var selectedIndex = 0.obs;
   var selectedDate = DateTime.now().obs;
 
@@ -13,4 +39,12 @@ class CalendarController extends GetxController {
   }
 }
 
+class TimeController extends GetxController {
+  static TimeController get instance => Get.find<TimeController>();
 
+  final selectedTimeStamp = (-1).obs;
+
+  void updateSelectedTimeStamp(int index) {
+    selectedTimeStamp.value = index;
+  }
+}
