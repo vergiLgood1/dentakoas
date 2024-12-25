@@ -1,7 +1,7 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/cards/partner_card.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
-import 'package:denta_koas/src/features/appointment/screen/posts/category_posts.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/category_post/post_with_specific_category.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,7 +33,7 @@ class AllCategoryScreen extends StatelessWidget {
                   showVerifiyIcon: false,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   maxLines: 2,
-                  onTap: () => Get.to(() => const CategoryPosts()),
+                  onTap: () => Get.to(() => const PostWithSpecificCategory()),
                 ),
               ),
             ],
