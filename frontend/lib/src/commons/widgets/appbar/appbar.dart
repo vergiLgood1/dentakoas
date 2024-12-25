@@ -10,6 +10,7 @@ class DAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final VoidCallback? leadingOnPressed;
   final bool showBackArrow;
+  final bool centerTitle;
 
   const DAppBar({
     super.key,
@@ -19,6 +20,8 @@ class DAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leadingOnPressed,
     this.showBackArrow = false,
+    this.centerTitle = false,
+   
   });
 
   @override
@@ -26,6 +29,7 @@ class DAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: TSizes.md),
       child: AppBar(
+        centerTitle: centerTitle,
         automaticallyImplyLeading: false,
         leading: showBackArrow
             ? IconButton(
@@ -39,7 +43,7 @@ class DAppBar extends StatelessWidget implements PreferredSizeWidget {
                   )
                 : null,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,  
           children: [
             if (avatar != null) ...[
               CircleAvatar(
@@ -49,7 +53,7 @@ class DAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               const SizedBox(width: 8), // Spasi antara avatar dan title
             ],
-            if (title != null) Expanded(child: title!), // Title jika ada
+            if (title != null) title!, // Title jika ada
           ],
         ),
         actions: actions,
@@ -58,6 +62,5 @@ class DAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => Size.fromHeight(TDeviceUtils.getAppBarHeight());
 }
