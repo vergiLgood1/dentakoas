@@ -2,7 +2,7 @@ import 'package:denta_koas/src/commons/widgets/cards/post_card.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/partnert/partner_showcase.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
-import 'package:denta_koas/src/features/appointment/screen/posts/post_detail.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/posts.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
