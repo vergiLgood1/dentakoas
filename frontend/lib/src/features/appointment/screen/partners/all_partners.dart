@@ -1,7 +1,7 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/cards/partner_card.dart';
 import 'package:denta_koas/src/commons/widgets/koas/sortable/sortable_koas.dart';
-import 'package:denta_koas/src/features/appointment/screen/posts/partner_posts.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/parnert_post/post_with_specific_parnert.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class AllParnertScreen extends StatelessWidget {
                   subtitle: '200+ Availabel Koas',
                   showVerifiyIcon: true,
                   image: TImages.appleLogo,
-                  onTap: () => Get.to(() => const PartnerPosts()),
+                  onTap: () => Get.to(() => const PostsWithSpecificParnert()),
                 ),
               )
             ],
