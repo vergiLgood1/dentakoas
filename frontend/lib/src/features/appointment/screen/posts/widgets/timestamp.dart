@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/features/appointment/controller/time_controller.dart';
+import 'package:denta_koas/src/features/appointment/controller/post_controller';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class TimeStamp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(TimeController());
+    final controller = Get.put(PostController());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -35,7 +35,8 @@ class TimeStamp extends StatelessWidget {
             runSpacing: 8, // Vertical space between rows
             children: List.generate(timeslots.length, (index) {
               final timeslot = timeslots[index];
-              final isSelected = controller.selectedTimeStamp.value == index;
+              final isSelected =
+                  controller.timeController.selectedTimeStamp.value == index;
               final isAvailable = timeslot['isAvailable'] ?? false;
               final hasSpace = (timeslot['currentParticipants'] ?? 0) <
                   (timeslot['maxParticipants'] ?? 1);
@@ -45,7 +46,11 @@ class TimeStamp extends StatelessWidget {
               return GestureDetector(
                 onTap: isEnabled
                     ? () {
-                        controller.updateSelectedTimeStamp(index);
+                        controller.timeController
+                            .updateSelectedTimeStamp(index);
+
+                        controller.selectedTime.value =
+                            '${timeslot["startTime"]} - ${timeslot["endTime"]}';
                       }
                     : null, // Disable tap if not available
                 child: Container(
