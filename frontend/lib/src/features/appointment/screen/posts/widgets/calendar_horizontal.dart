@@ -19,7 +19,8 @@ class CalendarHorizontal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CalendarController());
+    final calendarController = Get.put(CalendarController());
+    final postController = Get.put(PostController());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,13 +50,17 @@ class CalendarHorizontal extends StatelessWidget {
 
             // Update header text if a date is selected
             if (selectedDate != null) {
-              controller.updateSelectedDay(
+              calendarController.updateSelectedDay(
                 selectedDate.difference(startDate).inDays,
               );
+
+              // 
+              postController.selectedDate.value =
+                  DateFormat('dd MMM yyyy').format(selectedDate);
             }
           },
           child: Obx(() {
-            final selectedIndex = controller.selectedIndex.value;
+            final selectedIndex = calendarController.selectedIndex.value;
             final selectedDate = startDate.add(Duration(days: selectedIndex));
             return Row(children: [
               SectionHeading(
@@ -90,11 +95,13 @@ class CalendarHorizontal extends StatelessWidget {
                         final currentDate =
                             startDate.add(Duration(days: index));
                         final isSelected =
-                            index == controller.selectedIndex.value;
+                            index == calendarController.selectedIndex.value;
 
                         return GestureDetector(
                           onTap: () {
-                            controller.updateSelectedDay(index);
+                            calendarController.updateSelectedDay(index);
+                            postController.selectedDate.value =
+                                DateFormat('dd MMM yyyy').format(currentDate);
                           },
                           child: Container(
                             width: 80,
