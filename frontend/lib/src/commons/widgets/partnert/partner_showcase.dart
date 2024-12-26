@@ -36,7 +36,7 @@ class CardShowcase extends StatelessWidget {
             title: title,
             subtitle: subtitle,
             image: prefixImage,
-            doctorTextSize: TextSizes.large,
+            textSizes: TextSizes.large,
           ),
 
           Row(
