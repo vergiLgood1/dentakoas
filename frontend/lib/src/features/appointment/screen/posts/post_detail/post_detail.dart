@@ -2,6 +2,7 @@ import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/widgets/booking_success.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/widgets/koas_profile.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/widgets/post_detail_badge.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/widgets/title_post_detail.dart';
@@ -155,6 +156,137 @@ class PostDetailScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ReviewSummaryScreen extends StatelessWidget {
+  const ReviewSummaryScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const DAppBar(
+        title: Text(
+          'Review Summary',
+          textAlign: TextAlign.center,
+        ),
+        centerTitle: true,
+        showBackArrow: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Profile Section
+            const Row(
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  backgroundImage: AssetImage(TImages.userProfileImage3),
+                ),
+                SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Dr. Jonny Wilson",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "Dentist",
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.location_pin, size: 16, color: Colors.blue),
+                        SizedBox(width: 4),
+                        Text(
+                          "New York, United States",
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const Divider(height: 32, thickness: 1),
+
+            const SizedBox(height: TSizes.spaceBtwItems),
+
+            // Date & Hour Section
+            const SectionHeading(
+              title: "Appointment Information",
+              showActionButton: false,
+            ),
+            const SizedBox(height: TSizes.spaceBtwItems),
+            buildInfoRow("Date & Hour", "August 24, 2023 | 10:00 AM"),
+            buildInfoRow("Category", "Perawatan gigi"),
+            buildInfoRow("Duration", "1 hours"),
+
+            const Divider(height: 32, thickness: 1),
+            const SectionHeading(
+              title: "Patient Information",
+              showActionButton: false,
+            ),
+            const SizedBox(height: TSizes.spaceBtwItems),
+            // Pasien Section
+            buildInfoRow('name', 'Anri'),
+            buildInfoRow('Phone', '08123456789'),
+            buildInfoRow('Email', 'example@email.com'),
+            buildInfoRow('Address', 'Jl. Jendral Sudirman No. 1'),
+
+            // const Divider(height: 32, thickness: 1),
+            // Payment Method Section
+
+            const Spacer(),
+            // Pay Now Button
+            Center(
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Get.to(() => const BookingSuccessScreen()),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text(
+                    "Booking now",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildInfoRow(String title, String value, {bool isBold = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ],
       ),
     );
   }
