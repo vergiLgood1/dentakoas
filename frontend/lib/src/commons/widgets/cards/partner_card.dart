@@ -14,7 +14,7 @@ class CategoryCard extends StatelessWidget {
     this.subtitle,
     this.image,
     this.isNetworkImage = false,
-    this.doctorTextSize = TextSizes.medium,
+    this.textSizes = TextSizes.medium,
     this.backgroundColor = TColors.transparent,
     this.maxLines = 1,
     this.textAlign = TextAlign.center,
@@ -30,7 +30,7 @@ class CategoryCard extends StatelessWidget {
   final String? subtitle;
   final String? image;
   final bool isNetworkImage;
-  final TextSizes doctorTextSize;
+  final TextSizes textSizes;
   final Color backgroundColor;
   final int maxLines;
   final TextAlign textAlign;
@@ -69,14 +69,14 @@ class CategoryCard extends StatelessWidget {
                   if (showVerifiyIcon)
                     TitleWithVerified(
                     title: title,
-                    doctorTextSize: doctorTextSize,
+                      textSizes: textSizes,
                     maxLines: maxLines,
                     textAlign: textAlign,
                     )
                   else
                     TitleWithVerified(
                       title: title,
-                      doctorTextSize: doctorTextSize,
+                      textSizes: textSizes,
                       maxLines: maxLines,
                       textAlign: textAlign,
                       showIcon: false,
