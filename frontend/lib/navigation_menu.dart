@@ -1,5 +1,6 @@
 import 'package:denta_koas/src/features/appointment/screen/explore/explore.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/home.dart';
+import 'package:denta_koas/src/features/appointment/screen/schedules/schedule.dart';
 import 'package:denta_koas/src/features/personalization/screen/setting/settings.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +96,7 @@ class NavigationController extends GetxController {
   final screens = [
     const HomeScreen(),
     const ExploreScreen(),
-    Container(color: Colors.green),
+    ScheduleScreen(),
     const SettingsScreen(),
   ];
 
