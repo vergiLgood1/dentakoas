@@ -11,10 +11,12 @@ class SuccessScreen extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.onPressed,
+    this.child,
   });
 
   final String image, title, subtitle;
   final VoidCallback? onPressed;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +56,9 @@ class SuccessScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: TSizes.spaceBtwItems),
+
+              // Additional child widget
+              if (child != null) child!,
             ],
           ),
         ),
