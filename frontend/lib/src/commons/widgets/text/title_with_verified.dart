@@ -11,7 +11,7 @@ class TitleWithVerified extends StatelessWidget {
     required this.title,
     this.maxLines = 1,
     this.textAlign = TextAlign.center,
-    this.doctorTextSize = TextSizes.small,
+    this.textSizes = TextSizes.small,
     this.textColor,
     this.iconColor = TColors.primary,
     this.showIcon = true,
@@ -20,7 +20,7 @@ class TitleWithVerified extends StatelessWidget {
   final String title;
   final int maxLines;
   final TextAlign? textAlign;
-  final TextSizes doctorTextSize;
+  final TextSizes textSizes;
   final Color? textColor, iconColor;
   final bool showIcon;
 
@@ -35,7 +35,7 @@ class TitleWithVerified extends StatelessWidget {
             color: textColor,
             textAlign: textAlign,
             maxLines: maxLines,
-            doctorTextSize: doctorTextSize,
+            textSizes: textSizes,
           ),
         ),
         const SizedBox(width: TSizes.xs),
