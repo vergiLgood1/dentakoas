@@ -1,8 +1,10 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/notifications/notification_menu.dart';
+import 'package:denta_koas/src/features/appointment/screen/notifications/notification.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({
@@ -36,7 +38,8 @@ class HomeAppBar extends StatelessWidget {
         ],
       ),
       actions: [
-        NotificationCounterIcon(onPressed: () {}),
+        NotificationCounterIcon(
+            onPressed: () => Get.to(() => NotificationScreen())),
       ],
     );
   }
