@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/features/appointment/controller/post_controller';
+import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
@@ -71,7 +72,8 @@ class BottomBookAppointment extends StatelessWidget {
                         ],
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () =>
+                            Get.to(() => const ReviewSummaryScreen()),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: TColors.primary,
                           padding: const EdgeInsets.symmetric(
