@@ -2,7 +2,7 @@ import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
-class DoctorCard extends StatelessWidget {
+class KoasCard extends StatelessWidget {
   final String doctorName;
   final String specialty;
   final String distance;
@@ -11,8 +11,9 @@ class DoctorCard extends StatelessWidget {
   final String openTime;
   final String doctorImageUrl;
   final void Function()? onTap;
+  final bool hideButton;
 
-  const DoctorCard({
+  const KoasCard({
     super.key,
     required this.doctorName,
     required this.specialty,
@@ -22,6 +23,7 @@ class DoctorCard extends StatelessWidget {
     required this.openTime,
     required this.doctorImageUrl,
     this.onTap,
+    this.hideButton = false,
   });
 
   @override
@@ -159,6 +161,7 @@ class DoctorCard extends StatelessWidget {
             const SizedBox(height: 12),
 
             // Full-width Button
+            if (!hideButton)
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
