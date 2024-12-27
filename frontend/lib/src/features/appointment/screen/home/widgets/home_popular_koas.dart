@@ -31,7 +31,7 @@ class HomePopularKoasSection extends StatelessWidget {
           DGridLayout(
             itemCount: 2,
             crossAxisCount: 1,
-            itemBuilder: (_, index) => DoctorCard(
+            itemBuilder: (_, index) => KoasCard(
                 onTap: () => Get.to(() => const KoasDetailScreen()),
                 doctorName: 'Dr. Joseph Brostito',
                 specialty: 'Dental Specialist',
