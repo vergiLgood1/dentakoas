@@ -29,7 +29,7 @@ class AllKoasScreen extends StatelessWidget {
             itemCount: 10,
             crossAxisCount: 1,
             mainAxisExtent: 200,
-            itemBuilder: (_, index) => const DoctorCard(
+            itemBuilder: (_, index) => const KoasCard(
               doctorName: 'Dr. John Doe',
               specialty: 'Dentist',
               distance: '2 km',
