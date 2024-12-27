@@ -53,7 +53,7 @@ class TabKoas extends StatelessWidget {
               DGridLayout(
                 itemCount: 4,
                 crossAxisCount: 1,
-                itemBuilder: (_, index) => const DoctorCard(
+                itemBuilder: (_, index) => const KoasCard(
                   doctorName: 'Dr. John Doe',
                   specialty: 'Dentist',
                   distance: '2 km',
