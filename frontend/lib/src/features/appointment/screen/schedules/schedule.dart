@@ -1,4 +1,8 @@
 import 'package:denta_koas/src/commons/widgets/appbar/tabbar.dart';
+import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab_cancel_schedule.dart';
+import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab_completed_schedule.dart';
+import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab_ongoing_schedule.dart';
+import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab_upcoming_schedules.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/device/device_utility.dart';
 import 'package:flutter/material.dart';
@@ -61,10 +65,10 @@ class ScheduleScreen extends StatelessWidget {
             const Expanded(
               child: TabBarView(
                 children: [
-                  Center(child: Text('Canceled')),
-                  Center(child: Text('Upcoming')),
-                  Center(child: Text('Ongoing')),
-                  Center(child: Text('Completed')),
+                  TabCancelSchedule(),
+                  TabUpcomingSchedules(),
+                  TabOngoingSchedule(),
+                  TabCompletedSchedule(),
                 ],
               ),
             ),
