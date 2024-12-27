@@ -1,10 +1,17 @@
+import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/commons/widgets/text/title_with_verified.dart';
+import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/doctor_card.dart';
+import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
+import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/koas_post/post_with_specific_koas.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/enums.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readmore/readmore.dart';
 
 class KoasDetailScreen extends StatelessWidget {
@@ -12,45 +19,56 @@ class KoasDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sections = [
-      const DoctorProfileSection(
-        imageUrl: TImages.userProfileImage3,
-        name: 'Dr. Bellamy Nicholas',
-        university: 'London Bridge Hospital',
-      ),
-      const DoctorStatsSection(),
-      const DoctorDescriptionSection(
-        bio:
-            'Dr. Bellamy Nicholas is a highly experienced doctor with over 10 years of experience in the field. He has treated over 1000 patients and has a rating of 4.5. He is available for consultation from Monday to Saturday between 8:30 AM and 9:00 PM.',
-      ),
-      const WorkingTimeSection(),
-      const CommunicationSection(),
-      const BookAppointmentButton(),
-    ];
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: const BackButton(color: Colors.black),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.black),
-            onPressed: () {},
+        appBar: DAppBar(
+          showBackArrow: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.more_vert),
+              onPressed: () {},
+            ),
+          ],
+        ),
+        body: const SingleChildScrollView(
+          child: Column(
+            children: [
+              // Koas profile
+              KoasProfileSection(
+                imageUrl: TImages.userProfileImage3,
+                name: 'Dr. Bellamy Nicholas',
+                university: 'London Bridge Hospital',
+              ),
+              SizedBox(height: TSizes.spaceBtwSections),
+
+              // Doctor stats
+              DoctorStatsSection(),
+              SizedBox(height: TSizes.spaceBtwSections),
+
+              // Doctor description
+              DoctorDescriptionSection(
+                bio:
+                    'Dr. Bellamy Nicholas is a highly experienced doctor with over 10 years of experience in the field. He has treated over 1000 patients and has a rating of 4.5. He is available for consultation from Monday to Saturday between 8:30 AM and 9:00 PM.',
+              ),
+              SizedBox(height: TSizes.spaceBtwSections),
+
+              // Working time
+              PersonalInformationSection(),
+              SizedBox(height: TSizes.spaceBtwSections),
+
+              // Koas upcoming event
+
+              UserReviewSection(),
+              BookAppointmentButton(),
+            ],
           ),
-        ],
-      ),
-      body: ListView.builder(
-        itemCount: sections.length,
-        itemBuilder: (context, index) => sections[index],
-      ),
+        )
     );
   }
 }
 
-class DoctorProfileSection extends StatelessWidget {
-  const DoctorProfileSection({
+class KoasProfileSection extends StatelessWidget {
+  const KoasProfileSection({
     super.key,
     this.isNetworkImage = false,
     required this.imageUrl,
@@ -84,7 +102,6 @@ class DoctorProfileSection extends StatelessWidget {
           textSizes: TextSizes.base,
           textColor: TColors.textSecondary,
         ),
-        const SizedBox(height: TSizes.spaceBtwSections),
       ],
     );
   }
@@ -149,7 +166,7 @@ class DoctorStatsSection extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: Colors.black,
+                        color: TColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -180,7 +197,7 @@ class DoctorDescriptionSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -217,24 +234,96 @@ class DoctorDescriptionSection extends StatelessWidget {
   }
 }
 
-class WorkingTimeSection extends StatelessWidget {
-  const WorkingTimeSection({super.key});
+class PersonalInformationSection extends StatelessWidget {
+  const PersonalInformationSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    final personalInfo = [
+      {'label': 'Koas Number', 'value': '12345'},
+      {'label': 'Faculty', 'value': 'Dental Information'},
+      {'label': 'Location', 'value': 'Jember'},
+      {'label': 'Age', 'value': '23'},
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Working time',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          const SectionHeading(
+            title: 'Personal Information',
+            showActionButton: false,
           ),
-          SizedBox(height: 5),
-          Text(
-            'Mon - Sat (08:30 AM - 09:00 PM)',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+          const SizedBox(height: TSizes.spaceBtwItems / 2),
+          ...personalInfo.map((info) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    info['label'] as String,
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  Text(
+                    info['value'] as String,
+                    style: const TextStyle(
+                        fontSize: 14, color: TColors.textPrimary),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+class MapSection extends StatelessWidget {
+  const MapSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeading(
+            title: 'Location',
+            showActionButton: false,
+          ),
+          const SizedBox(height: TSizes.spaceBtwItems / 2),
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: GoogleMap(
+                initialCameraPosition: const CameraPosition(
+                  target: LatLng(-6.200000, 106.816666),
+                  zoom: 14,
+                ),
+                markers: {
+                  const Marker(
+                    markerId: MarkerId('doctorLocation'),
+                    position: LatLng(-6.200000, 106.816666),
+                  ),
+                },
+              ),
+            ),
           ),
         ],
       ),
@@ -242,49 +331,68 @@ class WorkingTimeSection extends StatelessWidget {
   }
 }
 
-class CommunicationSection extends StatelessWidget {
-  const CommunicationSection({super.key});
+class UserReviewSection extends StatelessWidget {
+  const UserReviewSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final communicationOptions = [
-      {
-        'label': 'Messaging',
-        'description': 'Chat me up, share photos.',
-        'icon': Icons.message
-      },
-      {
-        'label': 'Audio Call',
-        'description': 'Call your doctor directly.',
-        'icon': Icons.phone
-      },
-      {
-        'label': 'Video Call',
-        'description': 'See your doctor live.',
-        'icon': Icons.videocam
-      },
-    ];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Communication',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          SectionHeading(
+            title: 'Rating & Review',
+            onPressed: () => Get.to(() => const KoasReviewsScreen()),
           ),
-          const SizedBox(height: 10),
-          ...communicationOptions.map(
-            (option) => ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.blue.shade50,
-                child: Icon(option['icon'] as IconData, color: Colors.blue),
-              ),
-              title: Text(option['label'] as String),
-              subtitle: Text(option['description'] as String),
-            ),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 2,
+            itemBuilder: (context, index) {
+              return const UserReviewsCard();
+            },
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class KoasUpcomingEvent extends StatelessWidget {
+  const KoasUpcomingEvent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionHeading(
+            title: 'Upcoming Event',
+            onPressed: () => Get.to(() => const KoasReviewsScreen()),
+          ),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 2,
+            itemBuilder: (context, index) {
+              return const KoasCard(
+                doctorName: 'Dr. John Doe',
+                specialty: 'Dentist',
+                distance: '2 km',
+                rating: 4.5,
+                reviewsCount: 120,
+                openTime: '9:00 AM - 5:00 PM',
+                doctorImageUrl: TImages.userProfileImage4,
+              );
+            },
+          ),
+           
         ],
       ),
     );
@@ -302,14 +410,13 @@ class BookAppointmentButton extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
+            backgroundColor: TColors.primary,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          onPressed: () {
-            // Action to book an appointment
-          },
+          onPressed: () => Get.to(() => const PostWithSpecificKoas()),
           child: const Text(
             'Book Appointment',
             style: TextStyle(fontSize: 16),
