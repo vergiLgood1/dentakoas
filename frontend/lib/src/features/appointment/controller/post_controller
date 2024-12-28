@@ -1,10 +1,16 @@
 import 'package:get/get.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
 
 class PostController extends GetxController {
   static PostController get instance => Get.find<PostController>();
 
   final calendarController = CalendarController();
   final timeController = TimeController();
+  final inputController = InputController();
 
   var koasName = ''.obs;
   var selectedDate = ''.obs;
@@ -15,6 +21,7 @@ class PostController extends GetxController {
     super.onInit();
     Get.put(CalendarController());
     Get.put(TimeController());
+    Get.put(InputController());
   }
 
   void updatePreviewAppointment(String name, String date, String time) {
@@ -29,6 +36,17 @@ class CalendarController extends GetxController {
 
   var selectedIndex = 0.obs;
   var selectedDate = DateTime.now().obs;
+
+  var selectedDateRange = <DateTime?>[].obs;
+
+  final calendarRangeConfig = CalendarDatePicker2Config(
+      calendarType: CalendarDatePicker2Type.range,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+      selectedDayHighlightColor: TColors.primary,
+      weekdayLabelTextStyle: const TextStyle(color: TColors.grey),
+      controlsTextStyle: const TextStyle(color: TColors.primary),
+    );
 
   void updateSelectedDay(int index) {
     selectedIndex.value = index;
@@ -46,5 +64,43 @@ class TimeController extends GetxController {
 
   void updateSelectedTimeStamp(int index) {
     selectedTimeStamp.value = index;
+  }
+}
+ 
+class InputController extends GetxController {
+  static InputController get instance => Get.find<InputController>();
+  // Reactive list of inputs
+  var inputs = <Widget>[].obs;
+
+  /// Initialize the inputs with a default count
+  void initializeInputs(int count) {
+    inputs.clear();
+    for (int i = 0; i < count; i++) {
+      inputs.add(_createInputRequirment(i + 1));
+    }
+  }
+
+  /// Add a new input for requirement patient
+  void addInputRequirment() {
+    inputs.add(_createInputRequirment(inputs.length + 1));
+  }
+  
+  /// Remove the input requirement at the specified index
+  void removeInputRequirement(int index) {
+    if (index >= 0 && index < inputs.length) {
+      inputs.removeAt(index);
+    }
+  }
+  /// Private method to create an input widget
+  Widget _createInputRequirment(int index) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+          prefixIcon: const Icon(Icons.settings),
+          labelText: 'Patient Requirement $index',
+        ),
+      ),
+    );
   }
 }
