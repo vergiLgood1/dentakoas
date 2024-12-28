@@ -9,6 +9,7 @@ class DAppBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData? leadingIcon;
   final List<Widget>? actions;
   final VoidCallback? leadingOnPressed;
+  final VoidCallback? onBack;
   final bool showBackArrow;
   final bool centerTitle;
 
@@ -21,7 +22,7 @@ class DAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingOnPressed,
     this.showBackArrow = false,
     this.centerTitle = false,
-   
+    this.onBack,
   });
 
   @override
@@ -33,7 +34,7 @@ class DAppBar extends StatelessWidget implements PreferredSizeWidget {
         automaticallyImplyLeading: false,
         leading: showBackArrow
             ? IconButton(
-                onPressed: () => Get.back(),
+                onPressed: onBack ?? () => Get.back(),
                 icon: const Icon(Icons.chevron_left),
               )
             : leadingIcon != null
