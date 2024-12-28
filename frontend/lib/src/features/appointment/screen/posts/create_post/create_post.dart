@@ -9,6 +9,7 @@ import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:time_slot/controller/day_part_controller.dart';
 
@@ -271,30 +272,7 @@ class CreateSchedulePost extends StatelessWidget {
                 const DateRangePicker(),
                 const SizedBox(height: TSizes.spaceBtwItems),
 
-                const SectionHeading(
-                  title: 'Time Slot',
-                  showActionButton: false,
-                ),
-                const SizedBox(height: TSizes.spaceBtwItems),
-
                 const TimeSlotWidget(),
-                // Time Slot
-                // TextFormField(
-                //   decoration: const InputDecoration(
-                //     prefixIcon: Icon(Icons.access_time),
-                //     labelText: 'Select Time Slot',
-                //   ),
-                //   readOnly: true,
-                //   onTap: () async {
-                //     TimeOfDay? pickedTime = await showTimePicker(
-                //       context: context,
-                //       initialTime: TimeOfDay.now(),
-                //     );
-                //     if (pickedTime != null) {
-                //       // Format and set the selected time
-                //     }
-                //   },
-                // ),
                 const SizedBox(height: TSizes.spaceBtwInputFields),
 
                 // Submit Button
@@ -394,7 +372,9 @@ class CreateGeneralInformation extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwInputFields),
 
               // Category
-              const DropdownCategory(),
+              const DDropdownMenu(
+                items: ['Surgery', 'Dentist', 'General Checkup'],
+              ),
               const SizedBox(height: TSizes.spaceBtwInputFields),
 
               const DynamicInputForm(),
@@ -452,6 +432,7 @@ class TimeSlotWidgetState extends State<TimeSlotWidget> {
   };
 
   Duration sessionDuration = const Duration(hours: 1);
+  String selectedSection = 'Pagi';
 
   void _addTimeSlot(TimeOfDay startTime) {
     final DateTime now = DateTime.now();
@@ -467,9 +448,9 @@ class TimeSlotWidgetState extends State<TimeSlotWidget> {
     final String timeSlot =
         "${DateFormat('HH:mm').format(startDateTime)} - ${DateFormat('HH:mm').format(endDateTime)}";
 
-    if (startTime.hour < 12) {
+    if (selectedSection == 'Pagi') {
       timeSlots['Pagi']?.add(timeSlot);
-    } else if (startTime.hour < 18) {
+    } else if (selectedSection == 'Siang') {
       timeSlots['Siang']?.add(timeSlot);
     } else {
       timeSlots['Malam']?.add(timeSlot);
@@ -479,9 +460,22 @@ class TimeSlotWidgetState extends State<TimeSlotWidget> {
   }
 
   Future<void> _showTimePicker() async {
+    TimeOfDay initialTime;
+    if (selectedSection == 'Pagi') {
+      initialTime = const TimeOfDay(hour: 6, minute: 0);
+    } else if (selectedSection == 'Siang') {
+      initialTime = const TimeOfDay(hour: 12, minute: 0);
+    } else {
+      initialTime = const TimeOfDay(hour: 18, minute: 0);
+    }
+
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: initialTime,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child!,
+      ),
     );
 
     if (pickedTime != null) {
@@ -496,34 +490,21 @@ class TimeSlotWidgetState extends State<TimeSlotWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const Text('Durasi per sesi: ', style: TextStyle(fontSize: 16)),
-              Expanded(
-                child: TextFormField(
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    suffixIcon: DropdownButton<int>(
-                      value: sessionDuration.inMinutes,
-                      items: [30, 60, 90]
-                          .map((minutes) => DropdownMenuItem<int>(
-                                value: minutes,
-                                child: Text('$minutes menit'),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            sessionDuration = Duration(minutes: value);
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ),
+          const SectionHeading(title: 'Duration', showActionButton: false),
+          const SizedBox(height: TSizes.spaceBtwItems),
+          const DDropdownMenu(
+            items: [
+              '1 Jam',
+              '2 Jam',
+              '3 Jam',
+              '4 Jam',
+              '5 Jam',
+              '6 Jam',
             ],
+            hintText: 'Select Session Duration...',
+            prefixIcon: Iconsax.clock,
           ),
+          const SizedBox(height: TSizes.spaceBtwItems),
           ListView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -550,7 +531,12 @@ class TimeSlotWidgetState extends State<TimeSlotWidget> {
                       fontSize: 18, fontWeight: FontWeight.bold)),
               IconButton(
                 icon: const Icon(Icons.add),
-                onPressed: _showTimePicker,
+                onPressed: () {
+                  setState(() {
+                    selectedSection = title;
+                  });
+                  _showTimePicker();
+                },
               ),
             ],
           ),
