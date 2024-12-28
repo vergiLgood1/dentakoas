@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/commons/widgets/success_screen/success_screen.dart';
+import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/features/authentication/screen/signin/signin.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -58,7 +58,7 @@ class VerifyEmailScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Get.to(() => SuccessScreen(
+                  onPressed: () => Get.to(() => StateScreen(
                         image: TImages.staticSuccessIllustration,
                         title: TTexts.yourAccountCreatedTitle,
                         subtitle: TTexts.yourAccountCreatedSubTitle,
