@@ -44,6 +44,10 @@ dependencies:
   carousel_slider: ^5.0.0
   flutter_rating_bar: ^4.0.1
   readmore: ^3.0.0
+  dropdown_search: ^6.0.1
+  time_slot: ^1.0.0
+  calendar_date_picker2: ^1.1.8
+  easy_date_timeline: ^2.0.6
 
   # Icons
   iconsax: ^0.0.8
@@ -58,6 +62,8 @@ dependencies:
 
   http: any
   google_maps_flutter: ^2.10.0
+  flutter_localizations:
+    sdk: flutter
 dev_dependencies:
   flutter_test:
     sdk: flutter
