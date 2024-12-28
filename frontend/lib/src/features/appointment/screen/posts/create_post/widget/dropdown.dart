@@ -3,9 +3,18 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class DropdownCategory extends StatelessWidget {
-  const DropdownCategory({
+class DDropdownMenu extends StatelessWidget {
+  final List<String> items;
+  final String hintText;
+  final IconData prefixIcon;
+  final String? disabledItem;
+
+  const DDropdownMenu({
     super.key,
+    required this.items,
+    this.hintText = 'Select Category...',
+    this.prefixIcon = Icons.medical_services,
+    this.disabledItem,
   });
 
   @override
@@ -20,7 +29,7 @@ class DropdownCategory extends StatelessWidget {
       decoratorProps: DropDownDecoratorProps(
         textAlign: TextAlign.start,
         decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.medical_services),
+          prefixIcon: Icon(prefixIcon),
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(
@@ -35,7 +44,7 @@ class DropdownCategory extends StatelessWidget {
             borderSide: BorderSide(color: Colors.black.withOpacity(0.1)),
             borderRadius: BorderRadius.circular(12),
           ),
-          hintText: 'Select Category...',
+          hintText: hintText,
           hintStyle: const TextStyle(
             color: TColors.textPrimary,
             fontWeight: FontWeight.w500,
@@ -43,18 +52,9 @@ class DropdownCategory extends StatelessWidget {
           ),
         ),
       ),
-      items: (f, cs) => [
-        "Item 1",
-        'Item 2',
-        'Item 3',
-        'Item 4',
-        'Item 5',
-        'Item 6',
-        'Item 7',
-        'Item 8',
-      ],
+      items: (f, cs) => items,
       popupProps: PopupProps.menu(
-        disabledItemFn: (item) => item == 'Item 3',
+        disabledItemFn: (item) => item == disabledItem,
         fit: FlexFit.loose,
         menuProps: MenuProps(
           backgroundColor: Colors.white,
