@@ -10,12 +10,14 @@ class SectionHeading extends StatelessWidget {
     required this.title,
     this.buttonTitle = 'View all',
     this.onPressed,
+    this.color = Colors.black,
   });
 
   final Color? textColor;
   final bool showActionButton;
   final bool isSuffixIcon;
   final IconData? suffixIcon;
+  final Color color;
   final String title, buttonTitle;
   final void Function()? onPressed;
 
@@ -42,10 +44,12 @@ class SectionHeading extends StatelessWidget {
               ? IconButton(
                   onPressed: onPressed,
                   icon: Icon(suffixIcon),
+                  color: color,
                 )
               : TextButton(
                   onPressed: onPressed,
                   child: Text(buttonTitle),
+                  
                 ),
       ],
     );
