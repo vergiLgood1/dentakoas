@@ -1,9 +1,11 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
+import 'package:denta_koas/src/features/appointment/controller/post_controller';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/date_range_picker.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/dropdown.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/dynamic_input.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/timeslot.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -417,140 +419,3 @@ class CreateGeneralInformation extends StatelessWidget {
   }
 }
 
-class TimeSlotWidget extends StatefulWidget {
-  const TimeSlotWidget({super.key});
-
-  @override
-  TimeSlotWidgetState createState() => TimeSlotWidgetState();
-}
-
-class TimeSlotWidgetState extends State<TimeSlotWidget> {
-  final Map<String, List<String>> timeSlots = {
-    'Pagi': [],
-    'Siang': [],
-    'Malam': [],
-  };
-
-  Duration sessionDuration = const Duration(hours: 1);
-  String selectedSection = 'Pagi';
-
-  void _addTimeSlot(TimeOfDay startTime) {
-    final DateTime now = DateTime.now();
-    final DateTime startDateTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      startTime.hour,
-      startTime.minute,
-    );
-    final DateTime endDateTime = startDateTime.add(sessionDuration);
-
-    final String timeSlot =
-        "${DateFormat('HH:mm').format(startDateTime)} - ${DateFormat('HH:mm').format(endDateTime)}";
-
-    if (selectedSection == 'Pagi') {
-      timeSlots['Pagi']?.add(timeSlot);
-    } else if (selectedSection == 'Siang') {
-      timeSlots['Siang']?.add(timeSlot);
-    } else {
-      timeSlots['Malam']?.add(timeSlot);
-    }
-
-    setState(() {});
-  }
-
-  Future<void> _showTimePicker() async {
-    TimeOfDay initialTime;
-    if (selectedSection == 'Pagi') {
-      initialTime = const TimeOfDay(hour: 6, minute: 0);
-    } else if (selectedSection == 'Siang') {
-      initialTime = const TimeOfDay(hour: 12, minute: 0);
-    } else {
-      initialTime = const TimeOfDay(hour: 18, minute: 0);
-    }
-
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: initialTime,
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
-      ),
-    );
-
-    if (pickedTime != null) {
-      _addTimeSlot(pickedTime);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionHeading(title: 'Duration', showActionButton: false),
-          const SizedBox(height: TSizes.spaceBtwItems),
-          const DDropdownMenu(
-            items: [
-              '1 Jam',
-              '2 Jam',
-              '3 Jam',
-              '4 Jam',
-              '5 Jam',
-              '6 Jam',
-            ],
-            hintText: 'Select Session Duration...',
-            prefixIcon: Iconsax.clock,
-          ),
-          const SizedBox(height: TSizes.spaceBtwItems),
-          ListView(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: timeSlots.entries.map((entry) {
-              return _buildSection(entry.key, entry.value);
-            }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSection(String title, List<String> slots) {
-    return SizedBox(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(title,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  setState(() {
-                    selectedSection = title;
-                  });
-                  _showTimePicker();
-                },
-              ),
-            ],
-          ),
-          Wrap(
-            spacing: 8.0,
-            children: slots
-                .map((slot) => Chip(
-                      label: Text(slot),
-                    ))
-                .toList(),
-          ),
-          const SizedBox(height: 16),
-        ],
-      ),
-    );
-  }
-}
