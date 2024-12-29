@@ -4,10 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DDropdownMenu extends StatelessWidget {
+  final String? selectedItem;
   final List<String> items;
   final String hintText;
   final IconData prefixIcon;
   final String? disabledItem;
+  final void Function(String?)? onChanged;
 
   const DDropdownMenu({
     super.key,
@@ -15,6 +17,8 @@ class DDropdownMenu extends StatelessWidget {
     this.hintText = 'Select Category...',
     this.prefixIcon = Icons.medical_services,
     this.disabledItem,
+    this.onChanged,
+    this.selectedItem,
   });
 
   @override
@@ -52,7 +56,9 @@ class DDropdownMenu extends StatelessWidget {
           ),
         ),
       ),
+      selectedItem: selectedItem,
       items: (f, cs) => items,
+      onChanged: onChanged,
       popupProps: PopupProps.menu(
         disabledItemFn: (item) => item == disabledItem,
         fit: FlexFit.loose,
