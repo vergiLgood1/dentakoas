@@ -108,6 +108,7 @@ class NotificationController extends GetxController {
       groupedNotifications.refresh();
     }
   }
+  
 
   String notificationValue() {
     final newNotifications =
