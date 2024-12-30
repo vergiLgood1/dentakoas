@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/features/authentication/screen/signup/signup.dart';
+import 'package:denta_koas/src/features/authentication/screen/signup/role_option.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
@@ -32,7 +32,7 @@ class SignInFooter extends StatelessWidget {
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 // Navigasi ke halaman SignUp
-                Get.to(const SignupScreen());
+                Get.to(const ChooseRolePage());
               },
           ),
         ],

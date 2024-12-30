@@ -13,26 +13,17 @@ class TimeSlotWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(PostController());
-    final durationItems = [
-      '1 Jam',
-      '2 Jam',
-      '3 Jam',
-      '4 Jam',
-      '5 Jam',
-      '6 Jam'
-    ];
 
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
+    return const Padding(
+      padding: EdgeInsets.all(0.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const RequiredParticipantSection(),
-          const SizedBox(height: TSizes.spaceBtwSections),
-          DurationSection(controller: controller, durationItems: durationItems),
-          const SizedBox(height: TSizes.spaceBtwSections),
-          const TimeSlotSelection()
+          RequiredParticipantSection(),
+          SizedBox(height: TSizes.spaceBtwSections),
+          DurationSection(),
+          SizedBox(height: TSizes.spaceBtwSections),
+          TimeSlotSelection()
         ],
       ),
     );
@@ -45,9 +36,9 @@ class RequiredParticipantSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PostController());
-    const RequiredParticipant = 5;
+    int requiredParticipant = 5;
 
-    controller.timeController.requiredParticipants.value = RequiredParticipant;
+    controller.timeController.requiredParticipants.value = requiredParticipant;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +56,7 @@ class RequiredParticipantSection extends StatelessWidget {
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly
           ],
-          initialValue: RequiredParticipant.toString(),
+          initialValue: requiredParticipant.toString(),
           enabled: false,
         ),
       ],
@@ -74,17 +65,23 @@ class RequiredParticipantSection extends StatelessWidget {
 }
 
 class DurationSection extends StatelessWidget {
-  final PostController controller;
-  final List<String> durationItems;
 
   const DurationSection({
-    required this.controller,
-    required this.durationItems,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(PostController());
+    final durationItems = [
+      '1 Jam',
+      '2 Jam',
+      '3 Jam',
+      '4 Jam',
+      '5 Jam',
+      '6 Jam'
+    ];
+   
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -148,16 +145,17 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
   }
 
   Widget _buildSection(BuildContext context, String title, List<String> slots) {
-    final totalMaxParticipants = controller.timeController.totalMaxParticipants;
-    final requiredParticipants =
+    int totalMaxParticipants = controller.timeController.totalMaxParticipants;
+    int requiredParticipants =
         controller.timeController.requiredParticipants.value;
     final totalAvailableTimeSlots =
         controller.timeController.totalAvailableTimeSlots;
     int totalSlots = controller.timeController.calculateTotalSlots();
 
-    bool isAvailable = totalSlots < requiredParticipants;
+    bool isAvailable = totalMaxParticipants < requiredParticipants &&
+        totalSlots < requiredParticipants;
 
-    print('Total Slots: $totalSlots');
+    print('Total maxparticipants: $totalMaxParticipants');
     print('Required Participants: $requiredParticipants');
 
     return Column(

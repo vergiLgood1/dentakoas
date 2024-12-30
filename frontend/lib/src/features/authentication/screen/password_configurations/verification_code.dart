@@ -31,7 +31,7 @@ class VerificationCodeScreen extends StatelessWidget {
             children: [
               // Image
               Image(
-                image: const AssetImage(TImages.deliveredEmailIllustration),
+                image: const AssetImage(TImages.enterYourVerificationCode),
                 width: THelperFunctions.screenWidth() * 0.6,
               ),
               const SizedBox(height: TSizes.spaceBtwSections),

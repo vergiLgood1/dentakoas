@@ -1,6 +1,8 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
+import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/features/appointment/controller/notification_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -41,8 +43,18 @@ class NotificationScreen extends StatelessWidget {
           ),
         ],
       ),
+ 
       body: Obx(() {
         final groupedNotifications = controller.groupedNotifications;
+        if (groupedNotifications.isEmpty) {
+          return const Center(
+            child: StateScreen(
+              image: TImages.emptyNotification,
+              title: "Empty Notifications",
+              subtitle: "You don't have any notifications yet.",
+            ),
+          );
+        }
         return ListView(
           padding: const EdgeInsets.all(16.0),
           children: groupedNotifications.entries.map((entry) {
@@ -157,12 +169,22 @@ class NotificationCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                     Text(
                       notification["title"] as String,
                       style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                       ),
+                    ),
+                        Text(
+                          _formatTime(notification["createdAt"] as String),
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -171,11 +193,6 @@ class NotificationCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                _formatTime(notification["createdAt"] as String),
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),

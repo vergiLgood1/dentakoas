@@ -1,8 +1,10 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/my_appointment/my_appointment.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TabCancelSchedule extends StatelessWidget {
   const TabCancelSchedule({
@@ -22,13 +24,13 @@ class TabCancelSchedule extends StatelessWidget {
                 crossAxisCount: 1,
                 mainAxisExtent: 230,
                 itemBuilder: (_, index) => ScheduleCard(
-                  onTap: () {},
                   imgUrl: TImages.user,
                   name: 'Dr. John Doe',
                   category: 'Scaling',
                   date: 'Sunday, 12 June',
                   timestamp: '10:00 - 11:00 AM',
-                  primaryBtnText: 'Add Review',
+                  primaryBtnText: 'Detail',
+                  onTap: () => Get.to(() => const MyAppointmentScreen()),
                 ),
               ),
             ],

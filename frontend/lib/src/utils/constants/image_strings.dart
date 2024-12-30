@@ -42,11 +42,46 @@ class TImages {
   static const String deliveredInPlaneIllustration = "assets/images/animations/sammy-line-come-back-later.png";
   static const String deliveredEmailIllustration = "assets/images/animations/sammy-line-man-receives-a-mail.png";
   static const String verifyIllustration = "assets/images/animations/sammy-line-travel-backpack-with-passport-and-air-ticket.gif";
+ 
 
   // -- OnBoarding Texts
   static const String onBoardingImage1 = "assets/images/on_boarding_images/sammy-line-searching.gif";
   static const String onBoardingImage2 = "assets/images/on_boarding_images/sammy-line-shopping.gif";
   static const String onBoardingImage3 = "assets/images/on_boarding_images/sammy-line-delivery.gif";
+  static const String onBoardingImage4 =
+      "assets/images/on_boarding_images/Deadline--Streamline-Brooklyn.png";
+  static const String onBoardingImage5 =
+      "assets/images/on_boarding_images/Create-Account-1--Streamline-Brooklyn.png";
+  static const String onBoardingImage6 =
+      "assets/images/on_boarding_images/Frontline-Worker--Streamline-Brooklyn (1).png";
+
+  static const String welcomeImage1 =
+      "assets/images/on_boarding_images/Video-Conference-4--Streamline-Brooklyn.png";
+  static const String welcomeImage2 =
+      "assets/images/on_boarding_images/Video-Conference-2--Streamline-Brooklyn.png";
+  static const String verifyEmailSuccess =
+      "assets/images/on_boarding_images/Doctor-Nurse--Streamline-Brooklyn.png";
+  static const String verifyEmail =
+      "assets/images/on_boarding_images/Message-Sent-1--Streamline-Brooklyn.png";
+  static const String enterYourVerificationCode =
+      "assets/images/on_boarding_images/Protect-Privacy-1--Streamline-Brooklyn.png";
+
+  // -- Empty States
+  static const String emptyPost =
+      "assets/images/on_boarding_images/No-Conversation-3--Streamline-Brooklyn.png";
+  static const String emptyBooking =
+      "assets/images/empty_states/empty_order.png";
+  static const String emptySearch =
+      "assets/images/empty_states/empty_search.png";
+  static const String emptyNotification =
+      "assets/images/on_boarding_images/No-Email-6--Streamline-Brooklyn.png";
+
+  static const String successCreatePost =
+      "assets/images/on_boarding_images/High-Five-1--Streamline-Brooklyn.png";
+ 
+
+
+  
 
   // -- Products
   static const String productImage1 = "assets/images/products/nike-shoes.png";

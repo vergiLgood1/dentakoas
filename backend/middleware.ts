@@ -25,42 +25,42 @@ export default auth((req) => {
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   // Role-Based-Access Control
-  const routeRoles = userRole ? ROUTE_ROLES[userRole] : undefined;
+  // const routeRoles = userRole ? ROUTE_ROLES[userRole] : undefined;
 
-  if (routeRoles?.length && !routeRoles.includes(nextUrl.pathname)) {
-    return NextResponse.redirect(new URL(DEFAULT_PROTECTED_REDIRECT, nextUrl));
-  }
+  // if (routeRoles?.length && !routeRoles.includes(nextUrl.pathname)) {
+  //   return NextResponse.redirect(new URL(DEFAULT_PROTECTED_REDIRECT, nextUrl));
+  // }
 
-  if (isApiAuthRoute || isApiPublicRoute) {
-    const response = NextResponse.next();
+  // if (isApiAuthRoute || isApiPublicRoute) {
+  //   const response = NextResponse.next();
 
-    // Tambahkan Header CORS
-    response.headers.set("Access-Control-Allow-Origin", "*"); // Gunakan domain spesifik untuk keamanan
-    response.headers.set(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PATCH, OPTIONS"
-    );
-    response.headers.set(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, X-Requested-With"
-    );
-    response.headers.set("Access-Control-Allow-Credentials", "true");
+  //   // Tambahkan Header CORS
+  //   response.headers.set("Access-Control-Allow-Origin", "*"); // Gunakan domain spesifik untuk keamanan
+  //   response.headers.set(
+  //     "Access-Control-Allow-Methods",
+  //     "GET, POST, PATCH, OPTIONS"
+  //   );
+  //   response.headers.set(
+  //     "Access-Control-Allow-Headers",
+  //     "Content-Type, Authorization, X-Requested-With"
+  //   );
+  //   response.headers.set("Access-Control-Allow-Credentials", "true");
 
-    return response;
-  }
+  //   return response;
+  // }
 
-  if (isAuthRoute) {
-    if (isLoggedIn) {
-      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
-    }
-    return;
-  }
+  // if (isAuthRoute) {
+  //   if (isLoggedIn) {
+  //     return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+  //   }
+  //   return;
+  // }
 
-  if (!isLoggedIn && !isPublicRoute) {
-    return NextResponse.redirect(new URL(DEFAULT_PROTECTED_REDIRECT, nextUrl));
-  }
+  // if (!isLoggedIn && !isPublicRoute) {
+  //   return NextResponse.redirect(new URL(DEFAULT_PROTECTED_REDIRECT, nextUrl));
+  // }
 
-  return;
+  // return;
 });
 
 export const config = {

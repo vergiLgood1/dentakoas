@@ -12,6 +12,9 @@ class PostController extends GetxController {
   final timeController = TimeController();
   final inputController = InputController();
 
+  var generalInfo = {}.obs;
+  var scheduleInfo = [].obs;
+
   var koasName = ''.obs;
   var selectedDate = ''.obs;
   var selectedTime = ''.obs;
@@ -22,6 +25,16 @@ class PostController extends GetxController {
     Get.put(CalendarController());
     Get.put(TimeController());
     Get.put(InputController());
+  }
+
+   // Fungsi untuk menyimpan data General Information
+  void setGeneralInfo(Map<String, dynamic> generalInformation) {
+    generalInfo.value = generalInformation;
+  }
+
+  // Fungsi untuk menyimpan data Schedule
+  void setSchedule(List<Map<String, dynamic>> schedules) {
+    scheduleInfo.value = schedules;
   }
 
   void updatePreviewAppointment(String name, String date, String time) {
@@ -104,7 +117,7 @@ void addTimeSlot(String section, TimeOfDay startTime) {
 
   // Cek apakah semua section kosong atau tidak
   bool allSectionsEmpty = maxParticipants.values.every((slots) => slots.isEmpty);
-  maxParticipants[section]![timeSlot] = allSectionsEmpty ? requiredParticipants.value : 1;
+  maxParticipants[section]![timeSlot] = 1;
 
   // Mengurangi peserta dari slot sebelumnya dengan maxParticipants tertinggi di semua section
   for (var sec in timeSlots.keys) {

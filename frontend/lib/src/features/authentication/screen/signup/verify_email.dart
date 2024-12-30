@@ -29,7 +29,7 @@ class VerifyEmailScreen extends StatelessWidget {
             children: [
               // Image
               Image(
-                image: const AssetImage(TImages.deliveredEmailIllustration),
+                image: const AssetImage(TImages.verifyEmail),
                 width: THelperFunctions.screenWidth() * 0.6,
               ),
               const SizedBox(height: TSizes.spaceBtwSections),
@@ -58,12 +58,7 @@ class VerifyEmailScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Get.to(() => StateScreen(
-                        image: TImages.staticSuccessIllustration,
-                        title: TTexts.yourAccountCreatedTitle,
-                        subtitle: TTexts.yourAccountCreatedSubTitle,
-                        onPressed: () => Get.to(() => const SigninScreen()),
-                      )),
+                  onPressed: () => Get.to(() => const VerifyEmailSuccess()),
                   child: const Text(TTexts.tContinue),
                 ),
               ),
@@ -80,6 +75,28 @@ class VerifyEmailScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class VerifyEmailSuccess extends StatelessWidget {
+  const VerifyEmailSuccess({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          StateScreen(
+            image: TImages.verifyEmailSuccess,
+            title: TTexts.yourAccountCreatedTitle,
+            subtitle: TTexts.yourAccountCreatedSubTitle,
+            showButton: true,
+            primaryButtonTitle: TTexts.tContinue,
+            onPressed: () => Get.to(() => const SigninScreen()),
+          ),
+        ],
       ),
     );
   }
