@@ -1,4 +1,5 @@
 import db from "@/lib/db";
+import { getUserByEmail } from "./user";
 
 export const getVerificationTokenByToken = async (token: string) => {
   try {

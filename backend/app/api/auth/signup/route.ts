@@ -5,10 +5,12 @@ import { SignUpSchema } from "@/lib/schemas";
 import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { sendVerificationEmail } from "@/lib/mail";
+import { generateVerificationToken } from "@/lib/tokens";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { givenName, familyName, email, password, confirmPassword, phone, role, profile } = body;
+  const { givenName, familyName, email, password, phone, role, profile } = body;
 
   const validateFields = SignUpSchema.safeParse(body);
 
@@ -36,6 +38,8 @@ export async function POST(req: Request) {
         name,
         email,
         password: hash,
+        phone,
+        role,
       } as Prisma.UserCreateInput,
     });
 
@@ -54,6 +58,12 @@ export async function POST(req: Request) {
         },
       });
     }
+
+    const verificationToken = await generateVerificationToken(email);
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
 
     return NextResponse.json(
       {
