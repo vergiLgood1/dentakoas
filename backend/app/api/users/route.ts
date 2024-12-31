@@ -7,6 +7,8 @@ import { Role } from "@/config/enum";
 import { SignUpSchema } from "@/lib/schemas";
 import { UserQueryString } from "@/config/types";
 import { getUserByEmail, parseSearchParams, genUsername } from "@/helpers/user";
+import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -111,6 +113,12 @@ export async function POST(req: Request) {
         },
       });
     }
+
+    const verificationToken = await generateVerificationToken(email);
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
 
     return NextResponse.json(
       {

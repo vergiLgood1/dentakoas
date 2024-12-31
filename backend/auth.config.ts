@@ -8,6 +8,8 @@ import { compare } from "bcryptjs";
 import { Role } from "@/config/enum";
 import { SignInSchema } from "@/lib/schemas";
 import { getUserByEmail } from "@/helpers/user";
+import { generateVerificationToken } from "./lib/tokens";
+import { sendVerificationEmail } from "./lib/mail";
 
 export default {
   session: { strategy: "jwt" },
@@ -32,17 +34,34 @@ export default {
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
 
-          const user = await getUserByEmail(email);
-          if (!user || !user.password) return null;
+          const existingUser = await getUserByEmail(email);
 
-          const passwordMatch = await compare(password, user.password);
+          if (!existingUser || !existingUser.email || !existingUser.password) {
+            return null;
+          }
 
-          if (passwordMatch) return user;
+          if (!existingUser.emailVerified) {
+            const verificationToken = await generateVerificationToken(
+              existingUser.email
+            );
+
+            await sendVerificationEmail(
+              verificationToken.email,
+              verificationToken.token
+            );
+
+            // return null;
+          }
+
+          const passwordMatch = await compare(password, existingUser.password);
+
+          if (passwordMatch) return existingUser;
         }
 
         return null;
       },
-      
     }),
   ],
 } satisfies NextAuthConfig;
+ 
+ 

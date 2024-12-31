@@ -14,6 +14,17 @@ const prisma = new PrismaClient({
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   callbacks: {
+    async signIn({ user, account }) {
+      // Allow OAuth without email verification
+      if (account?.provider !== "credentials") return true;
+
+      if (!user.id) throw new Error("User not found");
+      const existingUser = await getUserById(user.id);
+
+      if (!existingUser?.emailVerified) return false;
+
+      return true;
+    },
     async session({ token, session }) {
       // console.log("session", session, "token", token);
       if (token.sub && session.user) {
