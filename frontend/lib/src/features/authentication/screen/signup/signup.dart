@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/signin_signup/form_divider.dart';
 import 'package:denta_koas/src/commons/widgets/signin_signup/social_buttons.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/widgets/signup_footer.dart';
@@ -7,6 +8,7 @@ import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
@@ -15,7 +17,15 @@ class SignupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
   
     return Scaffold(
-      appBar: AppBar(),
+      appBar: DAppBar(
+        showBackArrow: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Iconsax.arrow_left),
+            onPressed: () => Get.back(),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(TSizes.defaultSpace),

@@ -11,7 +11,7 @@ import {
   publicRoutes,
 } from "@/routes";
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
 
 const { auth } = NextAuth(authConfig);
 
@@ -37,15 +37,6 @@ export default auth((req) => {
 
     // Example of setting CSRF token in the cookie
     // Set CSRF token (you can replace this logic with actual CSRF token generation)
-
-    const csrfToken = cookies().get("authjs.csrf-token")?.value ?? "";
-    // Set the CSRF token as a cookie in the response
-    response.cookies.set("authjs.csrf-token", csrfToken, {
-      path: "/", // Set path to '/' for global access to the cookie
-      httpOnly: true, // Set to true for security to prevent client-side access
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      sameSite: "strict", // Adjust according to your needs
-    });
 
     // Tambahkan Header CORS
     response.headers.set("Access-Control-Allow-Origin", "*"); // Gunakan domain spesifik untuk keamanan

@@ -4,7 +4,6 @@ import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
 import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -62,13 +61,8 @@ class SigninController extends GetxController {
       }
 
       // Login with credentials
-      await AuthenticationRepository.instance.signInWithEmailPassword(
+      await AuthenticationRepository.instance.signInWithEmailPasswordFirebase(
           email: email.text.trim(), password: password.text.trim());
-
-      if (kDebugMode) {
-        print(
-            '===================== User Logged in : ${email.text} ${password.text} =====================');
-      }
 
       // Stop loading
       TFullScreenLoader.stopLoading();

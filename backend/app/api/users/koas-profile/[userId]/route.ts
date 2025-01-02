@@ -2,10 +2,8 @@ import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { userId: string } }
-) {
+export async function GET(req: Request, props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
 
@@ -33,10 +31,8 @@ export async function GET(
   }
 }
 
-export async function POST(
-  req: Request,
-  { params }: { params: { userId: string } }
-) {
+export async function POST(req: Request, props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
 
@@ -71,10 +67,8 @@ export async function POST(
   }
 }
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { userId: string } }
-) {
+export async function PATCH(req: Request, props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
   const body = await req.json();
@@ -123,10 +117,8 @@ export async function PATCH(
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { userId: string } }
-) {
+export async function PUT(req: Request, props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("id") || params.userId;
   const body = await req.json();
@@ -172,10 +164,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { userId: string } }
-) {
+export async function DELETE(req: Request, props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
   const reset = searchParams.get("reset") === "true"; // Ambil opsi reset dari query

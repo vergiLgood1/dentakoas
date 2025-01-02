@@ -1,11 +1,12 @@
 import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
-import 'package:denta_koas/src/features/authentication/data/user_model.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/verify_email.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
 import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -64,14 +65,16 @@ class SignUpController extends GetxController {
       }
 
       // Register user in the Firebase Authentication
-      await AuthenticationRepository.instance
+      final userCredentials = await AuthenticationRepository.instance
           .signUpWithCredential(email.text.trim(), password.text.trim());
+      
 
       // Get user role
       final role = storage.read('SELECTED_ROLE');
 
       // Save user data in database
       final newUser = UserModel(
+        id: userCredentials.user!.uid,
         givenName: firstName.text.trim(),
         familyName: lastName.text.trim(),
         email: email.text.trim(),
@@ -80,6 +83,11 @@ class SignUpController extends GetxController {
         phone: phoneNumber.text.trim(),
         role: role.toString().trim(),
       );
+
+      // debug
+      if (kDebugMode) {
+        print("Data to be sent: ${newUser.toJson()}");
+      }
 
       final userRepository = Get.put(UserRepository());
       await userRepository.saveUserRecord(newUser);
@@ -97,6 +105,7 @@ class SignUpController extends GetxController {
 
       // Move to verification screen
       Get.to(() => VerifyEmailScreen(email: email.text.trim()));
+      // Get.to(() => const ProfileSetupScreen());
     } catch (e) {
       // Remove loading
       TFullScreenLoader.stopLoading();
@@ -105,4 +114,5 @@ class SignUpController extends GetxController {
       TLoaders.errorSnackBar(title: 'Oh snap', message: e.toString());
     }
   }
+
 }

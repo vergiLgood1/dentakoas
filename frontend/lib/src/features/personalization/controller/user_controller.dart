@@ -1,5 +1,6 @@
+import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
-import 'package:denta_koas/src/features/authentication/data/user_model.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -39,7 +40,8 @@ class UserController extends GetxController {
   Future<void> getUserRecord() async {
     try {
       profileLoading.value = true;
-      final user = await userRepository.getUserDetails();
+      final user = await userRepository
+          .getUserById(AuthenticationRepository.instance.authUser!.uid);
       this.user(user);
     } catch (e) {
       user(UserModel.empty());
@@ -59,6 +61,7 @@ class UserController extends GetxController {
 
       // Map user data
       final user = UserModel(
+        id: userCredentials.user!.uid,
         givenName: nameParts[0],
         familyName: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
         email: userCredentials.user!.email ?? '',
@@ -74,6 +77,8 @@ class UserController extends GetxController {
       //   print("Data to be sent: ${user.toJson()}");
       // }
     } catch (e) {
+
+
       TLoaders.warningSnackBar(
         title: 'Data not saved',
         message: 'Something went wrong while saving your information',
@@ -82,14 +87,17 @@ class UserController extends GetxController {
   }
 
   // update user data
-  Future<void> resetPasswordUser(UserModel user) async {
+  Future<void> resetPasswordUser(String id, UserModel user) async {
     try {
+
+      // 
+
       final updatedUser = UserModel(
         password: user.password,
       );
 
       // Save user data
-      await userRepository.updateUserRecord(updatedUser);
+      await userRepository.updateUserRecord(id, updatedUser);
     } catch (e) {
       if (kDebugMode) {
         print(e);

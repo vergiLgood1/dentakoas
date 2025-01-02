@@ -1,5 +1,7 @@
 import 'package:denta_koas/navigation_menu.dart';
+import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
 import 'package:denta_koas/src/features/authentication/screen/signin/signin.dart';
+import 'package:denta_koas/src/features/authentication/screen/signup/role_option.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/verify_email.dart';
 import 'package:denta_koas/src/features/onboarding/screen/onboarding/onboarding.dart';
 import 'package:denta_koas/src/utils/constants/api_urls.dart';
@@ -9,7 +11,6 @@ import 'package:denta_koas/src/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:denta_koas/src/utils/exceptions/firebase_exceptions.dart';
 import 'package:denta_koas/src/utils/exceptions/format_exceptions.dart';
 import 'package:denta_koas/src/utils/exceptions/platform_exceptions.dart';
-import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -25,21 +26,40 @@ class AuthenticationRepository extends GetxController {
   final storage = GetStorage();
   final _auth = FirebaseAuth.instance;
 
+  // Get Auth user 
+  User? get authUser => _auth.currentUser;
+
   @override
   void onReady() {
     FlutterNativeSplash.remove();
     screenRedirect();
+    storage.remove('SELECTED_ROLE');
   }
 
-  screenRedirect() async {
+screenRedirect() async {
     final user = _auth.currentUser;
-    final currentUser = _auth.currentUser?.email;
     if (user != null) {
-      if (user.emailVerified) {
+      final uid = user.uid;
+      final userRepository = Get.put(UserRepository());
+
+      final role = await userRepository.getRoleById(uid);
+
+      // if (role == null) {
+      //   print('User details not found');
+      //   return;
+      // }
+
+      // Debug: Cek nilai role dan emailVerified
+      print('Role: ${role}');
+      print('Email Verified: ${user.emailVerified}');
+
+      if (user.emailVerified && role != null) {
         Get.offAll(() => const NavigationMenu());
-      } else if (user.emailVerified) {
+      } else if (user.emailVerified && role == null) {
+        Get.offAll(() => const ChooseRolePage());
+      } else if (!user.emailVerified) {
         Get.offAll(() => const VerifyEmailScreen());
-      }
+      } 
     } else {
       // local storage
       storage.writeIfNull('isFirstTime', true);
@@ -49,6 +69,7 @@ class AuthenticationRepository extends GetxController {
           : Get.offAll(() => const OnBoardingScreen());
     }
   }
+
 
   // ----------------- Get CSRF -----------------
   Future<String> tokenCsrf() async {
@@ -72,22 +93,16 @@ class AuthenticationRepository extends GetxController {
   }) async {
     try {
       final csrfToken = await AuthenticationRepository.instance.tokenCsrf();
-      print("=================== csrfToken: $csrfToken =========");
-      print(
-          '===================== User Logged in : $email $password =====================');
+   
       await DioClient().post(
         Endpoints.signinWithCredentials,
         data: {
           'email': email,
           'password': password,
+          'csrfToken': csrfToken,
         },
-        options: Options(headers: {
-          'authjs.csrf-token': csrfToken,
-        }),
       );
 
-      print(
-          '===================== User Logged in : $email $password =====================');
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {

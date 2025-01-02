@@ -7,8 +7,9 @@ import { getUserById, setHashPassword } from "@/helpers/user";
 
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
 
@@ -50,11 +51,19 @@ export async function GET(
       }
     })();
 
+    const filteredUser = Object.fromEntries(
+      Object.entries(user).filter(([key, v]) =>
+        key === "PasienProfile" || key === "KoasProfile"
+          ? v !== undefined && v !== null
+          : true
+      )
+    );
+
     return NextResponse.json(
       {
         status: "Success",
-        message: "Retrived user successfully",
-        data: { user },
+        message: "Retrieved user successfully",
+        data: { user: filteredUser },
       },
       { status: 200 }
     );
@@ -69,8 +78,9 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
 
@@ -126,8 +136,9 @@ export async function PUT(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
 
@@ -184,8 +195,9 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
 

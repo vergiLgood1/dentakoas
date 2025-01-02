@@ -1,9 +1,4 @@
-import 'dart:async';
-
-import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
-import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
-import 'package:denta_koas/src/features/authentication/data/user_model.dart';
 import 'package:denta_koas/src/features/authentication/screen/password_configurations/reset_password.dart';
 import 'package:denta_koas/src/features/authentication/screen/password_configurations/verification_code.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
@@ -28,7 +23,7 @@ class ForgotPasswordController extends GetxController {
   final confirmPassword = TextEditingController();
 
   final GlobalKey<FormState> forgotPasswordFormKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> resetPasswordFormKey = GlobalKey<FormState>();
+  
 
   // Send email to reset password
   sendOtpResetPassword() async {
@@ -70,9 +65,12 @@ class ForgotPasswordController extends GetxController {
       // Redirect
       Get.to(() => const VerificationCodeScreen());
     } catch (e) {
+      // Stop loading
+      TFullScreenLoader.stopLoading();
+
       TLoaders.errorSnackBar(
         title: 'Oh snap',
-        message: e.toString(),
+        message: "Something went wrong. Please try again later",
       );
     }
   }
@@ -106,9 +104,12 @@ class ForgotPasswordController extends GetxController {
         message: 'A verification OTP has been sent to ${email.text}',
       );
     } catch (e) {
+      // Stop loading
+      TFullScreenLoader.stopLoading();
+
       TLoaders.errorSnackBar(
         title: 'Oh snap',
-        message: e.toString(),
+        message: "Something went wrong. Please try again later",
       );
     }
   }
@@ -146,74 +147,11 @@ class ForgotPasswordController extends GetxController {
     } catch (e) {
       TLoaders.errorSnackBar(
         title: 'Oh snap',
-        message: e.toString(),
+        message: "Something went wrong. Please try again later",
       );
     }
   }
 
-  // Reset password
-  resetPassword() async {
-    try {
-      // Start loading
-      TFullScreenLoader.openLoadingDialog(
-        'Resetting password....',
-        TImages.amongUsLoading,
-      );
-
-      // Check connection
-      final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-
-      // Form validation
-      if (forgotPasswordFormKey.currentState!.validate()) {
-        TFullScreenLoader.stopLoading();
-        return;
-      }
-
-      // Get current user
-      final email = localStorage.read('FORGOT_PASSWORD_EMAIL');
-
-      // Reset password
-      final userRepository = Get.put(UserRepository());
-      await userRepository.resetPassword(email, password.text.trim());
-
-      // Stop loading
-      TFullScreenLoader.stopLoading();
-
-      // Show success message
-      TLoaders.successSnackBar(
-        title: 'Password reset',
-        message: 'You have successfully reset your password',
-      );
-
-      localStorage.remove('FORGOT_PASSWORD_EMAIL');
-
-      // Redirect
-      Get.off(
-        () => Timer(
-          const Duration(seconds: 3),
-          () => Get.off(() => StateScreen(
-                image: TImages.successfullyResetPassword,
-                title: ' Passwordreset',
-                subtitle: 'You have successfully reset your password',
-                showButton: true,
-                isLottie: true,
-                primaryButtonTitle: 'Continue',
-                onPressed: () =>
-                    AuthenticationRepository.instance.screenRedirect(),
-              )),
-        ),
-      );
-    } catch (e) {
-      TLoaders.errorSnackBar(
-        title: 'Oh snap',
-        message: 'Something went wrong. Please try again later.',
-      );
-    }
-  }
-
+  
   // Set timer for auto redirect
 }

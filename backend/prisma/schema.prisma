@@ -56,27 +56,28 @@ enum StatusAppointment {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  givenName     String?
-  familyName    String?
-  name          String?        @unique @db.VarChar(50) // Batas maksimum 20 karakter
-  email         String?        @unique
-  emailVerified DateTime?      @map("email_verified")
-  password      String?
-  phone         String?        @db.VarChar(13) // Batas maksimum 13 karakter
-  address       String?
-  image         String?
-  role          Role?
-  KoasProfile   KoasProfile?
-  PasienProfile PasienProfile?
-  Account       Account[]
-  Post          Post[]
-  Notification  Notification[]
-  Like          Like[]
-  sessions      Session[]
-  Review        Review[]
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updateAt      DateTime       @updatedAt @map("updated_at")
+  id                 String              @id
+  givenName          String?
+  familyName         String?
+  name               String?             @unique @db.VarChar(50) // Batas maksimum 20 karakter
+  email              String?             @unique
+  emailVerified      DateTime?           @map("email_verified")
+  password           String?
+  phone              String?             @db.VarChar(13) // Batas maksimum 13 karakter
+  address            String?
+  image              String?
+  role               Role?
+  KoasProfile        KoasProfile?
+  PasienProfile      PasienProfile?
+  FasilitatorProfile FasilitatorProfile?
+  Account            Account[]
+  Post               Post[]
+  Notification       Notification[]
+  Like               Like[]
+  sessions           Session[]
+  Review             Review[]
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updateAt           DateTime            @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -140,7 +141,10 @@ model KoasProfile {
   id           String     @id @default(cuid())
   userId       String     @unique @map("user_id")
   koasNumber   String?    @unique @map("koas_number")
-  faculty      String?
+  age          String?
+  gender       String?
+  departement  String?
+  university   University @relation(fields: [id], references: [id])
   bio          String?
   whatsappLink String?    @map("whatsapp_link")
   status       StatusKoas @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
@@ -158,7 +162,7 @@ model PasienProfile {
   id        String   @id @default(cuid())
   userId    String   @unique @map("user_id")
   age       Int?
-  gender    Gender? // enum dapat ditambahkan jika ada daftar nilai yang terbatas
+  gender    String? // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   bio       String?
   createdAt DateTime @default(now()) @map("created_at")
   updateAt  DateTime @updatedAt @map("updated_at")
@@ -167,6 +171,28 @@ model PasienProfile {
   Appointment Appointment[]
 
   @@map("pasien-profile")
+}
+
+model FasilitatorProfile {
+  id     String @id @default(cuid())
+  userId String @unique @map("user_id")
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  university University @relation(fields: [id], references: [id])
+
+  @@map("fasilitator-profile")
+}
+
+model University {
+  id                 String               @id @default(cuid())
+  name               String
+  alias              String
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updateAt           DateTime             @updatedAt @map("updated_at")
+  FasilitatorProfile FasilitatorProfile[]
+  KoasProfile        KoasProfile[]
+
+  @@map("universities")
 }
 
 model Post {

@@ -64,6 +64,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json();
   const {
+    id,
     givenName,
     familyName,
     email,
@@ -115,6 +116,7 @@ export async function POST(req: Request) {
 
     const newUser = await db.user.create({
       data: {
+        id,
         givenName,
         familyName,
         name,

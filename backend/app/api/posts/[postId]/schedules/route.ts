@@ -1,10 +1,8 @@
 import db from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function POST(
-  req: Request,
-  { params }: { params: { postId: string } }
-) {
+export async function POST(req: Request, props: { params: Promise<{ postId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const postId = searchParams.get("postId") || params.postId;
 

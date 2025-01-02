@@ -1,6 +1,5 @@
 import 'package:denta_koas/src/features/authentication/controller/signup/role_controller.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/signup.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -63,10 +62,6 @@ class ChooseRolePage extends StatelessWidget {
                   
                   // Set the selected role to the storage
                   controller.setSelectedRole();
-
-                  if (kDebugMode) {
-                    print("Selected Role: ${controller.role}");
-                  }
 
                   // Navigasi ke halaman berikutnya
                   Get.to(() => const SignupScreen());

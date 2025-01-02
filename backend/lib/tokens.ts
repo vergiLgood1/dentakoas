@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
 
-export const csrfToken = cookies().get("authjs.csrf-token")?.value ?? "";
+export const csrfToken = (cookies() as unknown as UnsafeUnwrappedCookies).get("authjs.csrf-token")?.value ?? "";
 

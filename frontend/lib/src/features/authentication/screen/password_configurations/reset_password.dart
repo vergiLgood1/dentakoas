@@ -1,5 +1,5 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
-import 'package:denta_koas/src/features/authentication/controller/forgot.password/forgot_password_controller.dart';
+import 'package:denta_koas/src/features/authentication/controller/forgot.password/reset_password_controller.dart';
 import 'package:denta_koas/src/features/authentication/screen/signin/signin.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
@@ -13,9 +13,8 @@ class ResetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ForgotPasswordController());
-    final email = controller.localStorage.read('FORGOT_PASSWORD_EMAIL');
-
+    final controller = Get.put(ResetPasswordController());
+  
     return Scaffold(
       appBar: DAppBar(
         actions: [
@@ -47,18 +46,18 @@ class ResetPasswordScreen extends StatelessWidget {
               // Text Field
               Obx(
                 () => TextFormField(
-                  controller: controller.password,
+                  controller: controller.newPassword,
                   validator: (value) => TValidator.validatePassword(value),
-                  obscureText: controller.hidePassword.value,
+                  obscureText: controller.hideConfirmPassword.value,
                   expands: false,
                   decoration: InputDecoration(
                     labelText: TTexts.password,
                     prefixIcon: const Icon(Iconsax.password_check),
                     suffixIcon: IconButton(
-                      onPressed: () => controller.hidePassword.value =
-                          !controller.hidePassword.value,
+                      onPressed: () => controller.hideConfirmPassword.value =
+                          !controller.hideConfirmPassword.value,
                       icon: Icon(
-                        controller.hidePassword.value
+                        controller.hideConfirmPassword.value
                             ? Iconsax.eye_slash
                             : Iconsax.eye,
                       ),
@@ -71,17 +70,17 @@ class ResetPasswordScreen extends StatelessWidget {
                 () => TextFormField(
                   controller: controller.confirmPassword,
                   validator: (value) => TValidator.validateConfirmPassword(
-                      value, controller.password.text),
-                  obscureText: controller.hidePassword.value,
+                      value, controller.confirmPassword.text),
+                  obscureText: controller.hideConfirmPassword.value,
                   expands: false,
                   decoration: InputDecoration(
                     labelText: TTexts.confirmPassword,
                     prefixIcon: const Icon(Iconsax.password_check),
                     suffixIcon: IconButton(
-                      onPressed: () => controller.hidePassword.value =
-                          !controller.hidePassword.value,
+                      onPressed: () => controller.hideConfirmPassword.value =
+                          !controller.hideConfirmPassword.value,
                       icon: Icon(
-                        controller.hidePassword.value
+                        controller.hideConfirmPassword.value
                             ? Iconsax.eye_slash
                             : Iconsax.eye,
                       ),

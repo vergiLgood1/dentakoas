@@ -29,7 +29,7 @@ class Endpoints {
   // User Endpoints
   static const String users = '$baseUrl/users';
   static const String user = '$baseUrl/users/';
-  static const String userProfile = '$baseUrl/users/:id/profile';
+  static String userProfile(String id) => '$baseUrl/users/$id/profile';
 
   // Post Endpoints
   static const String posts = '$baseUrl/posts/';

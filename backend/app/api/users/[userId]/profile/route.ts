@@ -10,8 +10,9 @@ import {
 
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
 
@@ -87,12 +88,22 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
+  const params = await props.params;
   const userId = params.userId;
   const body = await req.json();
 
-  const { koasNumber, faculty, bio, whatsappLink, status, age, gender } = body;
+  const {
+    koasNumber,
+    age,
+    gender,
+    departement,
+    university,
+    bio,
+    whatsappLink,
+    status,
+  } = body;
   let profile;
 
   if (!userId) {
@@ -127,7 +138,10 @@ export async function PATCH(
         where: { userId },
         data: {
           koasNumber: koasNumber,
-          faculty: faculty,
+          age: age,
+          gender: gender,
+          departement: departement,
+          university: university,
           bio: bio,
           whatsappLink: whatsappLink,
           status: status,
@@ -172,8 +186,9 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { userId: string } }
+  props: { params: Promise<{ userId: string }> }
 ) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = params.userId;
   let profile;
@@ -201,7 +216,10 @@ export async function DELETE(
           where: { userId },
           data: {
             koasNumber: null,
-            faculty: null,
+            age: null,
+            gender: null,
+            departement: null,
+            university: null,
             bio: null,
             whatsappLink: null,
             status: "Pending",
@@ -260,6 +278,88 @@ export async function DELETE(
     console.error("Error deleting profile:", error);
     return NextResponse.json(
       { error: "Error deleting profile" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(
+  req: Request,
+  props: { params: Promise<{ userId: string }> }
+) {
+  const params = await props.params;
+  const userId = params.userId;
+  const body = await req.json();
+
+  const {
+    koasNumber,
+    departement,
+    bio,
+    whatsappLink,
+    university,
+    age,
+    gender,
+  } = body;
+  let profile;
+
+  if (!userId) {
+    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+  }
+
+  try {
+    const existingUser = await getUserById(userId, undefined, {
+      id: true,
+      role: true,
+    });
+
+    if (!existingUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Create the profile based on the user role
+    if (existingUser.role === Role.Koas) {
+      profile = await db.koasProfile.create({
+        data: {
+          user: { connect: { id: userId } },
+          koasNumber: koasNumber,
+          age: age,
+          gender: gender,
+          departement: departement,
+          university: university,
+          bio: bio,
+          whatsappLink: whatsappLink,
+        } as Prisma.KoasProfileCreateInput,
+      });
+    } else if (existingUser.role === Role.Pasien) {
+      profile = await db.pasienProfile.create({
+        data: {
+          user: { connect: { id: userId } },
+          age: age,
+          gender: gender,
+          bio: bio,
+        } as Prisma.PasienProfileCreateInput,
+      });
+    } else {
+      return NextResponse.json({ error: "Invalid user role" }, { status: 400 });
+    }
+
+    const user = {
+      ...existingUser,
+      profile,
+    };
+
+    return NextResponse.json(
+      {
+        status: "Success",
+        message: "Profile created successfully",
+        data: { user },
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error creating profile:", error);
+    return NextResponse.json(
+      { error: "Error creating profile" },
       { status: 500 }
     );
   }

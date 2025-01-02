@@ -3,10 +3,8 @@ import db from "@/lib/db";
 import { StatusKoas } from "@/config/enum";
 import { Prisma } from "@prisma/client";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { postId: string } }
-) {
+export async function GET(req: Request, props: { params: Promise<{ postId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const postId = searchParams.get("postId") || params.postId;
 
@@ -50,10 +48,8 @@ export async function GET(
   }
 }
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { postId: string } }
-) {
+export async function PATCH(req: Request, props: { params: Promise<{ postId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const postId = searchParams.get("postId") || params.postId;
 
@@ -109,10 +105,8 @@ export async function PATCH(
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { postId: string } }
-) {
+export async function PUT(req: Request, props: { params: Promise<{ postId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const postId = searchParams.get("postId") || params.postId;
 
@@ -161,10 +155,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { postId: string } }
-) {
+export async function DELETE(req: Request, props: { params: Promise<{ postId: string }> }) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
   const postId = searchParams.get("postId") || params.postId;
 
