@@ -3,13 +3,13 @@ import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import db from "@/lib/db";
-
+ 
 import { compare } from "bcryptjs";
-import { Role } from "@/config/enum";
+
 import { SignInSchema } from "@/lib/schemas";
 import { getUserByEmail } from "@/helpers/user";
-import { generateVerificationToken } from "./lib/tokens";
-import { sendVerificationEmail } from "./lib/mail";
+import { csrfToken } from "./lib/tokens";
+import { cookies } from "next/headers";
 
 export default {
   session: { strategy: "jwt" },
@@ -38,19 +38,6 @@ export default {
 
           if (!existingUser || !existingUser.email || !existingUser.password) {
             return null;
-          }
-
-          if (!existingUser.emailVerified) {
-            const verificationToken = await generateVerificationToken(
-              existingUser.email
-            );
-
-            await sendVerificationEmail(
-              verificationToken.email,
-              verificationToken.token
-            );
-
-            // return null;
           }
 
           const passwordMatch = await compare(password, existingUser.password);

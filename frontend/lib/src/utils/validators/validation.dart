@@ -1,7 +1,16 @@
 
 class TValidator {
-  static String? validateEmail(String? value) {
+
+static String? validateEmptyText(String? fieldName, String? value) {
     if (value == null || value.isEmpty) {
+      return '$fieldName is required.';
+    }
+
+    return null;
+  }
+
+  static String? validateEmail(String? value) {
+    if (value == null || value.isEmpty || value.trim().isEmpty || value == '') {
       return 'Email is required.';
     }
 
@@ -43,13 +52,26 @@ class TValidator {
     return null;
   }
 
+  static String? validateConfirmPassword(
+      String? password, String? confirmPassword) {
+    if (confirmPassword == null || confirmPassword.isEmpty) {
+      return 'Confirm password is required.';
+    }
+
+    if (password != confirmPassword) {
+      return 'Passwords do not match.';
+    }
+
+    return null;
+  }
+
   static String? validatePhoneNumber(String? value) {
     if (value == null || value.isEmpty) {
       return 'Phone number is required.';
     }
 
-    // Regular expression for phone number validation (assuming a 10-digit US phone number format)
-    final phoneRegExp = RegExp(r'^\d{10}$');
+    // Regular expression for phone number validation (assuming an Indonesian phone number format)
+    final phoneRegExp = RegExp(r'^(\+62|62|0)8[1-9][0-9]{6,9}$');
 
     if (!phoneRegExp.hasMatch(value)) {
       return 'Invalid phone number format (10 digits required).';

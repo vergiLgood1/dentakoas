@@ -5,8 +5,8 @@ import { SignUpSchema } from "@/lib/schemas";
 import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { sendVerificationEmail } from "@/lib/mail";
-import { generateVerificationToken } from "@/lib/tokens";
+
+ 
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -59,11 +59,11 @@ export async function POST(req: Request) {
       });
     }
 
-    const verificationToken = await generateVerificationToken(email);
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token
-    );
+    // const verificationToken = await generateVerificationToken(email);
+    // await sendVerificationEmail(
+    //   verificationToken.email,
+    //   verificationToken.token
+    // );
 
     return NextResponse.json(
       {

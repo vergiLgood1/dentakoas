@@ -11,13 +11,22 @@ class TFormatter {
   }
 
   static String formatPhoneNumber(String phoneNumber) {
-    // Assuming a 10-digit US phone number format: (123) 456-7890
-    if (phoneNumber.length == 10) {
-      return '(${phoneNumber.substring(0, 3)}) ${phoneNumber.substring(3, 6)} ${phoneNumber.substring(6)}';
-    } else if (phoneNumber.length == 11) {
-      return '(${phoneNumber.substring(0, 4)}) ${phoneNumber.substring(4, 7)} ${phoneNumber.substring(7)}';
+    // Assuming an Indonesian phone number format: +62 812-3456-7890
+    phoneNumber = phoneNumber.replaceAll(
+        RegExp(r'\D'), ''); // Remove non-digit characters
+
+    if (phoneNumber.startsWith('62')) {
+      phoneNumber = '+$phoneNumber';
+    } else if (phoneNumber.startsWith('0')) {
+      phoneNumber = '+62${phoneNumber.substring(1)}';
+    } else {
+      phoneNumber = '+62$phoneNumber';
     }
-    // Add more custom phone number formatting logic for different formats if needed.
+
+    if (phoneNumber.length > 5) {
+      return '${phoneNumber.substring(0, 3)} ${phoneNumber.substring(3, 5)}-${phoneNumber.substring(5, 9)}-${phoneNumber.substring(9)}';
+    }
+
     return phoneNumber;
   }
 

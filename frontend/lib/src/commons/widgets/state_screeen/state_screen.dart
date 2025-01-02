@@ -3,6 +3,7 @@ import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class StateScreen extends StatelessWidget {
   const StateScreen({
@@ -17,11 +18,13 @@ class StateScreen extends StatelessWidget {
     this.secondaryTitle = 'Contiue',
     this.primaryButtonTitle = 'Continue',
     this.onSecondaryPressed,
+    this.isLottie = false,
   });
 
   final String image, title, subtitle;
   final String primaryButtonTitle;
   final String secondaryTitle;
+  final bool? isLottie;
   final VoidCallback? onPressed;
   final VoidCallback? onSecondaryPressed;
   final bool showButton;
@@ -39,6 +42,10 @@ class StateScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Image
+                isLottie!
+                    ? Lottie.asset(image,
+                        width: THelperFunctions.screenWidth() * 1.5)
+                    :
                 Image(
                   image: AssetImage(image),
                   width: THelperFunctions.screenWidth(),

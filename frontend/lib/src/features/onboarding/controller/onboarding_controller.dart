@@ -1,6 +1,7 @@
 import 'package:denta_koas/src/features/onboarding/screen/onboarding/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class OnBoardingController {
   static OnBoardingController get instance => Get.find();
@@ -25,6 +26,8 @@ class OnBoardingController {
   // Update current index & jump to next page
   void nextPage() {
     if (currentPageIndex.value == 2) {
+      final storage = GetStorage();
+      storage.write('isFirstTime', false);
       Get.offAll(const WelcomeScreen());
     } else {
       int page = currentPageIndex.value + 1;

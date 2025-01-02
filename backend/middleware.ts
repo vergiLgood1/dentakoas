@@ -11,6 +11,7 @@ import {
   publicRoutes,
 } from "@/routes";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 const { auth } = NextAuth(authConfig);
 
@@ -31,23 +32,35 @@ export default auth((req) => {
   //   return NextResponse.redirect(new URL(DEFAULT_PROTECTED_REDIRECT, nextUrl));
   // }
 
-  // if (isApiAuthRoute || isApiPublicRoute) {
-  //   const response = NextResponse.next();
+  if (isApiAuthRoute || isApiPublicRoute) {
+    const response = NextResponse.next();
 
-  //   // Tambahkan Header CORS
-  //   response.headers.set("Access-Control-Allow-Origin", "*"); // Gunakan domain spesifik untuk keamanan
-  //   response.headers.set(
-  //     "Access-Control-Allow-Methods",
-  //     "GET, POST, PATCH, OPTIONS"
-  //   );
-  //   response.headers.set(
-  //     "Access-Control-Allow-Headers",
-  //     "Content-Type, Authorization, X-Requested-With"
-  //   );
-  //   response.headers.set("Access-Control-Allow-Credentials", "true");
+    // Example of setting CSRF token in the cookie
+    // Set CSRF token (you can replace this logic with actual CSRF token generation)
 
-  //   return response;
-  // }
+    const csrfToken = cookies().get("authjs.csrf-token")?.value ?? "";
+    // Set the CSRF token as a cookie in the response
+    response.cookies.set("authjs.csrf-token", csrfToken, {
+      path: "/", // Set path to '/' for global access to the cookie
+      httpOnly: true, // Set to true for security to prevent client-side access
+      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      sameSite: "strict", // Adjust according to your needs
+    });
+
+    // Tambahkan Header CORS
+    response.headers.set("Access-Control-Allow-Origin", "*"); // Gunakan domain spesifik untuk keamanan
+    response.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PATCH, OPTIONS"
+    );
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, X-Requested-With"
+    );
+    response.headers.set("Access-Control-Allow-Credentials", "true");
+
+    return response;
+  }
 
   // if (isAuthRoute) {
   //   if (isLoggedIn) {
@@ -60,7 +73,7 @@ export default auth((req) => {
   //   return NextResponse.redirect(new URL(DEFAULT_PROTECTED_REDIRECT, nextUrl));
   // }
 
-  // return;
+  return;
 });
 
 export const config = {

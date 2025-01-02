@@ -1,5 +1,6 @@
-import 'package:denta_koas/src/features/authentication/controller/auth_controller.dart';
+import 'package:denta_koas/src/features/authentication/controller/signup/role_controller.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/signup.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,8 +9,7 @@ class ChooseRolePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AuthController());
-    final selectedRole = controller.selectedRoleName;
+    final controller = Get.put(RoleController());
 
     return Scaffold(
       appBar: AppBar(
@@ -36,7 +36,7 @@ class ChooseRolePage extends StatelessWidget {
                   title: "Fasilitator",
                   subtitle:
                       "Manage your koas and keep track of their progress.",
-                  isSelected: controller.selectedIndex.value == 0,
+                  isSelected: controller.selectedIndexRole.value == 0,
                   onTap: () => controller.selectRole(0),
                 )),
             const SizedBox(height: 16),
@@ -44,7 +44,7 @@ class ChooseRolePage extends StatelessWidget {
                   icon: Icons.school,
                   title: "Koas",
                   subtitle: "Make your post and meet with your pasien.",
-                  isSelected: controller.selectedIndex.value == 1,
+                  isSelected: controller.selectedIndexRole.value == 1,
                   onTap: () => controller.selectRole(1),
                 )),
             const SizedBox(height: 16),
@@ -52,7 +52,7 @@ class ChooseRolePage extends StatelessWidget {
                   icon: Icons.person,
                   title: "Pasien",
                   subtitle: "Find your koas and make an appointment with them.",
-                  isSelected: controller.selectedIndex.value == 2,
+                  isSelected: controller.selectedIndexRole.value == 2,
                   onTap: () => controller.selectRole(2),
                 )),
             const Spacer(),
@@ -60,9 +60,17 @@ class ChooseRolePage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Update selectedRole before navigating
-                  Get.to(() => const SignupScreen());
+                  
+                  // Set the selected role to the storage
+                  controller.setSelectedRole();
+
+                  if (kDebugMode) {
+                    print("Selected Role: ${controller.role}");
+                  }
+
                   // Navigasi ke halaman berikutnya
+                  Get.to(() => const SignupScreen());
+                  
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(16),

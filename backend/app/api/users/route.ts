@@ -7,8 +7,6 @@ import { Role } from "@/config/enum";
 import { SignUpSchema } from "@/lib/schemas";
 import { UserQueryString } from "@/config/types";
 import { getUserByEmail, parseSearchParams, genUsername } from "@/helpers/user";
-import { generateVerificationToken } from "@/lib/tokens";
-import { sendVerificationEmail } from "@/lib/mail";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -65,17 +63,45 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { givenName, familyName, email, password, phone, role, profile } = body;
+  const {
+    givenName,
+    familyName,
+    email,
+    password,
+    phone,
+    role,
+    profile,
+    image,
+  } = body;
 
-  const validateFields = SignUpSchema.safeParse(body);
+  console.log("Received Body:", body);
 
-  if (!validateFields.success) {
-    return NextResponse.json({ error: validateFields.error }, { status: 400 });
+  const isOauth = password === null;
+
+  let hash = null;
+  // const validateFields = SignUpSchema.safeParse(body);
+
+  // if (!validateFields.success) {
+  //   return NextResponse.json({ error: validateFields.error }, { status: 400 });
+  // }
+
+  if (isOauth && password !== null) {
+    return NextResponse.json(
+      { error: "OAuth users should not provide a password." },
+      { status: 400 }
+    );
+  }
+
+  if (!isOauth && (!password || password.trim() === "")) {
+    return NextResponse.json(
+      { error: "Password is required for non-OAuth users." },
+      { status: 400 }
+    );
   }
 
   const existingUser = await getUserByEmail(email);
-
   if (existingUser) {
+    // console.log(`Attempted signup with existing email: ${email}`);
     return NextResponse.json(
       { error: "Email already in use." },
       { status: 400 }
@@ -84,7 +110,8 @@ export async function POST(req: Request) {
 
   try {
     const name = await genUsername(givenName, familyName);
-    const hash = await bcrypt.hash(password, 10);
+
+    const hash = !isOauth ? await bcrypt.hash(password, 10) : null;
 
     const newUser = await db.user.create({
       data: {
@@ -94,7 +121,8 @@ export async function POST(req: Request) {
         email,
         password: hash,
         phone,
-        role,
+        image: image ?? null,
+        role: role ?? null,
       } as Prisma.UserCreateInput,
     });
 
@@ -114,11 +142,11 @@ export async function POST(req: Request) {
       });
     }
 
-    const verificationToken = await generateVerificationToken(email);
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token
-    );
+    if (isOauth)
+      await db.user.update({
+        where: { id: newUser.id },
+        data: { emailVerified: new Date() },
+      });
 
     return NextResponse.json(
       {

@@ -34,3 +34,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# firebase
+firebase.json
+ta-dentakoas-73626-firebase-adminsdk-hdtla-dd0ac07883.json

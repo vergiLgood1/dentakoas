@@ -1,26 +1,26 @@
 import db from "@/lib/db";
 import { getUserByEmail } from "./user";
 
-export const getVerificationTokenByToken = async (token: string) => {
+export const getVerificationOtpByOtp = async (otp: string) => {
   try {
-    const verificationToken = await db.verificationRequest.findUnique({
-      where: { token },
+    const verificationOtp = await db.otp.findUnique({
+      where: { otp },
     });
 
-    return verificationToken;
+    return verificationOtp;
   } catch (error) {
     console.error(error);
     return null;
   }
 };
 
-export const getVerificationTokenByEmail = async (email: string) => {
+export const getVerificationOtpByEmail = async (email: string) => {
   try {
-    const verificationToken = await db.verificationRequest.findFirst({
+    const verificationOtp = await db.otp.findFirst({
       where: { email },
     });
 
-    return verificationToken;
+    return verificationOtp;
   } catch (error) {
     console.error(error);
     return null;

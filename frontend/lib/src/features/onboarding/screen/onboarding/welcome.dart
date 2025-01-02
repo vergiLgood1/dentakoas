@@ -23,7 +23,8 @@ class WelcomeScreen extends StatelessWidget {
             secondaryButton: true,
             secondaryTitle: 'Sign In',
             onPressed: () => Get.to(() => const ChooseRolePage()),
-            onSecondaryPressed: () => Get.to(() => SigninScreen),
+            onSecondaryPressed: () => Get.to(() => const SigninScreen()),
+             
           ),
         ],
       ),

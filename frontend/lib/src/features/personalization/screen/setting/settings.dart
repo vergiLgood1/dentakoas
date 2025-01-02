@@ -3,6 +3,7 @@ import 'package:denta_koas/src/commons/widgets/containers/primary_header_contain
 import 'package:denta_koas/src/commons/widgets/list_tiles/setting_menu_tile.dart';
 import 'package:denta_koas/src/commons/widgets/list_tiles/user_profile_tile.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -96,10 +97,16 @@ class SettingsScreen extends StatelessWidget {
                     subtitle: 'Set recomendarions based on your location',
                     trailing: Switch(value: true, onChanged: (value) {}),
                   ),
-
-                  // Logout button
                   const SizedBox(
                     height: TSizes.spaceBtwSections,
+                  ),
+
+                  // Logout button
+                  SettingMenuTile(
+                    icon: Iconsax.logout,
+                    title: 'Logout',
+                    subtitle: 'Logout from your account',
+                    onTap: () => AuthenticationRepository.instance.signOut(), 
                   ),
                 ],
               ),

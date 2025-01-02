@@ -1,4 +1,5 @@
-import 'package:denta_koas/src/features/onboarding/screen/onboarding/onboarding.dart';
+import 'package:denta_koas/src/cores/bindings/general_bindings.dart';
+import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:denta_koas/src/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,18 @@ class App extends StatelessWidget {
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
+      initialBinding: GeneralBindings(),
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [
         Locale('id', ''),
       ],
       // initialBinding: GeneralBindings(),
-      home: const OnBoardingScreen(),
+      home: const Scaffold(
+        backgroundColor: TColors.primary,
+        body: Center(
+          child: CircularProgressIndicator(color: TColors.white),
+        ),
+      ),
     );
   }
 }

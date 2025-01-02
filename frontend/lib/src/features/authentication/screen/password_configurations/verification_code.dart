@@ -1,5 +1,7 @@
+import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/signin_signup/footer.dart';
-import 'package:denta_koas/src/features/authentication/screen/password_configurations/reset_password.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
+import 'package:denta_koas/src/features/authentication/controller/forgot.password/forgot_password_controller.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
@@ -7,7 +9,6 @@ import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:get/get.dart';
 
 class VerificationCodeScreen extends StatelessWidget {
   const VerificationCodeScreen({super.key});
@@ -15,11 +16,10 @@ class VerificationCodeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
+      appBar: DAppBar(
         actions: [
           IconButton(
-            onPressed: () => Get.back(),
+            onPressed: () => AuthenticationRepository.instance.screenRedirect(),
             icon: const Icon(CupertinoIcons.clear),
           )
         ],
@@ -38,7 +38,7 @@ class VerificationCodeScreen extends StatelessWidget {
 
               // Title & subtitle
               Text(
-                TTexts.verificationCodeTitle,
+                TTexts.verificationCode,
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
@@ -61,16 +61,28 @@ class VerificationCodeScreen extends StatelessWidget {
                 onCodeChanged: (String code) {
                   // Aksi opsional jika input berubah
                 },
-                onSubmit: (String verificationCode) {
-                  Get.to(() => const ResetPasswordScreen());
+                onSubmit: (String otp) {
+                  ForgotPasswordController.instance
+                      .compareOtpResetPassword(otp);
                 },
               ),
+
+              // Button
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: ElevatedButton(
+              //     onPressed: () => Get.off(() => const ResetPasswordScreen()),
+              //     child: const Text(TTexts.submit),
+              //   ),
+              // ),
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Footer
-              const DFooter(
+              DFooter(
                 mainText: TTexts.notReceivingCode,
                 linkText: TTexts.resendCode,
+                onPressed: () =>
+                    ForgotPasswordController.instance.resendOtpResetPassword(),
               )
             ],
           ),

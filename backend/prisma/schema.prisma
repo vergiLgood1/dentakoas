@@ -125,6 +125,17 @@ model VerificationRequest {
   @@unique([email, token])
 }
 
+model Otp {
+  id        String   @id @default(cuid())
+  email     String
+  otp       String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([email, otp])
+}
+
 model KoasProfile {
   id           String     @id @default(cuid())
   userId       String     @unique @map("user_id")
@@ -136,7 +147,7 @@ model KoasProfile {
   createdAt    DateTime   @default(now()) @map("created_at")
   updateAt     DateTime   @updatedAt @map("updated_at")
 
-  user        User          @relation(fields: [userId], references: [id])
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   Post        Post[]
   Appointment Appointment[]
 
@@ -152,7 +163,7 @@ model PasienProfile {
   createdAt DateTime @default(now()) @map("created_at")
   updateAt  DateTime @updatedAt @map("updated_at")
 
-  user        User          @relation(fields: [userId], references: [id])
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   Appointment Appointment[]
 
   @@map("pasien-profile")

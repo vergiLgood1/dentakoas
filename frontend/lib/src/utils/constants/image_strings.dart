@@ -42,6 +42,12 @@ class TImages {
   static const String deliveredInPlaneIllustration = "assets/images/animations/sammy-line-come-back-later.png";
   static const String deliveredEmailIllustration = "assets/images/animations/sammy-line-man-receives-a-mail.png";
   static const String verifyIllustration = "assets/images/animations/sammy-line-travel-backpack-with-passport-and-air-ticket.gif";
+  static const String amongUsLoading =
+      "assets/images/animations/amongus-loading.json";
+  static const String successfullySignedUp =
+      "assets/images/animations/verify_succes.json";
+  static const String successfullyResetPassword =
+      "assets/images/animations/reset-password.json";
  
 
   // -- OnBoarding Texts

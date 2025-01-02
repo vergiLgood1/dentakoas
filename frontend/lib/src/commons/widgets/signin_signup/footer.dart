@@ -1,6 +1,5 @@
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class DFooter extends StatelessWidget {
@@ -18,27 +17,25 @@ class DFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
 
-    return Text.rich(
-      TextSpan(
-        children: [
-          TextSpan(
-            text: '$mainText ',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          TextSpan(
-            text: '$linkText ',
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          '$mainText ',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        GestureDetector(
+          onTap: onPressed,
+          child: Text(
+            '$linkText ',
             style: Theme.of(context).textTheme.bodyMedium!.apply(
                   color: dark ? TColors.white : TColors.primary,
                   decoration: TextDecoration.underline,
                   decorationColor: dark ? TColors.white : TColors.primary,
                 ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                onPressed;
-              },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
