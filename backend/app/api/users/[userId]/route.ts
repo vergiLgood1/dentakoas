@@ -64,9 +64,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        status: "Success",
-        message: "Retrieved user successfully",
-        data: { user: filteredUser },
+        ...filteredUser,
       },
       { status: 200 }
     );
@@ -146,7 +144,7 @@ export async function PATCH(
   const userId = searchParams.get("userId") || params.userId;
 
   const body = await req.json();
-  const { givenName, familyName, email, password, phone, role } = body;
+  const { givenName, familyName, name, email, password, phone, role } = body;
 
   console.log("receive body : ", body);
 
@@ -183,6 +181,7 @@ export async function PATCH(
       data: {
         givenName: givenName || existingUser.givenName,
         familyName: familyName || existingUser.familyName,
+        name: name || existingUser.name,
         email: email || existingUser.email,
         password: hash || existingUser.password,
         phone: phone || existingUser.phone,
@@ -253,15 +252,13 @@ export async function PATCH(
 
     return NextResponse.json(
       {
-        status: "Success",
-        message: "Update user successfully",
-        data: { ...user },
+        ...user,
       },
       { status: 200 }
     );
   } catch (error) {
     if (error instanceof Error) {
-      console.error("Error details:", error);
+      // console.error("Error details:", error);
       return NextResponse.json(
         {
           error: "Internal Server Error : " + error.message,

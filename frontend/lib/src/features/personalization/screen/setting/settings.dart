@@ -1,12 +1,16 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/containers/primary_header_container.dart';
+import 'package:denta_koas/src/commons/widgets/images/circular_image.dart';
 import 'package:denta_koas/src/commons/widgets/list_tiles/setting_menu_tile.dart';
-import 'package:denta_koas/src/commons/widgets/list_tiles/user_profile_tile.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/screen/profile/profile.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -14,6 +18,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = UserController.instance;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -32,7 +37,10 @@ class SettingsScreen extends StatelessWidget {
                   ),
 
                   // User Profile Card
-                  const UserProfileTile(),
+                  DProfileMenu(
+                    onPressed: () => Get.to(() => const ProfileScreen()),
+                  ),
+    
                   const SizedBox(
                     height: TSizes.spaceBtwSections,
                   ),
@@ -115,5 +123,52 @@ class SettingsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class DProfileMenu extends StatelessWidget {
+  const DProfileMenu({
+    super.key,
+    required this.onPressed,
+  });
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = UserController.instance;
+    return Obx(() {
+      if (controller.profileLoading.value) {
+        return const SizedBox();
+      } else {
+        return ListTile(
+          leading: const CircularImage(
+            image: TImages.user,
+            widht: 50,
+            height: 50,
+            padding: 0,
+          ),
+          title: Text(
+            controller.user.value.fullName,
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall!
+                .apply(color: TColors.textWhite),
+          ),
+          subtitle: Text(
+            controller.user.value.email!,
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .apply(color: TColors.textWhite),
+          ),
+          trailing: IconButton(
+            onPressed: onPressed,
+            icon: const Icon(Iconsax.edit),
+            color: TColors.white,
+          ),
+        );
+      }
+    });
   }
 }

@@ -1,6 +1,6 @@
-import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
+import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -11,7 +11,7 @@ class UserController extends GetxController {
   static UserController get instance => Get.find();
 
   final profileLoading = false.obs;
-  Rx<UserModel?> user = UserModel.empty().obs;
+  Rx<UserModel> user = UserModel.empty().obs;
   final userRepository = Get.put(UserRepository());
 
   final greetingMsg = ''.obs;
@@ -21,7 +21,7 @@ class UserController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getUserRecord();
+    fetchUserDetail();
   }
 
   String updateGreetingMessage() {
@@ -31,17 +31,27 @@ class UserController extends GetxController {
     } else if (hour < 18) {
       greetingMsg.value = 'Good Afternoon';
     } else {
-      greetingMsg.value = 'Good Night';
+      greetingMsg.value = 'Good Evening';
     }
     return greetingMsg.value;
   }
 
-  // Get user data
-  Future<void> getUserRecord() async {
+  Future<void> fetchAuthUserRecord() async {
     try {
       profileLoading.value = true;
-      final user = await userRepository
-          .getUserById(AuthenticationRepository.instance.authUser!.uid);
+      final user = await userRepository.fetchUserDetailById();
+      this.user(user);
+    } catch (e) {
+      user(UserModel.empty());
+    } finally {
+      profileLoading.value = false;
+    }
+  }
+
+  Future<void> fetchUserDetail() async {
+    try {
+      profileLoading.value = true;
+      final user = await userRepository.getUserDetailById();
       this.user(user);
     } catch (e) {
       user(UserModel.empty());
@@ -79,41 +89,6 @@ class UserController extends GetxController {
     }
   }
 
-  bool hasEmptyFields(Map<String, dynamic> data) {
-    // List of keys to check
-    List<String> keysToCheck = [
-      'FasilitatorProfile',
-      'KoasProfile',
-      'PasienProfile',
-    ];
-
-    for (String key in keysToCheck) {
-      if (data.containsKey(key) && data[key] != null) {
-        Map<String, dynamic> profileData = data[key];
-
-        // Log to check the profile data
-        Logger().i(['Checking fields in $key: $profileData']);
-
-        // Iterate through the fields in the profile
-        for (var entry in profileData.entries) {
-          final fieldKey = entry.key;
-          final fieldValue = entry.value;
-
-          // Check if the field is null or an empty string
-          if (fieldValue == null ||
-              (fieldValue is String && fieldValue.trim().isEmpty) ||
-              (fieldValue is List && fieldValue.isEmpty) ||
-              (fieldValue is Map && fieldValue.isEmpty)) {
-            Logger().i(['Empty field found in $key: $fieldKey']);
-            return true; // Return true if any field is empty
-          }
-        }
-      }
-    }
-
-    return false; // Return false if no empty fields found
-  }
-
   bool hasEmptyFields2(Map<String, dynamic> data) {
     for (var entry in data.entries) {
       final key = entry.key;
@@ -138,7 +113,9 @@ class UserController extends GetxController {
     return false; // Tidak ada field kosong
 }
 
-bool hasEmptyFields3(Map<String, dynamic> data) {
+
+
+bool hasEmptyFields(Map<String, dynamic> data) {
   // Daftar key yang akan diperiksa
   const List<String> keysToCheck = ['koasProfile', 'pasienProfile', 'fasilitatorProfile'];
 
@@ -160,7 +137,7 @@ bool hasEmptyFields3(Map<String, dynamic> data) {
 
     // Jika nilai adalah Map, cek secara rekursif
     if (value is Map<String, dynamic>) {
-      final hasEmptyInNested = hasEmptyFields2(value);
+        final hasEmptyInNested = hasEmptyFields2(value);
       if (hasEmptyInNested) return true;
     }
   }
@@ -168,6 +145,15 @@ bool hasEmptyFields3(Map<String, dynamic> data) {
   return false; // Tidak ada field kosong
 }
 
-
-
+setStatusColor() {
+    if (user.value.koasProfile?.status == 'Pending') {
+      return TColors.warning;
+    } else if (user.value.koasProfile?.status == 'Approved') {
+      return TColors.success;
+    } else if (user.value.koasProfile?.status == 'Rejected') {
+      return TColors.error;
+    } else {
+      return TColors.primary;
+    }
+  }
 }

@@ -9,11 +9,15 @@ class ProfileMenu extends StatelessWidget {
     required this.title,
     required this.value,
     required this.onTap,
+    this.showIcon = true,
+    this.color,
   });
 
   final IconData icon;
   final String title, value;
   final VoidCallback onTap;
+  final bool? showIcon;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +27,9 @@ class ProfileMenu extends StatelessWidget {
         padding:
             const EdgeInsets.symmetric(vertical: TSizes.spaceBtwItems / 1.5),
         child: Row(
+          mainAxisAlignment: showIcon!
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               flex: 3,
@@ -40,12 +47,14 @@ class ProfileMenu extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Expanded(
-              child: Icon(
-                icon,
-                size: 18,
-              ),
-            )
+            if (showIcon!)
+              Expanded(
+                child: Icon(
+                  icon,
+                  size: 18,
+                  color: color,
+                ),
+              )
           ],
         ),
       ),

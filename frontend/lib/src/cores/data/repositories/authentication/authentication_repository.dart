@@ -32,6 +32,8 @@ class AuthenticationRepository extends GetxController {
 
   // Get Auth user 
   User? get authUser => _auth.currentUser;
+  
+  
 
   @override
   void onReady() {
@@ -51,7 +53,10 @@ screenRedirect() async {
       final userMap = userDetail.toJson();
 
       final userProfile = filterProfileByRole(userMap);
-      final hasNullField = userController.hasEmptyFields3(userProfile);
+      final hasNullField = userController.hasEmptyFields(userProfile);
+
+      Logger().i(['User Profile: $userProfile']);
+      Logger().i(['Has Null Field: $hasNullField']);
 
       final isOauth =
           userDetail.password!.isEmpty || userDetail.password == null;

@@ -56,21 +56,98 @@ class UserRepository extends GetxController {
   Future<UserModel> fetchUserDetailById() async {
     try {
       // Kirim permintaan GET dengan parameter userId
-      final response = await DioClient().get(
-        Endpoints.userDetail(AuthenticationRepository.instance.authUser!.uid),
-      );
+      final documentSnapshot = await _dbAuth
+          .collection('Users')
+          .doc(AuthenticationRepository.instance.authUser!.uid)
+          .get();
 
-      if (response.statusCode == 200) {
-        final data = response.data;
-
-        if (data is Map<String, dynamic>) {
-          return UserModel.fromJson(data);
-        }
+      if (documentSnapshot.exists) {
+        return UserModel.fromSnapshot(documentSnapshot);
+      } else {
+        return UserModel.empty();
       }
+
     } catch (e) {
       throw 'Something went wrong. Please try again later.';
     }
-    throw 'Failed to fetch user data.';
+  }
+
+  Future<void> updateAuthUserDetails(UserModel updateUser) async {
+    try {
+      await _dbAuth
+          .collection('Users')
+          .doc(AuthenticationRepository.instance.authUser!.uid)
+          .update(updateUser.toJsonAuth());
+    } on FirebaseAuthException catch (e) {
+      // Tangani error Firebase Auth
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      // Tangani error Firebase lainnya
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      // Tangani custom exception
+      throw TExceptions(e.message);
+    } on FormatException catch (e) {
+      // Tangani kesalahan format respons
+      throw TFormatException(e.message);
+    } on PlatformException catch (e) {
+      // Tangani error platform
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      // Tangani error tak dikenal
+      throw 'Something went wrong. Please try again later.';
+    }
+  }
+
+  Future<void> updateSinglefieldAuthUser(Map<String, dynamic> json) async {
+    try {
+      await _dbAuth
+          .collection('Users')
+          .doc(AuthenticationRepository.instance.authUser!.uid)
+          .update(json);
+    } on FirebaseAuthException catch (e) {
+      // Tangani error Firebase Auth
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      // Tangani error Firebase lainnya
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      // Tangani custom exception
+      throw TExceptions(e.message);
+    } on FormatException catch (e) {
+      // Tangani kesalahan format respons
+      throw TFormatException(e.message);
+    } on PlatformException catch (e) {
+      // Tangani error platform
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      // Tangani error tak dikenal
+      throw 'Something went wrong. Please try again later.';
+    }
+  }
+
+  Future<void> removeAuthUserRecord(String userId) async {
+    try {
+      await _dbAuth.collection('Users').doc(userId).delete();
+    } on FirebaseAuthException catch (e) {
+      // Tangani error Firebase Auth
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      // Tangani error Firebase lainnya
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      // Tangani custom exception
+      throw TExceptions(e.message);
+    } on FormatException catch (e) {
+      // Tangani kesalahan format respons
+      throw TFormatException(e.message);
+    } on PlatformException catch (e) {
+      // Tangani error platform
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      // Tangani error tak dikenal
+      throw 'Something went wrong. Please try again later.';
+    }
   }
 
   Future<UserModel?> getUserByEmail(String email) async {
@@ -102,9 +179,10 @@ class UserRepository extends GetxController {
    
   }
   
-  Future<UserModel?> getUserById(String id) async {
+  Future<UserModel> getUserDetailById() async {
     try {
-      final response = await DioClient().get(Endpoints.userDetail(id));
+      final response = await DioClient().get(Endpoints.userDetail(
+          AuthenticationRepository.instance.authUser!.uid));
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -122,7 +200,7 @@ class UserRepository extends GetxController {
     } catch (e) {
       throw e.toString();
     }
-    return null;
+    throw 'Failed to fetch user details';
   }
 
   Future<String?> getRoleById(String id) async {

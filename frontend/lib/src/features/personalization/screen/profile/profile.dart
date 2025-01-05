@@ -1,11 +1,16 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/images/circular_image.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/screen/profile/bio/change_bio.dart';
+import 'package:denta_koas/src/features/personalization/screen/profile/personal.information/change_personal_information.dart';
+import 'package:denta_koas/src/features/personalization/screen/profile/profile.information/change_profile_information.dart';
 import 'package:denta_koas/src/features/personalization/screen/profile/widgets/profile_menu.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -13,10 +18,12 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = UserController.instance;
     return Scaffold(
       appBar: const DAppBar(
         showBackArrow: true,
         title: Text('Profile'),
+        centerTitle: true,
       ),
 
       // Body
@@ -50,12 +57,40 @@ class ProfileScreen extends StatelessWidget {
                 height: TSizes.spaceBtwItems / 2,
               ),
               const Divider(),
+
+              SectionHeading(
+                title: 'Bio',
+                showActionButton: true,
+                buttonTitle: "Edit",
+                onPressed: () => Get.to(() => const ChangeBioScreen()),
+              ),
+
+              // bio
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(0),
+                // decoration: BoxDecoration(
+                //   color: TColors.white,
+                //   borderRadius: BorderRadius.circular(10),
+                //   border: Border.all(color: TColors.textPrimary),
+                // ),
+                child: Obx(
+                  () => Text(
+                    controller.user.value.profile!.bio!,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+              ),
               const SizedBox(
                 height: TSizes.spaceBtwItems,
               ),
-              const SectionHeading(
+
+              // Profile Information
+              SectionHeading(
                 title: 'Profile Information',
-                showActionButton: false,
+                showActionButton: true,
+                onPressed: () => Get.to(() => const ChangeProfileInformation()),
+                buttonTitle: "Edit",
               ),
               const SizedBox(
                 height: TSizes.spaceBtwItems,
@@ -63,16 +98,25 @@ class ProfileScreen extends StatelessWidget {
 
               ProfileMenu(
                 title: 'Name',
-                value: 'user',
-                onTap: () {},
+                value: controller.user.value.fullName,
+                onTap: () => Get.to(() => const ChangeProfileInformation()),
               ),
               ProfileMenu(
                 title: 'Username',
-                value: 'user_name',
+                value: controller.user.value.name!,
+                onTap: () => Get.to(() => const ChangePersonalInformation()),
+              ),
+              ProfileMenu(
+                title: 'Phone',
+                value: controller.user.value.phone!,
+                onTap: () => Get.to(() => const ChangePersonalInformation()),
+              ),
+              ProfileMenu(
+                title: 'Email',
+                value: controller.user.value.email!,
                 onTap: () {},
               ),
-
-              const SizedBox(
+              const SizedBox( 
                 height: TSizes.spaceBtwItems,
               ),
               const Divider(),
@@ -81,33 +125,57 @@ class ProfileScreen extends StatelessWidget {
               ),
 
               // Heading Personal Information
-              const SectionHeading(
+              SectionHeading(
                 title: 'Personal Information',
-                showActionButton: false,
+                showActionButton: true,
+                buttonTitle: "Edit",
+                onPressed: () =>
+                    Get.to(() => const ChangePersonalInformation()),
+                
               ),
               const SizedBox(
                 height: TSizes.spaceBtwItems,
               ),
 
               ProfileMenu(
+                title: 'Status Koas',
+                value: controller.user.value.koasProfile!.status.toString(),
+                icon: Iconsax.info_circle,
+                color: controller.setStatusColor(),
+                showIcon: true,
+                onTap: () {},
+              ),
+              ProfileMenu(
                 title: 'User ID',
-                value: '12345',
+                value: controller.user.value.id!,
                 icon: Iconsax.copy,
                 onTap: () {},
               ),
               ProfileMenu(
-                title: 'Email',
-                value: 'user@app.com',
+                title: 'Koas Number',
+                value: controller.user.value.profile!.koasNumber!,
+                icon: Iconsax.copy,
+                onTap: () {},
+              ),
+
+              ProfileMenu(
+                title: 'University',
+                value: controller.user.value.profile!.university!,
                 onTap: () {},
               ),
               ProfileMenu(
-                title: 'Phone',
-                value: 'user_phone',
+                title: 'Department',
+                value: controller.user.value.profile!.departement!,
+                onTap: () {},
+              ),
+              ProfileMenu(
+                title: 'Age',
+                value: controller.user.value.profile!.age!,
                 onTap: () {},
               ),
               ProfileMenu(
                 title: 'Gender',
-                value: 'Man',
+                value: controller.user.value.profile!.gender!,
                 onTap: () {},
               ),
               const Divider(),

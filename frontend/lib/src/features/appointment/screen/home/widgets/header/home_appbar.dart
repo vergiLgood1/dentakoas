@@ -25,6 +25,9 @@ class HomeAppBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Obx(() {
+            if (controller.profileLoading.value) {
+              return const TShimmerEffect(widht: 80, height: 15);
+            } else {
             final greeting = controller.updateGreetingMessage();
             return Text(
               greeting,
@@ -33,13 +36,14 @@ class HomeAppBar extends StatelessWidget {
                 .labelMedium!
                 .apply(color: TColors.black),
             );
+            }
           }),
           Obx(() {
             if (controller.profileLoading.value) {
               return const TShimmerEffect(widht: 80, height: 15);
             } else {
               return Text(
-                controller.user.value!.fullName,
+                controller.user.value.fullName,
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall!

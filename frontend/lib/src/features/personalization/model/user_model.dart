@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:denta_koas/src/features/personalization/model/fasilitator_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
@@ -11,6 +12,7 @@ class UserModel {
   final String? familyName;
   final String? name;
   final String? email;
+  final String? gender;
   final DateTime? emailVerified;
   final String? password;
   final String? confirmPassword;
@@ -30,6 +32,7 @@ class UserModel {
     this.givenName,
     this.familyName,
     this.name,
+    this.gender,
     this.email,
     this.emailVerified,
     this.password,
@@ -46,10 +49,22 @@ class UserModel {
   // Helper to get the full name
   String get fullName => '$givenName $familyName';
 
+  // Helper to set random the name
+  String get setUsername =>
+      '${givenName?.toLowerCase()}_${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}';
+
   // Helper function to format the phone number
   String get formattedPhoneNo => TFormatter.formatPhoneNumber(phone!);
 
   static List<String> nameParts(fullname) => fullname.split(' ');
+
+  // Getter to get the active profile dynamically
+  dynamic get profile {
+    if (koasProfile != null) return koasProfile;
+    if (pasienProfile != null) return pasienProfile;
+    if (fasilitatorProfile != null) return fasilitatorProfile;
+    return null; // No profile found
+  }
 
   // Static function to create an empty user model
   static UserModel empty() {
@@ -75,6 +90,7 @@ class UserModel {
       'id': id,
       'givenName': givenName,
       'familyName': familyName,
+      'name': name,
       'email': email,
       'password': password,
       'confirmPassword': confirmPassword,
@@ -106,6 +122,8 @@ class UserModel {
       'id': id,
       'givenName': givenName,
       'familyName': familyName,
+      'name': name,
+      'gender': gender,
       'email': email,
       'phone': phone,
       'image': image,
@@ -142,6 +160,7 @@ class UserModel {
       id: json['id'],
       givenName: json['givenName'] ?? '', // Default to empty string if null
       familyName: json['familyName'] ?? '',
+      name: json['name'] ?? '',
       email: json['email'] ?? '',
       emailVerified:
           json['emailVerified'] != null && json['emailVerified'] is String
@@ -163,6 +182,34 @@ class UserModel {
           ? FasilitatorProfileModel.fromJson(json['FasilitatorProfile'])
           : FasilitatorProfileModel.empty(),
     );
+  }
+
+  factory UserModel.fromSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> document) {
+    if (document.data() != null) {
+      final data = document.data();
+
+      return UserModel(
+        id: document.id,
+        givenName: data!['givenName'] ?? '',
+        familyName: data['familyName'] ?? '',
+        name: data['name'] ?? '',
+        gender: data['gender'] ?? '',
+        email: data['email'] ?? '',
+        emailVerified:
+            data['emailVerified'] != null && data['emailVerified'] is String
+                ? DateTime.tryParse(
+                    data['emailVerified']) // Safely parse only if it's a string
+                : null,
+        password: data['password'] ?? '',
+        address: data['address'] ?? '',
+        phone: data['phone'] ?? '',
+        image: data['image'] ?? '',
+        role: data['role'] ?? '',
+      );
+    } else {
+      return UserModel.empty();
+    }
   }
 
   Map<String, dynamic> toMap() {

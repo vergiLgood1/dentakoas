@@ -1,12 +1,12 @@
 class PasienProfileModel {
-  final String age;
-  final String gender;
+  final String? age;
+  final String? gender;
   final String? bio;
   final String userId;
 
   PasienProfileModel({
-    required this.age,
-    required this.gender,
+    this.age,
+    this.gender,
     this.bio,
     this.userId = '',
   });

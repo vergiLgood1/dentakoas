@@ -1,21 +1,23 @@
 class KoasProfileModel {
-  final String koasNumber;
-  final String age;
-  final String gender;
-  final String departement;
-  final String university;
+  final String? koasNumber;
+  final String? age;
+  final String? gender;
+  final String? departement;
+  final String? university;
   final String? bio;
   final String? whatsappLink;
+  final Object? status;
 
 
   KoasProfileModel({
-    required this.koasNumber,
-    required this.age,
-    required this.gender,
-    required this.departement,
-    required this.university,
+    this.koasNumber,
+    this.age,
+    this.gender,
+    this.departement,
+    this.university,
     this.bio,
     this.whatsappLink,
+    this.status,
 
   });
 
@@ -29,6 +31,7 @@ class KoasProfileModel {
       university: '',
       bio: '',
       whatsappLink: '',
+      status: '',
     );
   }
 
@@ -41,6 +44,7 @@ class KoasProfileModel {
       'university': university,
       'bio': bio,
       'whatsappLink': whatsappLink,
+      'status': status ?? 'Pending',
     };
   }
 
@@ -53,6 +57,7 @@ class KoasProfileModel {
       university: json['university'] ?? '',
       bio: json['bio'] ?? '',
       whatsappLink: json['whatsappLink'] ?? '',
+      status: json['status'] ?? '',
     );
   }
 }

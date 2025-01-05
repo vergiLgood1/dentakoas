@@ -151,35 +151,48 @@ export async function PATCH(
 
     // Create the profile based on the user role
     if (existingUser.role === Role.Koas) {
+
+      const existingUser = await db.koasProfile.findUnique({
+        where: { userId },
+      });
+
       profile = await db.koasProfile.update({
         where: { userId },
         data: {
-          koasNumber: koasNumber,
-          age: age,
-          gender: gender,
-          departement: departement,
-          university: university, // Relasi ke universitas
-          bio: bio,
-          whatsappLink: whatsappLink,
-          status: status,
+          koasNumber: koasNumber ?? existingUser?.koasNumber,
+          age: age ?? existingUser?.age,
+          gender: gender ?? existingUser?.gender,
+          departement: departement ?? existingUser?.departement,
+          university: university ?? existingUser?.university, // Relasi ke universitas
+          bio: bio ?? existingUser?.bio,
+          whatsappLink: whatsappLink ?? existingUser?.whatsappLink,
+          status: status ?? existingUser?.status,
           user: { connect: { id: userId } },
         } as Prisma.KoasProfileUpdateInput,
       });
     } else if (existingUser.role === Role.Pasien) {
+
+      const existingUser = await db.pasienProfile.findUnique({
+        where: { userId },
+      });
+
       profile = await db.pasienProfile.update({
         where: { userId },
         data: {
-          age: age,
-          gender: gender,
-          bio: bio,
+          age: age ?? existingUser?.age,
+          gender: gender ?? existingUser?.gender,
+          bio: bio ?? existingUser?.bio,
           user: { connect: { id: userId } },
         } as Prisma.PasienProfileUpdateInput,
       });
     } else if (existingUser.role === Role.Fasilitator) {
+      const existingUser = await db.fasilitatorProfile.findUnique({
+        where: { userId },
+      });
       profile = await db.fasilitatorProfile.update({
         where: { userId },
         data: {
-          university: university,
+          university: university ?? existingUser?.university,
           user: { connect: { id: userId } },
         } as Prisma.FasilitatorProfileUpdateInput,
       });
