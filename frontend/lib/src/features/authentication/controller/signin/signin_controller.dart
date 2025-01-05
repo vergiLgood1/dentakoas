@@ -1,5 +1,7 @@
 import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
 import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
@@ -7,6 +9,7 @@ import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:logger/logger.dart';
 
 class SigninController extends GetxController {
   // -- Variables
@@ -21,6 +24,8 @@ class SigninController extends GetxController {
   GlobalKey<FormState> signinFormKey = GlobalKey<FormState>();
 
   final userController = Get.put(UserController());
+
+  final storage = GetStorage();
 
   @override
   void onInit() {
@@ -38,7 +43,7 @@ class SigninController extends GetxController {
     try {
       // Start loading
       TFullScreenLoader.openLoadingDialog(
-          'Logging you in....', TImages.amongUsLoading);
+          'Logging you in....', TImages.loadingHealth);
 
       // Check connection
       final isConected = await NetworkManager.instance.isConnected();
@@ -82,7 +87,7 @@ class SigninController extends GetxController {
     try {
       // Start loading
       TFullScreenLoader.openLoadingDialog(
-          'Logging you in....', TImages.amongUsLoading);
+          'Logging you in....', TImages.loadingHealth);
 
       // Check connection
       final isConected = await NetworkManager.instance.isConnected();
@@ -91,12 +96,37 @@ class SigninController extends GetxController {
         return;
       }
 
-      // Login with Google
+      // Login with Google and save user data in Firebase Authtentication
       final userCredentials =
           await AuthenticationRepository.instance.signInWithGoogle();
 
-      // Save user record
-      await userController.saveUserWithGoogle(userCredentials);
+      // Save user record to the database
+      final nameParts =
+          UserModel.nameParts(userCredentials.user!.displayName ?? '');
+
+      final role = storage.read('TEMP_ROLE');
+
+      // Map user data
+      final user = UserModel(
+        id: userCredentials.user!.uid,
+        givenName: nameParts[0],
+        familyName: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
+        email: userCredentials.user!.email ?? '',
+        phone: userCredentials.user!.phoneNumber,
+        image: userCredentials.user!.photoURL,
+        role: role,
+      );
+
+      // Logger().w(['User Data: $user']);
+
+      // Initialize user repository
+      final userRepository = Get.put(UserRepository());
+
+      // Save user to firestore authentication
+      await userRepository.saveAuthUser(user);
+
+      // Save user data
+      await userRepository.saveUserRecord(user);
 
       // Stop loading
       TFullScreenLoader.stopLoading();

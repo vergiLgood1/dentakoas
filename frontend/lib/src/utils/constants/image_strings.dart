@@ -46,8 +46,14 @@ class TImages {
       "assets/images/animations/amongus-loading.json";
   static const String successfullySignedUp =
       "assets/images/animations/verify_succes.json";
+  static const String emailVerificationSuccess =
+      "assets/images/animations/loading-health.json";
   static const String successfullyResetPassword =
-      "assets/images/animations/reset-password.json";
+      "assets/images/animations/password-reset-2.json";
+
+  static const String loadingHealth = "assets/images/animations/email.json";
+  static const String setupProfileSuccess =
+      "assets/images/animations/setup-profile.json";
  
 
   // -- OnBoarding Texts
@@ -85,9 +91,6 @@ class TImages {
   static const String successCreatePost =
       "assets/images/on_boarding_images/High-Five-1--Streamline-Brooklyn.png";
  
-
-
-  
 
   // -- Products
   static const String productImage1 = "assets/images/products/nike-shoes.png";

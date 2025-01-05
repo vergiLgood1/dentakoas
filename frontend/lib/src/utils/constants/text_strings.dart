@@ -67,12 +67,27 @@ class TTexts {
   static const String yourAccountCreatedSubTitle =
       "Welcome to Appointment Denta Koas! Schedule an appointment with your preferred dentist.";
 
+  static const String verificatonEmailSuccessTitle =
+      "Congratulations! Email Verified";
+  static const String verificatonEmailSuccessSubTitle =
+      "Your email has been verified successfully. Please Setup Profile for Additonal Information.";
+
+  static const String successfullyResetPasswordTitle = "Congratulations!";
+  static const String successfullyResetPasswordSubTitle =
+      "Your password has been reset successfully. Please login with your new password!.";
   static const String notReceivingCode = "Not receiving the code?";
   static const String resendCode = "Resend Code";
 
   static const String resetYourPasswordTitle = "Reset Your Password";
   static const String resetYourPasswordSubTitle =
       "Enter your new password and confirm it to reset.";
+
+  static const String successfullySendEmailResetPasswordTitle =
+      "Email Sent Successfully!";
+  static const String successfullySendEmailResetPasswordSubTitle =
+      "Please check your email for the password reset link. If you don't see it, check your spam folder.";
+  static const String notReceiveEmailResetPassword =
+      "Didn't receive the email?";
 
   // -- Product
   static const String popularProducts = "Popular Services";

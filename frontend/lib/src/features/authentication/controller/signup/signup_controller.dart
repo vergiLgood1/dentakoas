@@ -6,7 +6,6 @@ import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
 import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -37,7 +36,7 @@ class SignUpController extends GetxController {
     try {
       // Start loading
       TFullScreenLoader.openLoadingDialog(
-          'Processing your information....', TImages.amongUsLoading);
+          'Processing your information....', TImages.loadingHealth);
 
       // Check connection
       final isConected = await NetworkManager.instance.isConnected();
@@ -68,9 +67,19 @@ class SignUpController extends GetxController {
       final userCredentials = await AuthenticationRepository.instance
           .signUpWithCredential(email.text.trim(), password.text.trim());
       
-
       // Get user role
-      final role = storage.read('SELECTED_ROLE');
+      final role = storage.read('TEMP_ROLE');
+
+      // Initialize new auth user
+      final newAuthUser = UserModel(
+        id: userCredentials.user!.uid,
+        givenName: firstName.text.trim(),
+        familyName: lastName.text.trim(),
+        email: email.text.trim(),
+        phone: phoneNumber.text.trim(),
+        address: '',
+        role: role.toString().trim(),
+      );
 
       // Save user data in database
       final newUser = UserModel(
@@ -81,15 +90,16 @@ class SignUpController extends GetxController {
         password: password.text.trim(),
         confirmPassword: confirmPassword.text.trim(),
         phone: phoneNumber.text.trim(),
+        address: '',
         role: role.toString().trim(),
       );
 
-      // debug
-      if (kDebugMode) {
-        print("Data to be sent: ${newUser.toJson()}");
-      }
-
       final userRepository = Get.put(UserRepository());
+
+      // Save auth user to firestore
+      await userRepository.saveAuthUser(newAuthUser);
+
+      // Save user record to database
       await userRepository.saveUserRecord(newUser);
 
       // Remove loading

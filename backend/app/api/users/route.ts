@@ -12,6 +12,10 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const query: UserQueryString = parseSearchParams(searchParams);
 
+  const isKoas = Role.Koas;
+  const isPasien = Role.Pasien;
+  const isFasilitator = Role.Fasilitator;
+
   try {
     const user = await db.user.findMany({
       where: {
@@ -20,7 +24,11 @@ export async function GET(req: Request) {
       orderBy: {
         name: "asc",
       },
-      include: { KoasProfile: true, PasienProfile: true },
+      include: {
+        KoasProfile: true,
+        PasienProfile: true,
+        FasilitatorProfile: true,
+      },
     });
 
     const filtereduser = user.map((user) => {
@@ -28,20 +36,28 @@ export async function GET(req: Request) {
         return {
           ...user,
           PasienProfile: undefined, // sembunyikan pasien profile
+          FasilitatorProfile: undefined, // sembunyikan fasilitator profile
         };
       } else if (user.role === Role.Pasien) {
         return {
           ...user,
-          koasProfile: undefined, // sembunyikan koas profile
+          KoasProfile: undefined, // sembunyikan koas profile
+          FasilitatorProfile: undefined, // sembunyikan fasilitator profile
+        };
+      } else if (user.role === Role.Fasilitator) {
+        return {
+          ...user,
+          KoasProfile: undefined, // sembunyikan koas profile
+          PasienProfile: undefined, // sembunyikan pasien profile
         };
       } else {
         return {
           ...user,
-          koasProfile: undefined,
-          PasienProfile: undefined,
+          KoasProfile: undefined, // sembunyikan koas profile
+          PasienProfile: undefined, // sembunyikan pasien profile
+          FasilitatorProfile: undefined, // sembunyikan fasilitator profile
         };
       }
-      // return user
     });
 
     return NextResponse.json(
@@ -77,7 +93,10 @@ export async function POST(req: Request) {
 
   console.log("Received Body:", body);
 
-  const isOauth = password === null;
+  const isOauth =
+    password === null ||
+    (password === undefined && role === null) ||
+    role === undefined;
 
   let hash = null;
   // const validateFields = SignUpSchema.safeParse(body);
@@ -86,23 +105,9 @@ export async function POST(req: Request) {
   //   return NextResponse.json({ error: validateFields.error }, { status: 400 });
   // }
 
-  if (isOauth && password !== null) {
-    return NextResponse.json(
-      { error: "OAuth users should not provide a password." },
-      { status: 400 }
-    );
-  }
-
-  if (!isOauth && (!password || password.trim() === "")) {
-    return NextResponse.json(
-      { error: "Password is required for non-OAuth users." },
-      { status: 400 }
-    );
-  }
-
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
-    // console.log(`Attempted signup with existing email: ${email}`);
+    console.log(`Attempted signup with existing email: ${email}`);
     return NextResponse.json(
       { error: "Email already in use." },
       { status: 400 }
@@ -142,6 +147,13 @@ export async function POST(req: Request) {
           userId: newUser.id,
         },
       });
+    } else {
+      await db.fasilitatorProfile.create({
+        data: {
+          ...profile,
+          userId: newUser.id,
+        },
+      });
     }
 
     if (isOauth)
@@ -159,10 +171,29 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating user", error);
+    if (error instanceof Error) {
+      console.log("Error: ", error.stack);
+    }
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    await db.user.deleteMany({});
+
+    return NextResponse.json(
+      {
+        status: "Success",
+        message: "All users deleted successfully",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting all users", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
     );
   }
 }
+

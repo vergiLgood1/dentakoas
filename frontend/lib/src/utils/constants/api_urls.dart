@@ -1,6 +1,6 @@
 class Endpoints {
   // Base URL
-  static const String baseUrl = 'http://192.168.1.5:3000/api';
+  static const String baseUrl = 'http://192.168.1.6:3000/api';
 
   static const String baseAuthUrl = '$baseUrl/auth';
   static const String baseAuthSignin = '$baseAuthUrl/signin';
@@ -18,8 +18,11 @@ class Endpoints {
   static const String createNewVerificationToken =
       '$baseAuthUrl/new-verification';
   static const String verifyEmail = '$baseAuthUrl/email-verify';
-  static const String resetPassword = '$baseAuthUrl/reset-password';
+  static const String sendEmailResetPassword = '$baseAuthUrl/reset-password';
   static const String compareOtpResetPassword = '$baseAuthUrl/verification-otp';
+
+  static String isEmailExist(String email) =>
+      '$baseUrl/users/is-email-exist?email=$email';
 
   static const String session = '$baseAuthUrl/session';
   static const String csrf = '$baseAuthUrl/csrf';
@@ -28,8 +31,13 @@ class Endpoints {
 
   // User Endpoints
   static const String users = '$baseUrl/users';
-  static const String user = '$baseUrl/users/';
+  static String userDetail(String id) => '$baseUrl/users/$id';
   static String userProfile(String id) => '$baseUrl/users/$id/profile';
+  static String resetPassword(String id) => '$baseUrl/users/$id/reset-password';
+
+  // University Endpoints
+  static const String universities = '$baseUrl/universities';
+  static String university(String id) => '$baseUrl/universities/$id';
 
   // Post Endpoints
   static const String posts = '$baseUrl/posts/';

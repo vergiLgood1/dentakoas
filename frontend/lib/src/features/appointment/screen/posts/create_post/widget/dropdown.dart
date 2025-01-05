@@ -9,6 +9,7 @@ class DDropdownMenu extends StatelessWidget {
   final String hintText;
   final IconData prefixIcon;
   final String? disabledItem;
+  final String? Function(String?)? validator;
   final void Function(String?)? onChanged;
 
   const DDropdownMenu({
@@ -19,11 +20,13 @@ class DDropdownMenu extends StatelessWidget {
     this.disabledItem,
     this.onChanged,
     this.selectedItem,
+    this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownSearch<String>(
+      validator: validator,
       suffixProps: const DropdownSuffixProps(
         dropdownButtonProps: DropdownButtonProps(
           iconClosed: Icon(CupertinoIcons.chevron_down),

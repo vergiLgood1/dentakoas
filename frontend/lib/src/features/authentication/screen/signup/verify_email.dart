@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
 import 'package:denta_koas/src/features/authentication/controller/signup/verify_email_controller.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
@@ -18,10 +19,10 @@ class VerifyEmailScreen extends StatelessWidget {
     final controller = Get.put(VerifyEmailController());
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: DAppBar(
         actions: [
           IconButton(
-            onPressed: () => AuthenticationRepository.instance.signOut,
+            onPressed: () => AuthenticationRepository.instance.signOut(),
             icon: const Icon(CupertinoIcons.clear),
           )
         ],

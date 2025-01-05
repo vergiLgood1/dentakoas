@@ -1,5 +1,4 @@
 import 'package:denta_koas/src/features/authentication/controller/signup/role_controller.dart';
-import 'package:denta_koas/src/features/authentication/screen/signup/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -58,15 +57,7 @@ class ChooseRolePage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  
-                  // Set the selected role to the storage
-                  controller.setSelectedRole();
-
-                  // Navigasi ke halaman berikutnya
-                  Get.to(() => const SignupScreen());
-                  
-                },
+                onPressed: () => controller.setSelectedRole(),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(16),
                 ),

@@ -95,7 +95,7 @@ export function parseSearchParams(
  */
 export async function setHashPassword(
   password: string | undefined,
-  existingHash: string
+  existingHash: string | undefined | null
 ) {
   return password ? await bcrpyt.hash(password, 12) : existingHash;
 }

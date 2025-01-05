@@ -48,16 +48,16 @@ class ResetPasswordScreen extends StatelessWidget {
                 () => TextFormField(
                   controller: controller.newPassword,
                   validator: (value) => TValidator.validatePassword(value),
-                  obscureText: controller.hideConfirmPassword.value,
+                  obscureText: controller.hidePassword.value,
                   expands: false,
                   decoration: InputDecoration(
                     labelText: TTexts.password,
                     prefixIcon: const Icon(Iconsax.password_check),
                     suffixIcon: IconButton(
-                      onPressed: () => controller.hideConfirmPassword.value =
-                          !controller.hideConfirmPassword.value,
+                      onPressed: () => controller.hidePassword.value =
+                          !controller.hidePassword.value,
                       icon: Icon(
-                        controller.hideConfirmPassword.value
+                        controller.hidePassword.value
                             ? Iconsax.eye_slash
                             : Iconsax.eye,
                       ),

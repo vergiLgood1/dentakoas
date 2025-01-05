@@ -3,10 +3,6 @@ import db from "@/lib/db";
 import { Role } from "@/config/enum";
 import { Prisma } from "@prisma/client";
 import { getUserById } from "@/helpers/user";
-import {
-  getKoasProfileByUserId,
-  getPasienProfileByUserId,
-} from "@/helpers/profile";
 
 export async function GET(
   req: Request,
@@ -18,71 +14,84 @@ export async function GET(
 
   let profile;
 
+  console.log("Received userId", userId);
+
   if (!userId) {
+    console.log("User ID is required");
     return NextResponse.json({ error: "User ID is required" }, { status: 400 });
   }
 
   try {
     const existingUser = await getUserById(userId, undefined, {
       id: true,
-      name: true,
       email: true,
-      phone: true,
-      address: true,
-      image: true,
+      emailVerified: true,
+      password: true,
       role: true,
     });
+
+    const isOauth =
+      existingUser?.password === null ||
+      existingUser?.password === undefined ||
+      existingUser?.password === "";
+
+    console.log("Existing user", existingUser);
 
     if (!existingUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Check user role and respond with the appropriate profile
-    if (existingUser.role === Role.Koas) {
-      profile = await getKoasProfileByUserId(userId, undefined, {
-        id: true,
-        userId: true,
-        koasNumber: true,
-        faculty: true,
-        bio: true,
-        whatsappLink: true,
-        status: true,
+    if (existingUser.role == Role.Koas) {
+      profile = await db.koasProfile.findUnique({
+        where: { userId },
       });
-    } else if (existingUser.role === Role.Pasien) {
-      profile = await getPasienProfileByUserId(userId, undefined, {
-        id: true,
-        userId: true,
-        age: true,
-        gender: true,
-        bio: true,
+    } else if (existingUser.role == Role.Pasien) {
+      profile = await db.pasienProfile.findUnique({
+        where: { userId },
       });
-    } else {
-      return NextResponse.json({ error: "Invalid user role" }, { status: 400 });
+    } else if (existingUser.role == Role.Fasilitator) {
+      profile = await db.fasilitatorProfile.findUnique({
+        where: { userId },
+      });
+    } else if (existingUser.role == Role.Admin) {
+      profile = await db.user.findUnique({
+        where: { id: userId },
+      });
+    } else if (existingUser.role == null) {
+      return NextResponse.json(existingUser, { status: 200 });
     }
 
     if (!profile) {
+      console.log("Existing role : " + existingUser.role);
+      console.log("Profile not found : " + profile);
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
+    const filteredProfile = (() => {
+      switch (existingUser.role) {
+        case Role.Fasilitator:
+          return { FasilitatorProfile: profile };
+        case Role.Koas:
+          return { KoasProfile: profile };
+        case Role.Pasien:
+          return { PasienProfile: profile };
+        default:
+          return { message: "No profile available for this role" };
+      }
+    })();
+
     const user = {
       ...existingUser,
-      profile,
+      ...filteredProfile,
     };
 
-    return NextResponse.json(
-      {
-        status: "Success",
-        message: "Fetch user profile successfully",
-        data: { user },
-      },
-      { status: 200 }
-    );
+    return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error("Error fetching profile:", error);
-    return NextResponse.json(
-      { error: "Error fetching profile" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.log(error.stack);
+      console.error("Failed to create content interaction:", error);
+    }
   }
 }
 
@@ -104,6 +113,14 @@ export async function PATCH(
     whatsappLink,
     status,
   } = body;
+
+  console.log("Received body", body);
+  console.log("Received userId", userId);
+
+  if (typeof age === "string") {
+    body.age = parseInt(age, 10);
+  }
+
   let profile;
 
   if (!userId) {
@@ -141,7 +158,7 @@ export async function PATCH(
           age: age,
           gender: gender,
           departement: departement,
-          university: university,
+          university: university, // Relasi ke universitas
           bio: bio,
           whatsappLink: whatsappLink,
           status: status,
@@ -157,6 +174,14 @@ export async function PATCH(
           bio: bio,
           user: { connect: { id: userId } },
         } as Prisma.PasienProfileUpdateInput,
+      });
+    } else if (existingUser.role === Role.Fasilitator) {
+      profile = await db.fasilitatorProfile.update({
+        where: { userId },
+        data: {
+          university: university,
+          user: { connect: { id: userId } },
+        } as Prisma.FasilitatorProfileUpdateInput,
       });
     } else {
       return NextResponse.json({ error: "Invalid user role" }, { status: 400 });
@@ -176,11 +201,10 @@ export async function PATCH(
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating profile:", error);
-    return NextResponse.json(
-      { error: "Error creating profile" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.log(error.stack);
+      console.error("Failed to create content interaction:", error);
+    }
   }
 }
 
@@ -219,7 +243,7 @@ export async function DELETE(
             age: null,
             gender: null,
             departement: null,
-            university: null,
+            university: { disconnect: true },
             bio: null,
             whatsappLink: null,
             status: "Pending",
@@ -275,11 +299,10 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting profile:", error);
-    return NextResponse.json(
-      { error: "Error deleting profile" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.log(error.stack);
+      console.error("Failed to create content interaction:", error);
+    }
   }
 }
 
@@ -325,7 +348,7 @@ export async function POST(
           age: age,
           gender: gender,
           departement: departement,
-          university: university,
+          university: university, // Relasi ke universitas
           bio: bio,
           whatsappLink: whatsappLink,
         } as Prisma.KoasProfileCreateInput,
@@ -357,10 +380,9 @@ export async function POST(
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating profile:", error);
-    return NextResponse.json(
-      { error: "Error creating profile" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.log(error.stack);
+      console.error("Failed to create content interaction:", error);
+    }
   }
 }

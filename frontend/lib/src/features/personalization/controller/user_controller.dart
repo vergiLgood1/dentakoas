@@ -1,11 +1,11 @@
 import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
-import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:logger/logger.dart';
 
 class UserController extends GetxController {
   static UserController get instance => Get.find();
@@ -31,7 +31,7 @@ class UserController extends GetxController {
     } else if (hour < 18) {
       greetingMsg.value = 'Good Afternoon';
     } else {
-      greetingMsg.value = 'Good Evening';
+      greetingMsg.value = 'Good Night';
     }
     return greetingMsg.value;
   }
@@ -53,36 +53,10 @@ class UserController extends GetxController {
   // Save user who sign in with Google
   Future<void> saveUserWithGoogle(UserCredential userCredentials) async {
     try {
-      // convert Name to first name and last name
-      final nameParts =
-          UserModel.nameParts(userCredentials.user!.displayName ?? '');
-
-      final role = storage.read('SELECTED_ROLE');
-
-      // Map user data
-      final user = UserModel(
-        id: userCredentials.user!.uid,
-        givenName: nameParts[0],
-        familyName: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
-        email: userCredentials.user!.email ?? '',
-        phone: userCredentials.user!.phoneNumber ?? '',
-        image: userCredentials.user!.photoURL,
-        role: role,
-      );
-
-      // Save user data
-      await userRepository.saveUserRecord(user);
-
-      // if (kDebugMode) {
-      //   print("Data to be sent: ${user.toJson()}");
-      // }
+     
     } catch (e) {
-
-
-      TLoaders.warningSnackBar(
-        title: 'Data not saved',
-        message: 'Something went wrong while saving your information',
-      );
+      Logger().e(['Error saving user with Google: $e']);
+      throw e.toString();
     }
   }
 
@@ -100,8 +74,100 @@ class UserController extends GetxController {
       await userRepository.updateUserRecord(id, updatedUser);
     } catch (e) {
       if (kDebugMode) {
-        print(e);
+        Logger().w(e);
       }
     }
   }
+
+  bool hasEmptyFields(Map<String, dynamic> data) {
+    // List of keys to check
+    List<String> keysToCheck = [
+      'FasilitatorProfile',
+      'KoasProfile',
+      'PasienProfile',
+    ];
+
+    for (String key in keysToCheck) {
+      if (data.containsKey(key) && data[key] != null) {
+        Map<String, dynamic> profileData = data[key];
+
+        // Log to check the profile data
+        Logger().i(['Checking fields in $key: $profileData']);
+
+        // Iterate through the fields in the profile
+        for (var entry in profileData.entries) {
+          final fieldKey = entry.key;
+          final fieldValue = entry.value;
+
+          // Check if the field is null or an empty string
+          if (fieldValue == null ||
+              (fieldValue is String && fieldValue.trim().isEmpty) ||
+              (fieldValue is List && fieldValue.isEmpty) ||
+              (fieldValue is Map && fieldValue.isEmpty)) {
+            Logger().i(['Empty field found in $key: $fieldKey']);
+            return true; // Return true if any field is empty
+          }
+        }
+      }
+    }
+
+    return false; // Return false if no empty fields found
+  }
+
+  bool hasEmptyFields2(Map<String, dynamic> data) {
+    for (var entry in data.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
+      // Cek kondisi untuk berbagai tipe data
+      if (value == null ||
+          (value is String && value.trim().isEmpty) ||
+          (value is List && value.isEmpty) ||
+          (value is Map && value.isEmpty)) {
+        print('Field kosong ditemukan pada key: $key, value: $value');
+        return true; // Ada field kosong
+      }
+
+      // Jika nilai adalah Map, cek secara rekursif
+      if (value is Map<String, dynamic>) {
+        final hasEmptyInNested = hasEmptyFields2(value);
+        if (hasEmptyInNested) return true;
+      }
+    }
+
+    return false; // Tidak ada field kosong
+}
+
+bool hasEmptyFields3(Map<String, dynamic> data) {
+  // Daftar key yang akan diperiksa
+  const List<String> keysToCheck = ['koasProfile', 'pasienProfile', 'fasilitatorProfile'];
+
+  for (var entry in data.entries) {
+    final key = entry.key;
+    final value = entry.value;
+
+    // Lewati key yang tidak perlu diperiksa
+    if (!keysToCheck.contains(key)) continue;
+
+    // Cek kondisi untuk berbagai tipe data
+    if (value == null ||
+        (value is String && value.trim().isEmpty) ||
+        (value is List && value.isEmpty) ||
+        (value is Map && value.isEmpty)) {
+      print('Field kosong ditemukan pada key: $key, value: $value');
+      return true; // Ada field kosong
+    }
+
+    // Jika nilai adalah Map, cek secara rekursif
+    if (value is Map<String, dynamic>) {
+      final hasEmptyInNested = hasEmptyFields2(value);
+      if (hasEmptyInNested) return true;
+    }
+  }
+
+  return false; // Tidak ada field kosong
+}
+
+
+
 }

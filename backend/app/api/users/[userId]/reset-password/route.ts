@@ -1,38 +1,43 @@
-import { getUserByEmail, setHashPassword } from "@/helpers/user";
+import bcrypt from "bcryptjs";
 import db from "@/lib/db";
 import { NextResponse } from "next/server";
-import bcrpyt from "bcryptjs";
 
 export async function PATCH(req: Request) {
   try {
+    // Parsing URL untuk mendapatkan userId
+    const url = new URL(req.url);
+    const pathSegments = url.pathname.split("/");
+    const userId = pathSegments[pathSegments.length - 2]; // Elemen sebelum "reset-password"
+
+    console.log("ini adalah userId:", userId);
+
     // Parsing body request
     const body = await req.json();
-    const { email, newPassword } = body;
+    const { password } = body;
 
-    // Validasi input email
-    if (!email || typeof email !== "string") {
+    if (!userId) {
       return NextResponse.json(
-        { error: "Invalid or missing email address." },
+        { error: "Invalid URL. User ID is missing." },
         { status: 400 }
       );
     }
 
-    // Cari user berdasarkan email
-    const existingUser = await getUserByEmail(email);
+    console.log("ini adalah userId:", userId);
 
-    // Jika user tidak ditemukan
-    if (!existingUser?.email) {
-      return NextResponse.json(
-        { error: "User email not found." },
-        { status: 400 }
-      );
+    // Fetch user dari database
+    const existingUser = await db.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!existingUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Hash password
-    const hashedPassword = await bcrpyt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Update data user
-    await db.user.update({
+    const newPasswordUser = await db.user.update({
       where: { id: existingUser.id },
       data: {
         password: hashedPassword,
@@ -42,12 +47,16 @@ export async function PATCH(req: Request) {
     return NextResponse.json({
       success: true,
       message: "Password updated successfully.",
+      data: { user: newPasswordUser },
     });
   } catch (error) {
-    console.error("Error verifying email", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          error: "Internal Server Error : " + error.message,
+        },
+        { status: 500 }
+      );
+    }
   }
 }

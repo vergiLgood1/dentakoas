@@ -1,9 +1,12 @@
 import 'package:denta_koas/navigation_menu.dart';
 import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
 import 'package:denta_koas/src/features/authentication/screen/signin/signin.dart';
+import 'package:denta_koas/src/features/authentication/screen/signup/profile-setup.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/role_option.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/verify_email.dart';
 import 'package:denta_koas/src/features/onboarding/screen/onboarding/onboarding.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/api_urls.dart';
 import 'package:denta_koas/src/utils/dio.client/dio_client.dart';
 import 'package:denta_koas/src/utils/exceptions/exceptions.dart';
@@ -18,6 +21,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
@@ -33,7 +37,7 @@ class AuthenticationRepository extends GetxController {
   void onReady() {
     FlutterNativeSplash.remove();
     screenRedirect();
-    storage.remove('SELECTED_ROLE');
+    // storage.remove('TEMP_ROLE');
   }
 
 screenRedirect() async {
@@ -41,25 +45,32 @@ screenRedirect() async {
     if (user != null) {
       final uid = user.uid;
       final userRepository = Get.put(UserRepository());
+      final userController = Get.put(UserController());
 
-      final role = await userRepository.getRoleById(uid);
+      final userDetail = await userRepository.getUserProfile(uid);
+      final userMap = userDetail.toJson();
 
-      // if (role == null) {
-      //   print('User details not found');
-      //   return;
-      // }
+      final userProfile = filterProfileByRole(userMap);
+      final hasNullField = userController.hasEmptyFields3(userProfile);
 
-      // Debug: Cek nilai role dan emailVerified
-      print('Role: ${role}');
-      print('Email Verified: ${user.emailVerified}');
-
-      if (user.emailVerified && role != null) {
+      final isOauth =
+          userDetail.password!.isEmpty || userDetail.password == null;
+        
+      if (user.emailVerified) {
+        if (userDetail.role == null ||
+            userDetail.role == '' ||
+            isOauth && userDetail.role == null ||
+            userDetail.role == '') {
+          Get.offAll(() => const ChooseRolePage());
+        } else if (userDetail.role != null && hasNullField) {
+          storage.write("TEMP_ROLE", userDetail.role);
+          Get.offAll(() => const ProfileSetupScreen());
+        } else if (userDetail.role != null && !hasNullField) {
         Get.offAll(() => const NavigationMenu());
-      } else if (user.emailVerified && role == null) {
-        Get.offAll(() => const ChooseRolePage());
-      } else if (!user.emailVerified) {
+        }
+      } else {
         Get.offAll(() => const VerifyEmailScreen());
-      } 
+      }
     } else {
       // local storage
       storage.writeIfNull('isFirstTime', true);
@@ -69,6 +80,49 @@ screenRedirect() async {
           : Get.offAll(() => const OnBoardingScreen());
     }
   }
+
+
+  // ----------------- Check if user is exist by email -----------------
+  Future<bool> checkEmailForResetPassword(String email) async {
+    try {
+      // Panggil API untuk memeriksa email
+      final response = await DioClient().get(
+        Endpoints.isEmailExist(email),
+      );
+
+      // Validasi respons
+      if (response.statusCode == 200 && response.data != null) {
+        final isEmailExist = response.data['isEmailExist'];
+        if (isEmailExist is bool) {
+          return isEmailExist;
+        } else {
+          throw const FormatException('Invalid response format from server.');
+        }
+      } else {
+        throw Exception(
+            'Unexpected response from server: ${response.statusCode}');
+      }
+    } on FirebaseAuthException catch (e) {
+      // Tangani error Firebase Auth
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      // Tangani error Firebase lainnya
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      // Tangani custom exception
+      throw TExceptions(e.message);
+    } on FormatException catch (e) {
+      // Tangani kesalahan format respons
+      throw TFormatException(e.message);
+    } on PlatformException catch (e) {
+      // Tangani error platform
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      // Tangani error tak dikenal
+      throw 'Something went wrong. Please try again later.';
+    }
+  }
+
 
 
   // ----------------- Get CSRF -----------------
@@ -92,14 +146,13 @@ screenRedirect() async {
     required String password,
   }) async {
     try {
-      final csrfToken = await AuthenticationRepository.instance.tokenCsrf();
    
       await DioClient().post(
         Endpoints.signinWithCredentials,
         data: {
           'email': email,
           'password': password,
-          'csrfToken': csrfToken,
+           
         },
       );
 
@@ -203,7 +256,7 @@ screenRedirect() async {
     try {
       // await _auth.sendPasswordResetEmail(email: email);
       await DioClient().post(
-        Endpoints.resetPassword,
+        Endpoints.sendEmailResetPassword,
         data: {
           'email': email,
         },
@@ -232,6 +285,62 @@ screenRedirect() async {
           'otp': otp,
         },
       );
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+  }
+
+  // [Email Reset Password] - RESET PASSWORD
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+  }
+
+  Future<String> changePassword(
+      String currentPassword, String newPassword, String email) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      // Reauthenticate the user.
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: email,
+        password: currentPassword,
+      );
+      await user?.reauthenticateWithCredential(credential);
+
+      Logger().i(['User: $user']);
+      Logger().i(['User ID: ${user!.uid}']);
+      Logger().i(['Email: ${user.email}']);
+      Logger().i(['New Password: $newPassword']);
+
+      // If reauthentication is successful, change the password.
+      await user.updatePassword(newPassword);
+
+      // Password changed successfully.
+      return 'Password changed successfully.';
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {

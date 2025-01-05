@@ -24,6 +24,7 @@ export async function GET(
     const existingUser = await getUserById(userId, {
       KoasProfile: true,
       PasienProfile: true,
+      FasilitatorProfile: true,
     });
 
     if (!existingUser) {
@@ -36,26 +37,28 @@ export async function GET(
         return {
           ...existingUser,
           pasienProfile: undefined, // Sembunyikan pasienProfile jika role KOAS
+          fasilitatorProfile: undefined,
         };
       } else if (existingUser.role === Role.Pasien) {
         return {
           ...existingUser,
           KoasProfile: undefined, // Sembunyikan KoasProfile jika role PASIEN
+          fasilitatorProfile: undefined,
         };
-      } else {
+      } else if (existingUser.role === Role.Fasilitator) {
         return {
           ...existingUser,
           KoasProfile: undefined,
           pasienProfile: undefined,
         };
       }
+      return existingUser; // Default jika role tidak dikenali
     })();
 
+    // Filter properti yang undefined atau null
     const filteredUser = Object.fromEntries(
-      Object.entries(user).filter(([key, v]) =>
-        key === "PasienProfile" || key === "KoasProfile"
-          ? v !== undefined && v !== null
-          : true
+      Object.entries(user).filter(
+        ([_, value]) => value !== undefined && value !== null
       )
     );
 
@@ -145,6 +148,8 @@ export async function PATCH(
   const body = await req.json();
   const { givenName, familyName, email, password, phone, role } = body;
 
+  console.log("receive body : ", body);
+
   try {
     if (!userId) {
       return NextResponse.json(
@@ -153,43 +158,117 @@ export async function PATCH(
       );
     }
 
-    const existingUser = await getUserById(userId, {
-      KoasProfile: true,
-      PasienProfile: true,
+    const existingUser = await db.user.findUnique({
+      where: { id: userId },
+      include: {
+        KoasProfile: true,
+        PasienProfile: true,
+        FasilitatorProfile: true,
+      },
     });
+
+    // const isOauth =
+    //   password === null ||
+    //   (password === undefined && existingUser?.emailVerified !== null);
 
     if (!existingUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const hash = await setHashPassword(password, existingUser.password ?? "");
+    const hash = await setHashPassword(password, existingUser.password);
 
+    // Update user dengan data baru
     const user = await db.user.update({
       where: { id: String(userId) },
       data: {
         givenName: givenName || existingUser.givenName,
         familyName: familyName || existingUser.familyName,
         email: email || existingUser.email,
-        password: hash,
+        password: hash || existingUser.password,
         phone: phone || existingUser.phone,
         role: role || existingUser.role,
       } as Prisma.UserUpdateInput,
     });
 
+    if (role === null) {
+      return NextResponse.json(
+        {
+          status: "Success",
+          message: "Update user successfully",
+          data: { ...user },
+        },
+        { status: 200 }
+      );
+    }
+
+    // Operasi untuk menangani profil
+    if (role) {
+      // Hapus profil lama sebelum membuat yang baru jika role berubah
+      if (existingUser.role !== role) {
+        await db.koasProfile.deleteMany({ where: { userId } });
+        await db.pasienProfile.deleteMany({ where: { userId } });
+        await db.fasilitatorProfile.deleteMany({ where: { userId } });
+
+        let newProfile = null;
+
+        // Buat profil baru sesuai role
+        if (role === Role.Koas) {
+          newProfile = await db.koasProfile.create({
+            data: {
+              ...body.profile,
+              userId: userId,
+            },
+          });
+        } else if (role === Role.Pasien) {
+          newProfile = await db.pasienProfile.create({
+            data: {
+              ...body.profile,
+              userId: userId,
+            },
+          });
+        } else if (role === Role.Fasilitator) {
+          newProfile = await db.fasilitatorProfile.create({
+            data: {
+              ...body.profile,
+              userId: userId,
+            },
+          });
+        } else {
+          return NextResponse.json(
+            { error: "Role not found" },
+            { status: 404 }
+          );
+        }
+
+        return NextResponse.json(
+          {
+            status: "Success",
+            message: "Update user successfully",
+            data: { ...user, newProfile },
+          },
+          { status: 200 }
+        );
+      }
+    }
+
     return NextResponse.json(
       {
         status: "Success",
         message: "Update user successfully",
-        data: { user },
+        data: { ...user },
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error updating user", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.error("Error details:", error);
+      return NextResponse.json(
+        {
+          error: "Internal Server Error : " + error.message,
+        },
+        { status: 500 }
+      );
+    }
   }
 }
 
@@ -218,10 +297,9 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting user", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.log(error.stack);
+      console.error("Failed to create content interaction:", error);
+    }
   }
 }

@@ -1,20 +1,26 @@
+import 'dart:convert';
+
+import 'package:denta_koas/src/features/personalization/model/fasilitator_profile.dart';
+import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
+import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
 import 'package:denta_koas/src/utils/formatters/formatter.dart';
 
 class UserModel {
-  String? id;
-  String? givenName;
-  String? familyName;
-  String? name;
-  String? email;
-  DateTime? emailVerified;
-  String? password;
-  String? confirmPassword;
-  String? phone;
-  String? address;
-  String? image;
-  String? role;
-  KoasProfileModel? koasProfile;
-  PasienProfileModel? pasienProfile;
+  final String? id;
+  final String? givenName;
+  final String? familyName;
+  final String? name;
+  final String? email;
+  final DateTime? emailVerified;
+  final String? password;
+  final String? confirmPassword;
+  final String? phone;
+  final String? address;
+  final String? image;
+  final String? role;
+  final KoasProfileModel? koasProfile;
+  final PasienProfileModel? pasienProfile;
+  final FasilitatorProfileModel? fasilitatorProfile;
 
   DateTime? createdAt;
   DateTime? updatedAt;
@@ -34,6 +40,7 @@ class UserModel {
     this.role,
     this.koasProfile,
     this.pasienProfile,
+    this.fasilitatorProfile,
   });
 
   // Helper to get the full name
@@ -43,18 +50,6 @@ class UserModel {
   String get formattedPhoneNo => TFormatter.formatPhoneNumber(phone!);
 
   static List<String> nameParts(fullname) => fullname.split(' ');
-
-  bool hasNullFieldsInProfiles() {
-    // Check if any field in KoasProfile is null
-    final hasNullInKoasProfile =
-        koasProfile!.toJson().values.any((value) => value == null);
-
-    // Check if any field in PasienProfile is null
-    final hasNullInPasienProfile =
-        pasienProfile!.toJson().values.any((value) => value == null);
-
-    return hasNullInKoasProfile || hasNullInPasienProfile;
-  }
 
   // Static function to create an empty user model
   static UserModel empty() {
@@ -76,7 +71,7 @@ class UserModel {
 
   // Convert model to JSON structure for storing data in database
   Map<String, dynamic> toJson() {
-    return {
+    Map<String, dynamic> json = {
       'id': id,
       'givenName': givenName,
       'familyName': familyName,
@@ -87,40 +82,105 @@ class UserModel {
       'address': address,
       'image': image,
       'role': role,
-      'koasProfile': koasProfile?.toJson(),
-      'pasienProfile': pasienProfile?.toJson(),
     };
+
+    switch (role) {
+      case 'Koas':
+        json['koasProfile'] = koasProfile?.toJson();
+        break;
+      case 'Pasien':
+        json['pasienProfile'] = pasienProfile?.toJson();
+        break;
+      case 'Fasilitator':
+        json['fasilitatorProfile'] = fasilitatorProfile?.toJson();
+        break;
+      default:
+        break;
+    }
+
+    return json;
+  }
+
+  Map<String, dynamic> toJsonAuth() {
+    Map<String, dynamic> json = {
+      'id': id,
+      'givenName': givenName,
+      'familyName': familyName,
+      'email': email,
+      'phone': phone,
+      'image': image,
+      'role': role,
+    };
+
+    // switch (role) {
+    //   case 'Koas':
+    //     json['koasProfile'] = koasProfile?.toJson();
+    //     break;
+    //   case 'Pasien':
+    //     json['pasienProfile'] = pasienProfile?.toJson();
+    //     break;
+    //   case 'Fasilitator':
+    //     json['fasilitatorProfile'] = fasilitatorProfile?.toJson();
+    //     break;
+    //   default:
+    //     break;
+    // }
+
+    return json;
   }
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     // Navigate directly to the 'user' object in the 'data' field
-    final userJson = json['data']?['user'];
+    // final jsonFinal = json['data']?['user'] ;
 
-    if (userJson == null) {
-      throw ArgumentError(
-          'User data is missing'); // Handle cases where 'user' is not found
-    }
+    // if (jsonFinal == null) {
+    //   throw ArgumentError(
+    //       'User data is missing'); // Handle cases where 'user' is not found
+    // }
 
     return UserModel(
-      id: userJson['id'],
-      givenName: userJson['givenName'] ?? '', // Default to empty string if null
-      familyName: userJson['familyName'] ?? '',
-      email: userJson['email'] ?? '',
-      emailVerified: userJson['emailVerified'] != null
-          ? DateTime.tryParse(userJson['emailVerified']) // Safely parse date
-          : null,
-      password: userJson['password'] ?? '',
-      confirmPassword: userJson['confirmPassword'] ?? '',
-      phone: userJson['phone'] ?? '',
-      image: userJson['image'] ?? '',
-      role: userJson['role'] ?? '',
-      koasProfile: userJson['KoasProfile'] != null
-          ? KoasProfileModel.fromJson(userJson['KoasProfile'])
+      id: json['id'],
+      givenName: json['givenName'] ?? '', // Default to empty string if null
+      familyName: json['familyName'] ?? '',
+      email: json['email'] ?? '',
+      emailVerified:
+          json['emailVerified'] != null && json['emailVerified'] is String
+              ? DateTime.tryParse(
+                  json['emailVerified']) // Safely parse only if it's a string
+              : null,
+      password: json['password'] ?? '',
+      confirmPassword: json['confirmPassword'] ?? '',
+      phone: json['phone'] ?? '',
+      image: json['image'] ?? '',
+      role: json['role'] ?? '',
+      koasProfile: json['KoasProfile'] != null
+          ? KoasProfileModel.fromJson(json['KoasProfile'])
           : KoasProfileModel.empty(),
-      pasienProfile: userJson['PasienProfile'] != null
-          ? PasienProfileModel.fromJson(userJson['PasienProfile'])
+      pasienProfile: json['PasienProfile'] != null
+          ? PasienProfileModel.fromJson(json['PasienProfile'])
           : PasienProfileModel.empty(),
+      fasilitatorProfile: json['FasilitatorProfile'] != null
+          ? FasilitatorProfileModel.fromJson(json['FasilitatorProfile'])
+          : FasilitatorProfileModel.empty(),
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'givenName': givenName,
+      'familyName': familyName,
+      'email': email,
+      'emailVerified': emailVerified,
+      'password': password,
+      'confirmPassword': confirmPassword,
+      'phone': phone,
+      'address': address,
+      'image': image,
+      'role': role,
+      'koasProfile': koasProfile?.toJson(),
+      'pasienProfile': pasienProfile?.toJson(),
+    };
   }
 }
 
@@ -145,100 +205,39 @@ class UserModel {
 //   }
 // }
 
-class KoasProfileModel {
-  final String koasNumber;
-  final String age;
-  final String gender;
-  final String departement;
-  final String university;
-  final String? bio;
-  final String? whatsappLink;
-  final String status;
+Map<String, dynamic> filterProfileByRole(Map<String, dynamic> data) {
+  String role = data['role'] ?? '';
+  Map<String, dynamic>? filteredProfile;
 
-  KoasProfileModel({
-    required this.koasNumber,
-    required this.age,
-    required this.gender,
-    required this.departement,
-    required this.university,
-    this.bio,
-    this.whatsappLink,
-    this.status = 'Pending',
-  });
-
-  // Static function to create an empty user model
-  static KoasProfileModel empty() {
-    return KoasProfileModel(
-      koasNumber: '',
-      age: '',
-      gender: '',
-      departement: '',
-      university: '',
-      bio: '',
-      whatsappLink: '',
-    );
+  switch (role) {
+    case 'Fasilitator':
+      filteredProfile = {
+        'fasilitatorProfile': data['fasilitatorProfile'] != null
+            ? jsonDecode(data['fasilitatorProfile'])
+            : null,
+      };
+      break;
+    case 'Koas':
+      filteredProfile = {
+        'koasProfile': data['koasProfile'],
+      };
+      break;
+    case 'Pasien':
+      filteredProfile = {
+        'pasienProfile': data['pasienProfile'],
+      };
+      break;
+    default:
+      filteredProfile = {
+        'message': 'No profile available for this role',
+      };
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'koasNumber': koasNumber,
-      'age': age,
-      'gender': gender,
-      'departement': departement,
-      'university': university,
-      'bio': bio,
-      'whatsappLink': whatsappLink,
-      'status': status,
-    };
-  }
-
-  factory KoasProfileModel.fromJson(Map<String, dynamic> json) {
-    return KoasProfileModel(
-      koasNumber: json['koasNumber'] ?? '',
-      age: json['age'] ?? '',
-      gender: json['gender'] ?? '',
-      departement: json['departement'] ?? '',
-      university: json['university'] ?? '',
-      bio: json['bio'] ?? '',
-      whatsappLink: json['whatsappLink'] ?? '',
-      status: json['status'],
-    );
-  }
-}
-
-class PasienProfileModel {
-  final String age;
-  final String gender;
-  final String? bio;
-
-  PasienProfileModel({
-    required this.age,
-    required this.gender,
-    this.bio,
-  });
-
-  // Static function to create an empty user model
-  static PasienProfileModel empty() {
-    return PasienProfileModel(
-      age: '',
-      gender: '',
-      bio: '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'age': age,
-      'gender': gender,
-      'bio': bio,
-    };
-  }
-
-  factory PasienProfileModel.fromJson(Map<String, dynamic> json) {
-    return PasienProfileModel(
-      age: json['age'] ?? '',
-      gender: json['gender'] ?? '',
-      bio: json['bio'],
-    );
-  }
+  return {
+    'id': data['id'],
+    'email': data['email'],
+    'password': data['password'],
+    'role': role,
+    ...filteredProfile, // Spread the filtered profile into the result
+  };
 }

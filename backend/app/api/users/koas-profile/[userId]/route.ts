@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
-export async function GET(req: Request, props: { params: Promise<{ userId: string }> }) {
+export async function GET(
+  req: Request,
+  props: { params: Promise<{ userId: string }> }
+) {
   const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
@@ -12,8 +15,18 @@ export async function GET(req: Request, props: { params: Promise<{ userId: strin
       where: {
         id: userId,
       },
-      include: {
-        KoasProfile: true,
+      select: {
+        KoasProfile: {
+          select: {
+            id: true,
+            userId: true,
+            koasNumber: true,
+            departement: true,
+            bio: true,
+            whatsappLink: true,
+            status: true,
+          },
+        },
       },
     });
 
@@ -31,13 +44,16 @@ export async function GET(req: Request, props: { params: Promise<{ userId: strin
   }
 }
 
-export async function POST(req: Request, props: { params: Promise<{ userId: string }> }) {
+export async function POST(
+  req: Request,
+  props: { params: Promise<{ userId: string }> }
+) {
   const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
 
   const body = await req.json();
-  const { koasNumber, faculty, bio, whatsappLink } = body;
+  const { koasNumber, departement, bio, whatsappLink } = body;
 
   try {
     if (!userId) {
@@ -50,7 +66,7 @@ export async function POST(req: Request, props: { params: Promise<{ userId: stri
     const KoasProfile = await db.koasProfile.create({
       data: {
         koasNumber,
-        faculty,
+        departement,
         bio,
         whatsappLink,
         user: { connect: { id: userId } },
@@ -67,7 +83,10 @@ export async function POST(req: Request, props: { params: Promise<{ userId: stri
   }
 }
 
-export async function PATCH(req: Request, props: { params: Promise<{ userId: string }> }) {
+export async function PATCH(
+  req: Request,
+  props: { params: Promise<{ userId: string }> }
+) {
   const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
@@ -97,7 +116,7 @@ export async function PATCH(req: Request, props: { params: Promise<{ userId: str
       where: { userId: String(userId) },
       data: {
         koasNumber: body.koasNumber ?? user.KoasProfile.koasNumber,
-        faculty: body.faculty ?? user.KoasProfile.faculty,
+        departement: body.departement ?? user.KoasProfile.departement,
         bio: body.bio ?? user.KoasProfile.bio,
         whatsappLink: body.whatsappLink ?? user.KoasProfile.whatsappLink,
         status: body.status ?? user.KoasProfile.status,
@@ -117,7 +136,10 @@ export async function PATCH(req: Request, props: { params: Promise<{ userId: str
   }
 }
 
-export async function PUT(req: Request, props: { params: Promise<{ userId: string }> }) {
+export async function PUT(
+  req: Request,
+  props: { params: Promise<{ userId: string }> }
+) {
   const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("id") || params.userId;
@@ -147,7 +169,7 @@ export async function PUT(req: Request, props: { params: Promise<{ userId: strin
       where: { userId: String(userId) },
       data: {
         koasNumber: body.koasNumber,
-        faculty: body.faculty,
+        departement: body.departement,
         bio: body.bio,
         whatsappLink: body.whatsappLink,
         status: body.status,
@@ -164,7 +186,10 @@ export async function PUT(req: Request, props: { params: Promise<{ userId: strin
   }
 }
 
-export async function DELETE(req: Request, props: { params: Promise<{ userId: string }> }) {
+export async function DELETE(
+  req: Request,
+  props: { params: Promise<{ userId: string }> }
+) {
   const params = await props.params;
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId") || params.userId;
@@ -202,10 +227,10 @@ export async function DELETE(req: Request, props: { params: Promise<{ userId: st
         },
         data: {
           koasNumber: null,
-          faculty: null,
+          departement: null,
           bio: null,
           whatsappLink: null,
-        } as Prisma.PasienProfileUpdateInput,
+        } as Prisma.KoasProfileUpdateInput,
       });
 
       return NextResponse.json(

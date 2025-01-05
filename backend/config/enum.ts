@@ -3,6 +3,7 @@ export enum Role {
   Pasien = "Pasien",
   Koas = "Koas",
   Admin = "Admin",
+  Fasilitator = "Fasilitator",
 }
 
 // Enum for Gender (if applicable)

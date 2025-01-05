@@ -138,20 +138,22 @@ model Otp {
 }
 
 model KoasProfile {
-  id           String     @id @default(cuid())
-  userId       String     @unique @map("user_id")
-  koasNumber   String?    @unique @map("koas_number")
-  age          String?
-  gender       String?
-  departement  String?
-  university   University @relation(fields: [id], references: [id])
+  id          String  @id @default(cuid())
+  userId      String  @unique @map("user_id")
+  koasNumber  String? @unique @map("koas_number")
+  age         String?
+  gender      String?
+  departement String?
+  university  String?
+
   bio          String?
   whatsappLink String?    @map("whatsapp_link")
   status       StatusKoas @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   createdAt    DateTime   @default(now()) @map("created_at")
   updateAt     DateTime   @updatedAt @map("updated_at")
 
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   Post        Post[]
   Appointment Appointment[]
 
@@ -161,7 +163,7 @@ model KoasProfile {
 model PasienProfile {
   id        String   @id @default(cuid())
   userId    String   @unique @map("user_id")
-  age       Int?
+  age       String?
   gender    String? // enum dapat ditambahkan jika ada daftar nilai yang terbatas
   bio       String?
   createdAt DateTime @default(now()) @map("created_at")
@@ -174,23 +176,21 @@ model PasienProfile {
 }
 
 model FasilitatorProfile {
-  id     String @id @default(cuid())
-  userId String @unique @map("user_id")
-
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  university University @relation(fields: [id], references: [id])
+  id         String  @id @default(cuid())
+  userId     String  @unique @map("user_id")
+  university String?
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("fasilitator-profile")
 }
 
 model University {
-  id                 String               @id @default(cuid())
-  name               String
-  alias              String
-  createdAt          DateTime             @default(now()) @map("created_at")
-  updateAt           DateTime             @updatedAt @map("updated_at")
-  FasilitatorProfile FasilitatorProfile[]
-  KoasProfile        KoasProfile[]
+  id        String   @id @default(cuid())
+  name      String
+  alias     String
+  location  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt @map("updated_at")
 
   @@map("universities")
 }

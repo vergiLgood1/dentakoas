@@ -8,7 +8,6 @@ import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
@@ -17,14 +16,8 @@ class SignupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
   
     return Scaffold(
-      appBar: DAppBar(
+      appBar: const DAppBar(
         showBackArrow: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Iconsax.arrow_left),
-            onPressed: () => Get.back(),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

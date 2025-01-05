@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
+import 'package:denta_koas/src/features/authentication/screen/signup/profile-setup.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
@@ -45,6 +46,7 @@ class VerifyEmailController extends GetxController {
         // await FirebaseAuth.instance.currentUser!.reload();
         // final email = FirebaseAuth.instance.currentUser!.email;
 
+  
         await FirebaseAuth.instance.currentUser!.reload();
         final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -56,14 +58,16 @@ class VerifyEmailController extends GetxController {
           timer.cancel(); 
           Get.off(
             () => StateScreen(
-              image: TImages.successfullySignedUp,
-              title: TTexts.yourAccountCreatedTitle,
-              subtitle: TTexts.yourAccountCreatedSubTitle,
+              image: TImages.emailVerificationSuccess,
+              title: TTexts.verificatonEmailSuccessTitle,
+              subtitle: TTexts.verificatonEmailSuccessSubTitle,
               showButton: true,
               isLottie: true,
-              primaryButtonTitle: TTexts.tContinue,
+              secondaryTitle: "Complete Profile",
               onPressed: () =>
                   AuthenticationRepository.instance.screenRedirect(),
+              onSecondaryPressed: () =>
+                  Get.to(() => const ProfileSetupScreen()),
             ),
           );
         }
@@ -78,13 +82,16 @@ class VerifyEmailController extends GetxController {
       await AuthenticationRepository.instance.verifyEmail(email);
       Get.off(
         () => StateScreen(
-          image: TImages.successfullySignedUp,
-          title: TTexts.yourAccountCreatedTitle,
-          subtitle: TTexts.yourAccountCreatedSubTitle,
+          image: TImages.emailVerificationSuccess,
+          title: TTexts.verificatonEmailSuccessTitle,
+          subtitle: TTexts.verificatonEmailSuccessSubTitle,
           showButton: true,
           isLottie: true,
           primaryButtonTitle: TTexts.tContinue,
+          secondaryButton: true,
+          secondaryTitle: "Complete Profile",
           onPressed: () => AuthenticationRepository.instance.screenRedirect(),
+          onSecondaryPressed: () => Get.to(() => const ProfileSetupScreen()),
         ),
       );
     }
