@@ -1,6 +1,6 @@
 class Endpoints {
   // Base URL
-  static const String baseUrl = 'http://192.168.1.6:3000/api';
+  static const String baseUrl = 'http://192.168.1.5:3000/api';
 
   static const String baseAuthUrl = '$baseUrl/auth';
   static const String baseAuthSignin = '$baseAuthUrl/signin';
@@ -34,27 +34,38 @@ class Endpoints {
   static String userDetail(String id) => '$baseUrl/users/$id';
   static String userProfile(String id) => '$baseUrl/users/$id/profile';
   static String resetPassword(String id) => '$baseUrl/users/$id/reset-password';
+  static String deleteAccount(String id) => '$baseUrl/users/$id';
+  static String userWithRole(String role) => '$baseUrl/users?role=$role';
 
   // University Endpoints
   static const String universities = '$baseUrl/universities';
   static String university(String id) => '$baseUrl/universities/$id';
 
   // Post Endpoints
-  static const String posts = '$baseUrl/posts/';
-  static const String post = '$baseUrl/posts/:id';
+  static const String posts = '$baseUrl/posts';
+  static String post(String id) => '$baseUrl/posts/$id';
+  static String postWithSpecificUser(String id) => '$baseUrl/users/$id/posts';
   static const String likes = '$baseUrl/posts/:id/likes';
 
   // Schedule Endpoints
-  static const String schedules = '$baseUrl/schedules/';
-  static const String schedule = '$baseUrl/schedules/:id';
-  static const String scheduleAvailability =
-      '$baseUrl/schedules/:id/availability';
+  static const String schedules = '$baseUrl/schedules';
+  static String schedule(String id) => '$baseUrl/schedules/$id';
+  static String scheduleAvailability(String id) =>
+      '$baseUrl/schedules/$id/availability';
 
   // Timeslot Endpoints
-  static const String timeslots = '$baseUrl/timeslots/';
-  static const String timeslot = '$baseUrl/timeslots/:id';
+  static const String timeslots = '$baseUrl/timeslots';
+  static String timeslot(String id) => '$baseUrl/timeslots/$id';
 
   // Appointment Endpoints
-  static const String appointments = '$baseUrl/appointments/';
-  static const String appointment = '$baseUrl/appointments/:id';
+  static const String appointments = '$baseUrl/appointments';
+  static String appointment(String id) => '$baseUrl/appointments/$id';
+
+  // Notification Endpoints
+  static String notifications(String id) => '$baseUrl/users/$id/notifications';
+  // static String createNotification(String id) =>
+  //     '$baseUrl/users/$id/notifications';
+
+  // Treatment Endpoints
+  static const String treatments = '$baseUrl/treatments';
 }

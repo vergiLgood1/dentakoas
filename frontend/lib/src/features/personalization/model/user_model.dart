@@ -5,6 +5,7 @@ import 'package:denta_koas/src/features/personalization/model/fasilitator_profil
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
 import 'package:denta_koas/src/utils/formatters/formatter.dart';
+import 'package:logger/logger.dart';
 
 class UserModel {
   final String? id;
@@ -23,9 +24,10 @@ class UserModel {
   final KoasProfileModel? koasProfile;
   final PasienProfileModel? pasienProfile;
   final FasilitatorProfileModel? fasilitatorProfile;
+  
 
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updateAt;
 
   UserModel({
     this.id,
@@ -44,6 +46,8 @@ class UserModel {
     this.koasProfile,
     this.pasienProfile,
     this.fasilitatorProfile,
+    this.createdAt,
+    this.updateAt,
   });
 
   // Helper to get the full name
@@ -57,12 +61,14 @@ class UserModel {
   String get formattedPhoneNo => TFormatter.formatPhoneNumber(phone!);
 
   static List<String> nameParts(fullname) => fullname.split(' ');
+  
+  
 
   // Getter to get the active profile dynamically
   dynamic get profile {
-    if (koasProfile != null) return koasProfile;
-    if (pasienProfile != null) return pasienProfile;
-    if (fasilitatorProfile != null) return fasilitatorProfile;
+    if (role == "Koas") return koasProfile;
+    if (role == "Pasien") return pasienProfile;
+    if (role == "Fasilitator") return fasilitatorProfile;
     return null; // No profile found
   }
 
@@ -92,6 +98,7 @@ class UserModel {
       'familyName': familyName,
       'name': name,
       'email': email,
+      'emailVerified': emailVerified,
       'password': password,
       'confirmPassword': confirmPassword,
       'phone': phone,
@@ -115,6 +122,20 @@ class UserModel {
     }
 
     return json;
+  }
+
+  static List<UserModel> usersFromJson(dynamic data) {
+    try {
+      // Pastikan data adalah Map dan memiliki key "treatments".
+      if (data is Map<String, dynamic> && data.containsKey("users")) {
+        final users = data["users"] as List;
+        return users.map((item) => UserModel.fromJson(item)).toList();
+      }
+    } catch (e) {
+      Logger().e(e);
+    }
+    Logger().e('Invalid data format for users');
+    throw Exception('Invalid data format for users');
   }
 
   Map<String, dynamic> toJsonAuth() {
@@ -162,11 +183,9 @@ class UserModel {
       familyName: json['familyName'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
-      emailVerified:
-          json['emailVerified'] != null && json['emailVerified'] is String
-              ? DateTime.tryParse(
-                  json['emailVerified']) // Safely parse only if it's a string
-              : null,
+      emailVerified: json['emailVerified'] != null
+          ? DateTime.tryParse(json['emailVerified'])
+          : null,
       password: json['password'] ?? '',
       confirmPassword: json['confirmPassword'] ?? '',
       phone: json['phone'] ?? '',
@@ -181,6 +200,11 @@ class UserModel {
       fasilitatorProfile: json['FasilitatorProfile'] != null
           ? FasilitatorProfileModel.fromJson(json['FasilitatorProfile'])
           : FasilitatorProfileModel.empty(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
+      updateAt:
+          json['updateAt'] != null ? DateTime.tryParse(json['updateAt']) : null,
     );
   }
 
@@ -252,6 +276,8 @@ class UserModel {
 //   }
 // }
 
+
+
 Map<String, dynamic> filterProfileByRole(Map<String, dynamic> data) {
   String role = data['role'] ?? '';
   Map<String, dynamic>? filteredProfile;
@@ -287,4 +313,6 @@ Map<String, dynamic> filterProfileByRole(Map<String, dynamic> data) {
     'role': role,
     ...filteredProfile, // Spread the filtered profile into the result
   };
+
+  
 }

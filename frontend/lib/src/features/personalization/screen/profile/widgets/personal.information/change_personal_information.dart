@@ -142,6 +142,7 @@ class ChangePersonalInformation extends StatelessWidget {
                           Obx(
                             () => DDropdownMenu(
                               hintText: 'Select University',
+                              selectedItem: controller.selectedUniversity.value,
                               prefixIcon: Iconsax.building_4,
                               validator: (value) =>
                                   TValidator.validateEmptyText(
@@ -151,6 +152,7 @@ class ChangePersonalInformation extends StatelessWidget {
                                   controller.selectedUniversity.value = value!,
                             ),
                           ),
+
                           const SizedBox(height: TSizes.spaceBtwInputFields),
                         ],
                       ],

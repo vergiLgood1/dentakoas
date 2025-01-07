@@ -2,6 +2,7 @@ import 'package:denta_koas/src/features/appointment/screen/explore/explore.dart'
 import 'package:denta_koas/src/features/appointment/screen/home/home.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/create_post.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/schedule.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/features/personalization/screen/setting/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,10 @@ class NavigationMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   controller.setSelectedIndex(initScreenIndex!); // Set to the desired index
+    // });
     return Scaffold(
       bottomNavigationBar: Obx(
         () {
@@ -56,7 +61,12 @@ class NavigationMenu extends StatelessWidget {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: isActive ? Colors.blue.shade50 : null,
+                      color: isActive
+                          ? controller.displayedIcons[index] !=
+                                  Iconsax.add_square
+                              ? Colors.blue.shade50
+                              : null
+                          : null,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -99,6 +109,17 @@ class NavigationMenu extends StatelessWidget {
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
+  void setSelectedIndex(int index) {
+    selectedIndex.value = index;
+  }
+
+  // Layar, ikon, dan label yang ditampilkan
+  final RxList<Widget> displayedScreens = <Widget>[].obs;
+  final RxList<IconData> displayedIcons = <IconData>[].obs;
+  final RxList<String> displayedLabels = <String>[].obs;
+
+  final role = UserController.instance.user.value.role;
+
   final screens = [
     const HomeScreen(),
     const ExploreScreen(),
@@ -113,6 +134,7 @@ class NavigationController extends GetxController {
     Icons.calendar_month,
     Icons.person,
     Iconsax.add_square,
+    Icons.shield,
   ];
 
   final List<String> labels = [
@@ -121,12 +143,8 @@ class NavigationController extends GetxController {
     'Bookings',
     'Profile',
     '',
+    'Verification',
   ];
-
-  // Layar, ikon, dan label yang ditampilkan
-  final RxList<Widget> displayedScreens = <Widget>[].obs;
-  final RxList<IconData> displayedIcons = <IconData>[].obs;
-  final RxList<String> displayedLabels = <String>[].obs;
 
   @override
   void onInit() {
@@ -136,19 +154,20 @@ class NavigationController extends GetxController {
 
   void initializeUserSession() {
     // Data sesi pengguna manual
-    final userSession = {
-      'id': 1,
-      'name': 'John Doe',
-      'role': 'koas', // Ubah menjadi 'user' untuk pengujian role lainnya
-    };
 
     // Tentukan apakah user adalah "koas"
-    final isKoas = userSession['role'] == 'koas';
+    final isKoas = role == 'Koas';
 
     // Tampilkan menu dasar (4 menu pertama)
     displayedScreens.addAll(screens.sublist(0, 4));
     displayedIcons.addAll(icons.sublist(0, 4));
     displayedLabels.addAll(labels.sublist(0, 4));
+
+    // Jika peran adalah fasilitator, ganti label ke-3 menjadi label ke-5
+    if (role == 'Fasilitator') {
+      displayedIcons[2] = icons[5];
+      displayedLabels[2] = labels[5];
+    }
 
     // Sisipkan menu "Koas" di indeks 2 jika peran adalah "koas"
     if (isKoas) {

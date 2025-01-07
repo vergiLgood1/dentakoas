@@ -49,74 +49,96 @@ async function main() {
   //     },
   //   });
   // }
-
-  const universities = [
+  const TreatmentTypes = [
     {
-      name: "Universitas Indonesia",
-      alias: "UI",
-      location: "Depok, Jawa Barat",
+      name: "Scaling",
+      alias: "scaling",
     },
     {
-      name: "Institut Teknologi Bandung",
-      alias: "ITB",
-      location: "Bandung, Jawa Barat",
-    },
-    { name: "Universitas Gadjah Mada", alias: "UGM", location: "Yogyakarta" },
-    {
-      name: "Institut Pertanian Bogor",
-      alias: "IPB",
-      location: "Bogor, Jawa Barat",
+      name: "Penambalan Gigi",
+      alias: "filling",
     },
     {
-      name: "Universitas Airlangga",
-      alias: "UNAIR",
-      location: "Surabaya, Jawa Timur",
+      name: "Pencabutan Gigi",
+      alias: "extraction",
     },
     {
-      name: "Universitas Brawijaya",
-      alias: "UB",
-      location: "Malang, Jawa Timur",
+      name: "Perawatan Saluran Akar (Endodontik)",
+      alias: "root canal",
     },
     {
-      name: "Universitas Diponegoro",
-      alias: "UNDIP",
-      location: "Semarang, Jawa Tengah",
+      name: "Pemasangan Kawat Gigi Sementara",
+      alias: "temporary braces",
     },
     {
-      name: "Universitas Padjadjaran",
-      alias: "UNPAD",
-      location: "Bandung, Jawa Barat",
+      name: "Pembuatan Gigi Palsu (Prosthodontik)",
+      alias: "dentures",
     },
     {
-      name: "Universitas Sebelas Maret",
-      alias: "UNS",
-      location: "Surakarta, Jawa Tengah",
+      name: "Perawatan Periodontal",
+      alias: "periodontal",
     },
     {
-      name: "Universitas Sumatera Utara",
-      alias: "USU",
-      location: "Medan, Sumatera Utara",
+      name: "Bleaching Gigi",
+      alias: "Bleaching",
     },
     {
-      name: "Politeknik Negeri Jember",
-      alias: "POLIJE",
-      location: "Jember, Jawa Timur",
+      name: "Pemasangan Mahkota Gigi",
+      alias: "crown",
     },
     {
-      name: "Universitas Negeri Jember",
-      alias: "UNEJ",
-      location: "Jember, Jawa Timur",
+      name: "Operasi Gigi Bungsu",
+      alias: "wisdom toothsurgery",
     },
-    // Tambahkan lebih banyak universitas sesuai kebutuhan
+    {
+      name: "Penghalusan Akar Gigi",
+      alias: "root planing",
+    },
+    {
+      name: "Perawatan Ortodontik ",
+      alias: "Aligners",
+    },
+    {
+      name: "Perawatan Gigi Anak ",
+      alias: "Pediatrik",
+    },
+    {
+      name: "Pembuatan Inlay atau Onlay",
+      alias: "inlay onlay",
+    },
+    {
+      name: "Perawatan Gigi Sensitif",
+      alias: "sensitive teeth treatment",
+    },
+    {
+      name: "Pemeriksaan Rutin dan Konsultasi",
+      alias: "routine checkup",
+    },
+    {
+      name: "Pemasangan Sealant Gigi",
+      alias: "dental sealant",
+    },
+    {
+      name: "Perawatan Luka atau Trauma pada Gigi",
+      alias: "dental trauma treatment",
+    },
+    {
+      name: "Penghapusan Gigi Tiruan yang Rusak",
+      alias: "damaged denture removal",
+    },
+    {
+      name: "Rekonstruksi Gigi Patah",
+      alias: "tooth reconstruction",
+    },
   ];
 
   // Menggunakan createMany untuk menambahkan banyak entri sekaligus
-  await prisma.university.createMany({
-    data: universities,
+  await prisma.treatmentType.createMany({
+    data: TreatmentTypes,
     skipDuplicates: true, // Menghindari error jika data sudah ada
   });
 
-  console.log("Seeded universities successfully." + universities);
+  console.log("Seeded universities successfully." + TreatmentTypes);
 
   // console.log("Data seed added:", TreatmentTypes);
 }

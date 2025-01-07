@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/api_urls.dart';
 import 'package:denta_koas/src/utils/dio.client/dio_client.dart';
@@ -424,5 +424,44 @@ class UserRepository extends GetxController {
     }
   }
 
-  
+  Future<void> deleteAccountInDb() {
+    try {
+      return DioClient().delete(
+        Endpoints.deleteAccount(
+          AuthenticationRepository.instance.authUser!.uid,
+        ),
+      );
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<List<UserModel>> fetchUsersByRole(String role) async {
+    try {
+      final response = await DioClient().get(Endpoints.userWithRole(role));
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+
+        if (data is Map<String, dynamic>) {
+          return UserModel.usersFromJson(data);
+        }
+      }
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw e.toString();
+    }
+    throw 'Failed to fetch users by role';
+  }
 }

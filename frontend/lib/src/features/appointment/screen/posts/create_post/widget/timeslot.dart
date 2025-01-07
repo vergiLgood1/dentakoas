@@ -1,5 +1,5 @@
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
-import 'package:denta_koas/src/features/appointment/controller/post_controller';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/timeslot_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/dropdown.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -7,23 +7,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:logger/logger.dart';
 
 class TimeSlotWidget extends StatelessWidget {
-  const TimeSlotWidget({super.key});
+  const TimeSlotWidget({super.key, this.requiredParticipants});
+
+  final int? requiredParticipants;
 
   @override
   Widget build(BuildContext context) {
 
-    return const Padding(
-      padding: EdgeInsets.all(0.0),
+    return Padding(
+      padding: const EdgeInsets.all(0.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RequiredParticipantSection(),
-          SizedBox(height: TSizes.spaceBtwSections),
-          DurationSection(),
-          SizedBox(height: TSizes.spaceBtwSections),
-          TimeSlotSelection()
+          RequiredParticipantSection(
+              requiredParticipants: requiredParticipants),
+          const SizedBox(height: TSizes.spaceBtwSections),
+          const DurationSection(),
+          const SizedBox(height: TSizes.spaceBtwSections),
+          const TimeSlotSelection()
         ],
       ),
     );
@@ -31,14 +35,15 @@ class TimeSlotWidget extends StatelessWidget {
 }
 
 class RequiredParticipantSection extends StatelessWidget {
-  const RequiredParticipantSection({super.key});
+  const RequiredParticipantSection({super.key, this.requiredParticipants});
+
+  final int? requiredParticipants;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(PostController());
-    int requiredParticipant = 5;
+    final controller = Get.put(PostTimeslotController());
 
-    controller.timeController.requiredParticipants.value = requiredParticipant;
+    controller.requiredParticipants.value = requiredParticipants!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +61,7 @@ class RequiredParticipantSection extends StatelessWidget {
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly
           ],
-          initialValue: requiredParticipant.toString(),
+          initialValue: requiredParticipants.toString(),
           enabled: false,
         ),
       ],
@@ -72,7 +77,7 @@ class DurationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(PostController());
+    final controller = Get.put(PostTimeslotController());
     final durationItems = [
       '1 Jam',
       '2 Jam',
@@ -90,11 +95,11 @@ class DurationSection extends StatelessWidget {
         Obx(
           () => DDropdownMenu(
             selectedItem:
-                "${controller.timeController.sessionDuration.value.inHours}  Jam",
+                "${controller.sessionDuration.value.inHours}  Jam",
             items: durationItems,
             onChanged: (value) {
               if (value != null) {
-                controller.timeController
+                controller
                     .updateSessionDuration(int.parse(value.split(' ')[0]));
               }
             },
@@ -115,7 +120,7 @@ class TimeSlotSelection extends StatefulWidget {
 }
 
 class _TimeSlotSelectionState extends State<TimeSlotSelection> {
-  final controller = Get.put(PostController());
+  final controller = Get.put(PostTimeslotController());
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +137,7 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
         Obx(
           () {
             return Column(
-              children: controller.timeController.timeSlots.entries.map(
+              children: controller.timeSlots.entries.map(
                 (entry) {
                   return _buildSection(context, entry.key, entry.value);
                 },
@@ -145,18 +150,25 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
   }
 
   Widget _buildSection(BuildContext context, String title, List<String> slots) {
-    int totalMaxParticipants = controller.timeController.totalMaxParticipants;
+    int totalMaxParticipants = controller.totalMaxParticipants;
     int requiredParticipants =
-        controller.timeController.requiredParticipants.value;
+        controller.requiredParticipants.value;
     final totalAvailableTimeSlots =
-        controller.timeController.totalAvailableTimeSlots;
-    int totalSlots = controller.timeController.calculateTotalSlots();
+        controller.totalAvailableTimeSlots;
+    int totalSlots = controller.calculateTotalSlots();
 
     bool isAvailable = totalMaxParticipants < requiredParticipants &&
         totalSlots < requiredParticipants;
 
-    print('Total maxparticipants: $totalMaxParticipants');
-    print('Required Participants: $requiredParticipants');
+    Logger().i({
+      'totalSlots': totalSlots,
+      'totalAvailableTimeSlots': totalAvailableTimeSlots,
+      'requiredParticipants': requiredParticipants,
+      'totalMaxParticipants': totalMaxParticipants,
+      'isAvailable': isAvailable,
+      'slots': slots,
+      'title': title,
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,17 +223,17 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
                                 icon: const Icon(Icons.chevron_left),
                                 iconSize: TSizes.iconBase,
                                 onPressed: () {
-                                  if (controller.timeController
+                                  if (controller
                                           .maxParticipantsForSlot(title, slot) >
                                       1) {
-                                    controller.timeController
+                                    controller
                                         .decrementMaxParticipantsForSlot(
                                             title, slot);
                                   }
                                 }),
                             Obx(() {
                               return Text(
-                                controller.timeController
+                                controller
                                     .maxParticipantsForSlot(title, slot)
                                     .toString(),
                                 style: Theme.of(context).textTheme.bodyMedium,
@@ -233,7 +245,7 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
                               onPressed: () {
                                 if (totalMaxParticipants <
                                     requiredParticipants) {
-                                  controller.timeController
+                                  controller
                                       .incrementMaxParticipantsForSlot(
                                           title, slot);
                                 }
@@ -245,7 +257,7 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
                       IconButton(
                         icon: const Icon(Icons.close),
                         iconSize: TSizes.iconSm,
-                        onPressed: () => controller.timeController
+                        onPressed: () => controller
                             .removeTimeSlot(title, slot),
                       ),
                     ],
@@ -271,10 +283,10 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
     );
 
     if (pickedTime != null) {
-      controller.timeController.addTimeSlot(section, pickedTime);
-      if (controller.timeController.tooltipShown == false) {
+      controller.addTimeSlot(section, pickedTime);
+      if (controller.tooltipShown == false) {
         await _showAndCloseTooltip();
-        controller.timeController.tooltipShown = true;
+        controller.tooltipShown = true;
       }
     }
   }

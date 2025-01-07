@@ -1,4 +1,11 @@
+enum StatusKoas {
+  pending,
+  approved,
+  rejected,
+}
+
 class KoasProfileModel {
+  final String? id;
   final String? koasNumber;
   final String? age;
   final String? gender;
@@ -6,10 +13,13 @@ class KoasProfileModel {
   final String? university;
   final String? bio;
   final String? whatsappLink;
-  final Object? status;
+  final String? status;
+  final DateTime? createdAt;
+  final DateTime? updateAt;
 
 
   KoasProfileModel({
+    this.id,
     this.koasNumber,
     this.age,
     this.gender,
@@ -18,12 +28,15 @@ class KoasProfileModel {
     this.bio,
     this.whatsappLink,
     this.status,
+    this.createdAt,
+    this.updateAt,
 
   });
 
   // Static function to create an empty user model
   static KoasProfileModel empty() {
     return KoasProfileModel(
+      id: '',
       koasNumber: '',
       age: '',
       gender: '',
@@ -32,11 +45,13 @@ class KoasProfileModel {
       bio: '',
       whatsappLink: '',
       status: '',
+
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'koasNumber': koasNumber,
       'age': age,
       'gender': gender,
@@ -50,6 +65,7 @@ class KoasProfileModel {
 
   factory KoasProfileModel.fromJson(Map<String, dynamic> json) {
     return KoasProfileModel(
+      id: json['id'] ?? '',
       koasNumber: json['koasNumber'] ?? '',
       age: json['age'] ?? '',
       gender: json['gender'] ?? '',
@@ -57,7 +73,12 @@ class KoasProfileModel {
       university: json['university'] ?? '',
       bio: json['bio'] ?? '',
       whatsappLink: json['whatsappLink'] ?? '',
-      status: json['status'] ?? '',
+      status: json['status'] ?? 'Pending',
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
+      updateAt:
+          json['updateAt'] != null ? DateTime.tryParse(json['updateAt']) : null,
     );
   }
 }

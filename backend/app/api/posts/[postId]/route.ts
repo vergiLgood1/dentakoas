@@ -14,15 +14,17 @@ export async function GET(req: Request, props: { params: Promise<{ postId: strin
         id: postId,
       },
       include: {
+        Schedule: true,
         user: true,
         koas: true,
+        treatment: true,
         likes: true,
       },
     });
 
-    if (!post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
-    }
+    // if (!post) {
+    //   return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    // }
 
     const likeCount = await db.like.count({
       where: {
@@ -30,15 +32,14 @@ export async function GET(req: Request, props: { params: Promise<{ postId: strin
       },
     });
 
-    const postWithLikeCount = {
-      ...post,
-      likeCount,
-    };
+    const postWithLikeCount = post
+      ? {
+          ...post,
+          likeCount,
+        }
+      : [];
 
-    return NextResponse.json(
-      { message: "Get spesific post successfully", postWithLikeCount },
-      { status: 200 }
-    );
+    return NextResponse.json({ posts: postWithLikeCount });
   } catch (error) {
     console.error(error);
     return NextResponse.json(

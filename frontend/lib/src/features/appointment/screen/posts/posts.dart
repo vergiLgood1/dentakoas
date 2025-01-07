@@ -10,6 +10,7 @@ class AllPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: const DAppBar(
         title: Text('All Koas'),

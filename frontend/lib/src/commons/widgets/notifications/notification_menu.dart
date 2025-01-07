@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/features/appointment/controller/notification_controller.dart';
+import 'package:denta_koas/src/features/appointment/controller/notifications_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class NotificationCounterIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(NotificationController());
+    final controller = Get.put(NotificationsController());
     return Stack(
       children: [
         IconButton(

@@ -1,5 +1,5 @@
 import 'package:denta_koas/navigation_menu.dart';
-import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
 import 'package:denta_koas/src/features/authentication/screen/signin/signin.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/profile-setup.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/role_option.dart';
@@ -448,6 +448,57 @@ screenRedirect() async {
       // await DioClient().post(Endpoints.signout);
       await FirebaseAuth.instance.signOut();
       Get.offAll(() => const SigninScreen());
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+  }
+
+  // ----------------- ReAuthenticate -----------------
+
+  Future<void> reAuthenticateWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+
+      await _auth.currentUser!.reauthenticateWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+  }
+
+  // ----------------- Delete Account -----------------
+  Future<void> deleteAccount() async {
+    try {
+      await UserRepository.instance.removeAuthUserRecord(
+        _auth.currentUser!.uid,
+      );
+
+      await UserRepository.instance.deleteAccountInDb();
+
+      await _auth.currentUser!.delete();
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {

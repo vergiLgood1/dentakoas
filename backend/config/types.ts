@@ -142,8 +142,18 @@ export type UserQueryString = {
   role?: string;
   createdAt?: string;
   updateAt?: string;
-  [key: string]: string | undefined; // Tambahkan tipe yang lebih spesifik
+  koasProfile?: {
+    [key: string]: string | undefined;
+  };
+  fasilitatorProfile?: {
+    [key: string]: string | undefined;
+  };
+  pasienProfile?: {
+    [key: string]: string | undefined;
+  };
+  [key: string]: string | undefined | { [key: string]: string | undefined };
 };
+
 
 export interface PostQueryString {
   userId?: string;

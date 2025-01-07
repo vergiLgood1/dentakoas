@@ -3,7 +3,7 @@ import 'package:denta_koas/src/commons/widgets/containers/primary_header_contain
 import 'package:denta_koas/src/commons/widgets/images/circular_image.dart';
 import 'package:denta_koas/src/commons/widgets/list_tiles/setting_menu_tile.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
-import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/features/personalization/screen/profile/profile.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';

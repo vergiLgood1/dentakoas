@@ -81,11 +81,12 @@ export function parseSearchParams(
   const query: UserQueryString = {};
 
   searchParams.forEach((value, key) => {
-    query[key] = value; // Simpan setiap parameter ke dalam objek query
+    query[key] = value;
   });
 
   return query;
 }
+
 
 /**
  * Generate a hashed password or return the existing hash if the password is not provided

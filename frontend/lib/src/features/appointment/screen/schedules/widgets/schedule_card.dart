@@ -26,6 +26,9 @@ class ScheduleCard extends StatelessWidget {
     this.padding = 0,
     this.primaryBtnText = 'Reschedule',
     this.secondaryBtnText = 'Add Review',
+    this.onPrimaryBtnPressed,
+    this.onSecondaryBtnPressed,
+    
   });
 
   final String imgUrl;
@@ -46,6 +49,8 @@ class ScheduleCard extends StatelessWidget {
       primaryBtnColor,
       secondaryBtnColor;
   final void Function()? onTap;
+  final void Function()? onPrimaryBtnPressed;
+  final void Function()? onSecondaryBtnPressed;
   final double padding;
 
   @override
@@ -163,7 +168,7 @@ class ScheduleCard extends StatelessWidget {
                       if (showPrimaryBtn!)
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: onTap,
+                            onPressed: onSecondaryBtnPressed,
                             style: ElevatedButton.styleFrom(
                               overlayColor: TColors.primary.withOpacity(0.1),
                               side: BorderSide(color: Colors.blue.shade50),
@@ -175,7 +180,7 @@ class ScheduleCard extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              primaryBtnText,
+                              secondaryBtnText,
                               style: const TextStyle(
                                 fontSize: TSizes.fontSizeMd,
                                 fontWeight: FontWeight.bold,
@@ -184,12 +189,14 @@ class ScheduleCard extends StatelessWidget {
                             ),
                           ),
                         ),
+                        
                       if (showPrimaryBtn! && showSecondaryBtn!)
                         const SizedBox(width: TSizes.spaceBtwItems),
                       if (showSecondaryBtn!)
+                        
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: onTap,
+                            onPressed: onPrimaryBtnPressed,
                             style: ElevatedButton.styleFrom(
                               side: const BorderSide(color: TColors.primary),
                               backgroundColor: TColors.primary,
@@ -200,7 +207,7 @@ class ScheduleCard extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              secondaryBtnText,
+                              primaryBtnText,
                               style: const TextStyle(
                                 fontSize: TSizes.fontSizeMd,
                                 fontWeight: FontWeight.bold,

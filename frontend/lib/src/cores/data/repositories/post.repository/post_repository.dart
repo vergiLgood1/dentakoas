@@ -1,0 +1,186 @@
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
+import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
+import 'package:denta_koas/src/utils/constants/api_urls.dart';
+import 'package:denta_koas/src/utils/dio.client/dio_client.dart';
+import 'package:denta_koas/src/utils/exceptions/exceptions.dart';
+import 'package:denta_koas/src/utils/exceptions/firebase_auth_exceptions.dart';
+import 'package:denta_koas/src/utils/exceptions/firebase_exceptions.dart';
+import 'package:denta_koas/src/utils/exceptions/format_exceptions.dart';
+import 'package:denta_koas/src/utils/exceptions/platform_exceptions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+
+class PostRepository extends GetxController {
+  static PostRepository get instance => Get.find();
+
+  Future<PostModel> getPosts() async {
+    try {
+      final response = await DioClient().get(Endpoints.posts);
+
+      if (response.statusCode == 200) {
+        final data = response.data['data']['post']; // Perbaikan akses
+        if (data is Map<String, dynamic>) {
+          return PostModel.fromJson(data);
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+    throw 'Failed to fetch posts data.';
+  }
+
+  Future<List<PostModel>> getPostById() async {
+    try {
+      final response = await DioClient()
+          .get(Endpoints.post(AuthenticationRepository.instance.authUser!.uid));
+
+      if (response.statusCode == 200) {
+        return PostModel.postsFromJson(response.data);
+      }
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+    throw 'Failed to fetch post data.';
+  }
+
+  Future<List<String>> getPostTitles() async {
+    final response = await DioClient().get(Endpoints.posts);
+
+    if (response.statusCode == 200) {
+      final data = response.data;
+
+      if (data['data'] == null || data['data']['post'] == null) {
+        throw Exception('Post data not found');
+      }
+
+      // Ambil hanya key 'title' dari setiap objek
+      return (data['data']['post'] as List)
+          .map((postJson) =>
+              (postJson as Map<String, dynamic>)['title'] as String)
+          .toList();
+    } else {
+      throw Exception('Failed to fetch posts');
+    }
+  }
+
+  Future<PostModel> createPost(PostModel post) async {
+    try {
+      final response =
+          await DioClient().post(Endpoints.posts, data: post.toJson());
+
+      if (response.statusCode == 201) {
+        return PostModel.fromJson(response.data);
+      }
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      Logger().e(['Error creating post: $e']);
+      throw e.toString();
+    }
+    throw 'Failed to create post.';
+  }
+
+  Future<void> updatePost(PostModel post) async {
+    try {
+      final response = await DioClient()
+          .put('${Endpoints.posts}/${post.id}', data: post.toJson());
+
+      if (response.statusCode == 200) {
+        return;
+      }
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+    throw 'Failed to update post.';
+  }
+
+  Future<void> deletePost(String id) async {
+    try {
+      final response = await DioClient().delete('${Endpoints.posts}/$id');
+
+      if (response.statusCode == 200) {
+        return;
+      }
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+    throw 'Failed to delete post.';
+  }
+
+  // Get current postId from the server
+  Future<String> getPostId(PostModel post) async {
+    try {
+      final response = await DioClient().get(Endpoints.posts);
+
+      if (response.statusCode == 200) {
+        final data = response.data['data']['post']; // Perbaikan akses
+        if (data is Map<String, dynamic>) {
+          return data['id'];
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+    throw 'Failed to fetch post data.';
+  }
+}

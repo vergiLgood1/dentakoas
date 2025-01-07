@@ -38,9 +38,9 @@ export async function GET(req: Request) {
       },
     });
 
-    if (!posts.length) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
-    }
+    // if (!posts.length) {
+    //   return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    // }
 
     // Map hanya untuk menambahkan properti `likeCount` tanpa `_count`
     const postsWithLikeCount = posts.map(({ _count, ...post }) => ({
@@ -50,9 +50,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(
       {
-        status: "Success",
-        message: "Posts retrieved successfully",
-        data: { posts: postsWithLikeCount },
+        posts: postsWithLikeCount,
       },
       { status: 200 }
     );
@@ -126,7 +124,7 @@ export async function POST(
         published,
         user: { connect: { id: String(userId) } },
         koas: { connect: { id: String(koasId) } },
-        treatmentId: String(treatmentId),
+        treatment: { connect: { id: String(treatmentId) } },
       } as Prisma.PostCreateInput,
     });
 
@@ -148,17 +146,13 @@ export async function POST(
 
     return NextResponse.json(
       {
-        status: "Success",
-        message: "Posts retrieved successfully",
-        data: { posts: post },
+        post,
       },
-      { status: 200 }
+      { status: 201 }
     );
   } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "An error occurred while creating the post" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.log("Error: ", error.stack);
+    }
   }
 }

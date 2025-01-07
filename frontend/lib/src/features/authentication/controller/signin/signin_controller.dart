@@ -1,5 +1,5 @@
-import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
-import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
@@ -9,7 +9,6 @@ import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:logger/logger.dart';
 
 class SigninController extends GetxController {
   // -- Variables

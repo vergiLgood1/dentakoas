@@ -1,17 +1,18 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:denta_koas/src/features/appointment/controller/post_controller';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/schedule_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 class DateRangePicker extends StatelessWidget {
   const DateRangePicker({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(PostController());
+    final controller = Get.put(SchedulePostController());
     final rangeDatePickerValueWithDefaultValue =
-        controller.calendarController.selectedDateRange;
+        controller.selectedDateRange;
 
     final config = CalendarDatePicker2Config(
       centerAlignModePicker: true,
@@ -81,7 +82,7 @@ class DateRangePicker extends StatelessWidget {
         children: [
           Obx(() {
             final selectedRange =
-                controller.calendarController.selectedDateRange;
+                controller.selectedDateRange;
             final startDate =
                 selectedRange.isNotEmpty && selectedRange[0] != null
                     ? selectedRange[0]!.toLocal().toString().split(' ')[0]
@@ -105,22 +106,29 @@ class DateRangePicker extends StatelessWidget {
                   builder: (context) => Dialog(
                     child: CalendarDatePicker2(
                       config: config,
-                      value: controller.calendarController.selectedDateRange,
+                      value: controller.selectedDateRange,
                       onValueChanged: (dates) {
-                        controller.calendarController.selectedDateRange.value =
+                        controller.selectedDateRange.value =
                             dates;
                       },
                     ),
                   ),
                 );
                 if (selectedDates != null) {
-                  controller.calendarController.selectedDateRange.value =
-                      selectedDates;
+                  controller.selectedDateRange.value = selectedDates;
                 }
               },
             );
           }),
           const SizedBox(height: 20),
+
+          ElevatedButton(
+              onPressed: () {
+                Logger().w(
+                  controller.formatSelectedDateRange(),
+                );
+              },
+              child: const Text('Submit'))
         ],
       ),
     );

@@ -25,7 +25,7 @@ export async function GET(
     const existingUser = await getUserById(userId, undefined, {
       id: true,
       email: true,
-      emailVerified: true,
+
       password: true,
       role: true,
     });
@@ -100,7 +100,8 @@ export async function PATCH(
   props: { params: Promise<{ userId: string }> }
 ) {
   const params = await props.params;
-  const userId = params.userId;
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("userId") || params.userId;
   const body = await req.json();
 
   const {
@@ -130,6 +131,8 @@ export async function PATCH(
   try {
     const existingUser = await getUserById(userId, undefined, {
       id: true,
+      givenName: true,
+      familyName: true,
       role: true,
     });
 
@@ -151,48 +154,66 @@ export async function PATCH(
 
     // Create the profile based on the user role
     if (existingUser.role === Role.Koas) {
-
-      const existingUser = await db.koasProfile.findUnique({
+      const existingKoas = await db.koasProfile.findUnique({
         where: { userId },
       });
 
       profile = await db.koasProfile.update({
         where: { userId },
         data: {
-          koasNumber: koasNumber ?? existingUser?.koasNumber,
-          age: age ?? existingUser?.age,
-          gender: gender ?? existingUser?.gender,
-          departement: departement ?? existingUser?.departement,
-          university: university ?? existingUser?.university, // Relasi ke universitas
-          bio: bio ?? existingUser?.bio,
-          whatsappLink: whatsappLink ?? existingUser?.whatsappLink,
-          status: status ?? existingUser?.status,
+          koasNumber: koasNumber ?? existingKoas?.koasNumber,
+          age: age ?? existingKoas?.age,
+          gender: gender ?? existingKoas?.gender,
+          departement: departement ?? existingKoas?.departement,
+          university: university ?? existingKoas?.university, // Relasi ke universitas
+          bio: bio ?? existingKoas?.bio,
+          whatsappLink: whatsappLink ?? existingKoas?.whatsappLink,
+          status: status ?? existingKoas?.status,
           user: { connect: { id: userId } },
         } as Prisma.KoasProfileUpdateInput,
       });
-    } else if (existingUser.role === Role.Pasien) {
 
-      const existingUser = await db.pasienProfile.findUnique({
+      // Send notification to Fasilitators with the same university
+      // const fasilitators = await db.fasilitatorProfile.findMany({
+      //   where: { university: profile.university },
+      //   include: { user: true },
+      // });
+
+      // for (const fasilitator of fasilitators) {
+      //   const newNotif = await db.notification.createMany({
+      //     data: {
+      //       senderId: existingUser!.id,
+      //       userId: fasilitator.user.id,
+      //       koasId: profile.id,
+      //       title: "Koas Registration Pending Approval",
+      //       message: `${existingUser.givenName} ${existingUser.familyName} has registered as Koas and is pending approval. Please review their profile.`,
+      //       createdAt: new Date(),
+      //     },
+      //   });
+      //   console.log("New notif for fasilitator:", newNotif);
+      // }
+    } else if (existingUser.role === Role.Pasien) {
+      const existingPasien = await db.pasienProfile.findUnique({
         where: { userId },
       });
 
       profile = await db.pasienProfile.update({
         where: { userId },
         data: {
-          age: age ?? existingUser?.age,
-          gender: gender ?? existingUser?.gender,
-          bio: bio ?? existingUser?.bio,
+          age: age ?? existingPasien?.age,
+          gender: gender ?? existingPasien?.gender,
+          bio: bio ?? existingPasien?.bio,
           user: { connect: { id: userId } },
         } as Prisma.PasienProfileUpdateInput,
       });
     } else if (existingUser.role === Role.Fasilitator) {
-      const existingUser = await db.fasilitatorProfile.findUnique({
+      const existingFasilitator = await db.fasilitatorProfile.findUnique({
         where: { userId },
       });
       profile = await db.fasilitatorProfile.update({
         where: { userId },
         data: {
-          university: university ?? existingUser?.university,
+          university: university ?? existingFasilitator?.university,
           user: { connect: { id: userId } },
         } as Prisma.FasilitatorProfileUpdateInput,
       });

@@ -31,6 +31,8 @@ class TabCompletedSchedule extends StatelessWidget {
                   date: 'Sunday, 12 June',
                   timestamp: '10:00 - 11:00 AM',
                   primaryBtnText: 'Add Review',
+                  onPrimaryBtnPressed: () {},
+                  onSecondaryBtnPressed: () {},
                  
                 ),
               ),

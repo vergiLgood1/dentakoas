@@ -1,6 +1,6 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/signin_signup/footer.dart';
-import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:denta_koas/src/features/authentication/controller/forgot.password/forgot_password_controller.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';

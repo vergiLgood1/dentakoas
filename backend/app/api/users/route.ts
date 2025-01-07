@@ -31,7 +31,7 @@ export async function GET(req: Request) {
       },
     });
 
-    const filtereduser = user.map((user) => {
+    const users = user.map((user) => {
       if (user.role === Role.Koas) {
         return {
           ...user,
@@ -62,9 +62,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(
       {
-        status: "Success",
-        message: "User retrived successfully",
-        data: { user: filtereduser },
+        users,
       },
       { status: 200 }
     );
@@ -134,7 +132,7 @@ export async function POST(req: Request) {
     });
 
     if (newUser.role === Role.Koas) {
-      await db.koasProfile.create({
+      const koasPofile = await db.koasProfile.create({
         data: {
           ...profile,
           userId: newUser.id,

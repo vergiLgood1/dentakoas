@@ -1,5 +1,5 @@
-import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
-import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/profile-setup.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/signup.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';

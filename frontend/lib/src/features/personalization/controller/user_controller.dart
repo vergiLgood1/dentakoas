@@ -1,8 +1,17 @@
-import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
+import 'package:denta_koas/src/features/authentication/screen/signup/signup.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
+import 'package:denta_koas/src/features/personalization/screen/profile/widgets/reauth_login_form.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:denta_koas/src/utils/constants/image_strings.dart';
+import 'package:denta_koas/src/utils/constants/sizes.dart';
+import 'package:denta_koas/src/utils/helpers/network_manager.dart';
+import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
+import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:logger/logger.dart';
@@ -12,11 +21,18 @@ class UserController extends GetxController {
 
   final profileLoading = false.obs;
   Rx<UserModel> user = UserModel.empty().obs;
+
   final userRepository = Get.put(UserRepository());
 
   final greetingMsg = ''.obs;
 
   final storage = GetStorage();
+
+  final email = TextEditingController();
+  final password = TextEditingController();
+  final GlobalKey<FormState> reAuthFormKey = GlobalKey<FormState>();
+
+  final hidePassword = true.obs;
 
   @override
   void onInit() {
@@ -154,6 +170,96 @@ setStatusColor() {
       return TColors.error;
     } else {
       return TColors.primary;
+    }
+  }
+
+  void reAuthenticate() async {
+    try {
+      // Start loading
+      TFullScreenLoader.openLoadingDialog(
+          'Re-authenticating....', TImages.loadingHealth);
+
+      // Check connection
+      final isConected = await NetworkManager.instance.isConnected();
+      if (!isConected) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Form validation
+      if (!reAuthFormKey.currentState!.validate()) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Re-authenticate
+      await AuthenticationRepository.instance
+          .reAuthenticateWithEmailAndPassword(
+        email.text.trim(),
+        password.text.trim(),
+      );
+
+      await AuthenticationRepository.instance.deleteAccount();
+
+      // Close loading
+      TFullScreenLoader.stopLoading();
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoaders.errorSnackBar(
+        title: 'Error',
+        message: e.toString(),
+      );
+    }
+  }
+
+  void deleteAccountWarningPopup() {
+    Get.defaultDialog(
+      backgroundColor: TColors.white,
+      contentPadding: const EdgeInsets.all(TSizes.md),
+      title: 'Delete Account',
+      middleText: 'Are you sure you want to delete your account?',
+      confirm: ElevatedButton(
+        onPressed: () => deleteUserAccount(),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          side: const BorderSide(color: Colors.red),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: TSizes.lg),
+          child: Text('Delete'),
+        ),
+      ),
+      cancel: OutlinedButton(
+        onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+        child: const Text('Cancel'),
+      ),
+    );
+  }
+
+  void deleteUserAccount() async {
+    try {
+      TFullScreenLoader.openLoadingDialog(
+          'Proccecing....', TImages.loadingHealth);
+
+      final auth = AuthenticationRepository.instance;
+      final provider =
+          auth.authUser!.providerData.map((e) => e.providerId).first;
+
+      if (provider == 'google.com') {
+        await auth.signInWithGoogle();
+        await auth.deleteAccount();
+        TFullScreenLoader.stopLoading();
+        Get.offAll(() => const SignupScreen());
+      } else if (provider == 'password') {
+        TFullScreenLoader.stopLoading();
+        Get.to(() => const ReauthLoginForm());
+      }
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoaders.errorSnackBar(
+        title: 'Error',
+        message: e.toString(),
+      );
     }
   }
 }

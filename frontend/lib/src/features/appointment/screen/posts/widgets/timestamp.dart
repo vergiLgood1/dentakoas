@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/features/appointment/controller/post_controller';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/posts_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';

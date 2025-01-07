@@ -3,12 +3,14 @@ class PasienProfileModel {
   final String? gender;
   final String? bio;
   final String userId;
+  final DateTime? createdAt;
 
   PasienProfileModel({
     this.age,
     this.gender,
     this.bio,
     this.userId = '',
+    this.createdAt,
   });
 
   // Static function to create an empty user model
@@ -33,6 +35,9 @@ class PasienProfileModel {
       age: json['age'] ?? '',
       gender: json['gender'] ?? '',
       bio: json['bio'] ?? '',
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
     );
   }
 }

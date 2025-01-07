@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:denta_koas/src/features/authentication/screen/password_configurations/reset_password.dart';
 import 'package:denta_koas/src/features/authentication/screen/password_configurations/verification_code.dart';
 import 'package:denta_koas/src/features/authentication/screen/password_configurations/verification_email_reset_password.dart';

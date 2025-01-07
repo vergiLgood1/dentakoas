@@ -2,9 +2,11 @@ import 'dart:convert';
 
 class FasilitatorProfileModel {
   final String university;
+  final DateTime? createdAt;
 
   FasilitatorProfileModel({
     required this.university,
+    this.createdAt,
   });
 
   FasilitatorProfileModel copyWith({
@@ -30,6 +32,9 @@ class FasilitatorProfileModel {
   factory FasilitatorProfileModel.fromJson(Map<String, dynamic> json) {
     return FasilitatorProfileModel(
       university: json['university'] ?? '',
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
     );
   }
 

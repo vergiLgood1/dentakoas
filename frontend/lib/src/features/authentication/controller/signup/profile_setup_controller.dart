@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
-import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
-import 'package:denta_koas/src/cores/data/repositories/university/universities_repository.dart';
-import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/university.repository/universities_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
 import 'package:denta_koas/src/features/personalization/model/fasilitator_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
@@ -137,7 +137,7 @@ class ProfileSetupController extends GetxController {
   checkStatusProfile() async {
     final user = FirebaseAuth.instance.currentUser!.uid;
     final currentUser = await userRepository.getUserDetailById();
-    if (currentUser != null && currentUser.koasProfile?.koasNumber != null) {
+    if (currentUser.koasProfile?.koasNumber != null) {
       Get.off(
         () => StateScreen(
           image: TImages.setupProfileSuccess,
@@ -160,7 +160,7 @@ class ProfileSetupController extends GetxController {
         await FirebaseAuth.instance.currentUser?.reload();
         final userId = FirebaseAuth.instance.currentUser!.uid;
         final currentUser = await userRepository.getUserDetailById();
-        if (currentUser!.koasProfile?.koasNumber != null) {
+        if (currentUser.koasProfile?.koasNumber != null) {
           timer.cancel();
           Get.off(
             () => StateScreen(

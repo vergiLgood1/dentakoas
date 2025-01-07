@@ -1,6 +1,6 @@
-import 'package:denta_koas/src/cores/data/repositories/authentication/authentication_repository.dart';
-import 'package:denta_koas/src/cores/data/repositories/university/universities_repository.dart';
-import 'package:denta_koas/src/cores/data/repositories/user/user_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/university.repository/universities_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/features/personalization/model/fasilitator_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
@@ -61,12 +61,11 @@ class UpdatePersonalInformationController extends GetxController {
         departement.text = user.koasProfile!.departement!;
         selectedUniversity.value = user.koasProfile!.university!;
         whatsappLink.text = user.koasProfile!.whatsappLink!;
-
         selectedGender.value = user.koasProfile!.gender!;
       } else if (role == 'Pasien') {
         age.text = user.pasienProfile!.age!;
       } else if (role == 'Fasilitator') {
-        university.text = user.fasilitatorProfile!.university;
+        selectedUniversity.value = user.fasilitatorProfile!.university;
       } else {
         TLoaders.errorSnackBar(
           title: 'Error',

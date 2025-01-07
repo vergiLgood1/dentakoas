@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/cores/data/repositories/university/universities_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/university.repository/universities_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 

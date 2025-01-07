@@ -49,6 +49,8 @@ dependencies:
   calendar_date_picker2: ^1.1.8
   easy_date_timeline: ^2.0.6
   shimmer: ^3.0.0
+  badges: ^3.1.2
+  image_picker: ^1.1.2
 
   # Icons
   iconsax: ^0.0.8
@@ -67,6 +69,9 @@ dependencies:
   firebase_core: ^3.9.0
   firebase_auth: ^5.3.4
   cloud_firestore: ^5.6.0
+
+  # Superbase
+  supabase_flutter: ^2.0.0
 
   # API Services
   dio: ^5.7.0

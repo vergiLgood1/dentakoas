@@ -8,13 +8,16 @@ export async function GET(req: Request) {
       orderBy: {
         name: "asc",
       },
+      select: {
+        id: true,
+        name: true,
+        alias: true,
+      },
     });
 
     return NextResponse.json(
       {
-        status: "Success",
-        message: "Treatment retrived successfully",
-        data: { treatments },
+        treatments,
       },
       { status: 200 }
     );

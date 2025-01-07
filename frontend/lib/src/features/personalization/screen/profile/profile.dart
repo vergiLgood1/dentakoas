@@ -2,9 +2,9 @@ import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/images/circular_image.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
-import 'package:denta_koas/src/features/personalization/screen/profile/bio/change_bio.dart';
-import 'package:denta_koas/src/features/personalization/screen/profile/personal.information/change_personal_information.dart';
-import 'package:denta_koas/src/features/personalization/screen/profile/profile.information/change_profile_information.dart';
+import 'package:denta_koas/src/features/personalization/screen/profile/widgets/bio/change_bio.dart';
+import 'package:denta_koas/src/features/personalization/screen/profile/widgets/personal.information/change_personal_information.dart';
+import 'package:denta_koas/src/features/personalization/screen/profile/widgets/profile.information/change_profile_information.dart';
 import 'package:denta_koas/src/features/personalization/screen/profile/widgets/profile_menu.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
@@ -19,6 +19,8 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = UserController.instance;
+    
+  
     return Scaffold(
       appBar: const DAppBar(
         showBackArrow: true,
@@ -58,15 +60,20 @@ class ProfileScreen extends StatelessWidget {
               ),
               const Divider(),
 
-              SectionHeading(
+              
+              // bio
+              if (controller.user.value.role != 'Fasilitator') ...[
+                SectionHeading(
                 title: 'Bio',
                 showActionButton: true,
                 buttonTitle: "Edit",
                 onPressed: () => Get.to(() => const ChangeBioScreen()),
               ),
 
-              // bio
-              Container(
+                const SizedBox(
+                  height: TSizes.spaceBtwItems,
+                ),
+                Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(0),
                 // decoration: BoxDecoration(
@@ -74,6 +81,7 @@ class ProfileScreen extends StatelessWidget {
                 //   borderRadius: BorderRadius.circular(10),
                 //   border: Border.all(color: TColors.textPrimary),
                 // ),
+                
                 child: Obx(
                   () => Text(
                     controller.user.value.profile!.bio!,
@@ -81,6 +89,8 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              ],
+            
               const SizedBox(
                 height: TSizes.spaceBtwItems,
               ),
@@ -130,54 +140,99 @@ class ProfileScreen extends StatelessWidget {
                 showActionButton: true,
                 buttonTitle: "Edit",
                 onPressed: () =>
-                    Get.to(() => const ChangePersonalInformation()),
+                    Get.to(
+                  () => const ChangePersonalInformation(),
+                ),
                 
-              ),
-              const SizedBox(
-                height: TSizes.spaceBtwItems,
+                // Tambahkan logika untuk menampilkan Personal Information berdasarkan role
               ),
 
-              ProfileMenu(
-                title: 'Status Koas',
-                value: controller.user.value.koasProfile!.status.toString(),
-                icon: Iconsax.info_circle,
-                color: controller.setStatusColor(),
-                showIcon: true,
-                onTap: () {},
-              ),
-              ProfileMenu(
-                title: 'User ID',
-                value: controller.user.value.id!,
-                icon: Iconsax.copy,
-                onTap: () {},
-              ),
-              ProfileMenu(
-                title: 'Koas Number',
-                value: controller.user.value.profile!.koasNumber!,
-                icon: Iconsax.copy,
-                onTap: () {},
-              ),
+              if (controller.user.value.role == 'Koas') ...[
+                ProfileMenu(
+                  title: 'Status Koas',
+                  value: controller.user.value.koasProfile!.status.toString(),
+                  icon: Iconsax.info_circle,
+                  color: controller.setStatusColor(),
+                  showIcon: true,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'User ID',
+                  value: controller.user.value.id!,
+                  icon: Iconsax.copy,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'Koas Number',
+                  value: controller.user.value.profile!.koasNumber!,
+                  icon: Iconsax.copy,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'University',
+                  value: controller.user.value.profile!.university!,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'Department',
+                  value: controller.user.value.profile!.departement!,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'Age',
+                  value: controller.user.value.profile!.age!,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'Gender',
+                  value: controller.user.value.profile!.gender!,
+                  onTap: () {},
+                ),
+],
 
-              ProfileMenu(
-                title: 'University',
-                value: controller.user.value.profile!.university!,
-                onTap: () {},
-              ),
-              ProfileMenu(
-                title: 'Department',
-                value: controller.user.value.profile!.departement!,
-                onTap: () {},
-              ),
-              ProfileMenu(
-                title: 'Age',
-                value: controller.user.value.profile!.age!,
-                onTap: () {},
-              ),
-              ProfileMenu(
-                title: 'Gender',
-                value: controller.user.value.profile!.gender!,
-                onTap: () {},
-              ),
+              if (controller.user.value.role == 'Pasien') ...[
+                ProfileMenu(
+                  title: 'User ID',
+                  value: controller.user.value.id!,
+                  icon: Iconsax.copy,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'Age',
+                  value: controller.user.value.profile!.age!,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'Gender',
+                  value: controller.user.value.profile!.gender!,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'Bio',
+                  value: controller.user.value.profile!.bio!,
+                  onTap: () {},
+                ),
+              ],
+
+              if (controller.user.value.role == 'Fasilitator') ...[
+                ProfileMenu(
+                  title: 'User ID',
+                  value: controller.user.value.id!,
+                  icon: Iconsax.copy,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'University',
+                  value: controller.user.value.profile!.university!,
+                  onTap: () {},
+                ),
+                ProfileMenu(
+                  title: 'Join Date',
+                  value: controller.user.value.profile!.createdAt.toString(),
+                  onTap: () {},
+                ),
+              ],
+
               const Divider(),
               const SizedBox(
                 height: TSizes.spaceBtwItems,
@@ -186,7 +241,7 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () => controller.deleteAccountWarningPopup(),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: TColors.error),
                   ),
