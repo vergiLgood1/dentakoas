@@ -10,11 +10,7 @@ import 'package:get/get.dart';
 import 'package:time_slot/controller/day_part_controller.dart';
 
 class CreateSchedulePost extends StatelessWidget {
-  const CreateSchedulePost(
-      {super.key, required this.postId, this.requiredParticipants});
-
-  final String postId;
-  final int? requiredParticipants;
+  const CreateSchedulePost({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +42,7 @@ class CreateSchedulePost extends StatelessWidget {
                 const DateRangePicker(),
                 const SizedBox(height: TSizes.spaceBtwItems),
 
-                TimeSlotWidget(requiredParticipants: requiredParticipants),
+                const TimeSlotWidget(),
                 const SizedBox(height: TSizes.spaceBtwInputFields),
 
                 // Submit Button
@@ -61,7 +57,7 @@ class CreateSchedulePost extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        controller.createPostSchedule(postId);
+                        controller.createPostSchedule();
 
                         // controller2.createAllTimeSlots(postId);
                       },

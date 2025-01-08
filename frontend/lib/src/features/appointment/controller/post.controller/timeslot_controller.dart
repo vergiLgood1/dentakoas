@@ -1,6 +1,8 @@
+import 'package:denta_koas/src/features/appointment/controller/post.controller/general_information_controller.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 class PostTimeslotController extends GetxController {
@@ -25,8 +27,12 @@ class PostTimeslotController extends GetxController {
     'Malam': {},
   }.obs;
 
-  void setRequiredParticipants(int requiredParticipant) {
-    requiredParticipants.value = requiredParticipant;
+  void setRequiredParticipants() {
+    requiredParticipants.value =
+        GeneralInformationController.instance.requiredParticipant.text.isEmpty
+            ? 0
+            : int.parse(
+                GeneralInformationController.instance.requiredParticipant.text);
   }
 
 // Tambahkan timeslot baru
@@ -324,5 +330,36 @@ class PostTimeslotController extends GetxController {
 
     return allTimeSlots;
   }
+
+  
+  List<String> getTempTimeslot() {
+    final List<String> tempTimeslot = [];
+
+    timeSlots.forEach((section, slots) {
+      tempTimeslot.addAll(slots);
+    });
+
+    return tempTimeslot;
+  }
+
+  Map<String, dynamic> getTimeSlotsJson() {
+    final timeSlots = this.timeSlots.entries.map((entry) {
+      return {
+        'title': entry.key,
+        'slots': entry.value.map((slot) {
+          final startTime = DateFormat("HH:mm").parse(slot);
+          final endTime = startTime
+              .add(const Duration(minutes: 30)); // Add 30 minutes as an example
+          return {
+            'startTime': DateFormat("HH:mm").format(startTime),
+            'endTime': DateFormat("HH:mm").format(endTime),
+            'maxParticipants': maxParticipantsForSlot(entry.key, slot),
+          };
+        }).toList(),
+      };
+    }).toList();
+    return {'timeSlots': timeSlots};
+  }
+
 
 }

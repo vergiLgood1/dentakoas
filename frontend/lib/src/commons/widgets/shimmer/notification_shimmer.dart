@@ -19,7 +19,7 @@ class NotificationShimmer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const TShimmerEffect(
-              widht: 100,
+              width: 100,
               height: 20,
               radius: 5,
             ),
@@ -27,7 +27,7 @@ class NotificationShimmer extends StatelessWidget {
             Row(
               children: [
                 const TShimmerEffect(
-                  widht: 40,
+                  width: 40,
                   height: 40,
                   radius: 20,
                 ),
@@ -37,13 +37,13 @@ class NotificationShimmer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TShimmerEffect(
-                        widht: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery.of(context).size.width * 0.6,
                         height: 10,
                         radius: 5,
                       ),
                       const SizedBox(height: 8.0),
                       const TShimmerEffect(
-                        widht: 150,
+                        width: 150,
                         height: 10,
                         radius: 5,
                       ),
@@ -51,7 +51,7 @@ class NotificationShimmer extends StatelessWidget {
                   ),
                 ),
                 const TShimmerEffect(
-                  widht: 20,
+                  width: 20,
                   height: 10,
                   radius: 5,
                 ),

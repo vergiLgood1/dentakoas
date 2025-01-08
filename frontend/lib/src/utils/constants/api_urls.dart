@@ -52,6 +52,7 @@ class Endpoints {
   static String schedule(String id) => '$baseUrl/schedules/$id';
   static String scheduleAvailability(String id) =>
       '$baseUrl/schedules/$id/availability';
+  
 
   // Timeslot Endpoints
   static const String timeslots = '$baseUrl/timeslots';

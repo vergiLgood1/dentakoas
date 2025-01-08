@@ -65,6 +65,29 @@ class PostRepository extends GetxController {
     throw 'Failed to fetch post data.';
   }
 
+  Future<PostModel> getPostByPostId(String postId) async {
+    try {
+      final response = await DioClient().get(Endpoints.post(postId));
+
+      if (response.statusCode == 200) {
+        return PostModel.fromJson(response.data);
+      }
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again later.';
+    }
+    throw 'Failed to fetch post data.';
+  }
+
   Future<List<String>> getPostTitles() async {
     final response = await DioClient().get(Endpoints.posts);
 
@@ -83,6 +106,34 @@ class PostRepository extends GetxController {
     } else {
       throw Exception('Failed to fetch posts');
     }
+  }
+
+  Future<List<PostModel>> getPostCurrentUser() async {
+    try {
+      final response = await DioClient().get(
+        Endpoints.postWithSpecificUser(
+          AuthenticationRepository.instance.authUser!.uid,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return PostModel.postsFromJson(response.data);
+      }
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      Logger().e(['Error fetching post: $e']);
+      throw e.toString();
+    }
+    throw 'Failed to fetch post data.';
   }
 
   Future<PostModel> createPost(PostModel post) async {
@@ -110,10 +161,12 @@ class PostRepository extends GetxController {
     throw 'Failed to create post.';
   }
 
-  Future<void> updatePost(PostModel post) async {
+  Future<void> updatePost(String postId, PostModel post) async {
     try {
-      final response = await DioClient()
-          .put('${Endpoints.posts}/${post.id}', data: post.toJson());
+      final response = await DioClient().patch(
+        Endpoints.post(post.id!),
+        data: post.toJson(),
+      );
 
       if (response.statusCode == 200) {
         return;
@@ -129,7 +182,8 @@ class PostRepository extends GetxController {
     } on PlatformException catch (e) {
       throw TPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again later.';
+      Logger().e(['Error updating post: $e']);
+      throw e.toString();
     }
     throw 'Failed to update post.';
   }

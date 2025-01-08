@@ -1,6 +1,15 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:denta_koas/navigation_menu.dart';
+import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/cores/data/repositories/post.repository/post_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/schedules.repository/shcedule_repository.dart';
+import 'package:denta_koas/src/cores/data/repositories/timeslot.repository/timeslot_repository.dart';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/general_information_controller.dart';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/schedule_controller.dart';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/timeslot_controller.dart';
 import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
+import 'package:denta_koas/src/features/appointment/data/model/schedules_model.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
@@ -8,6 +17,7 @@ import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 class PostController extends GetxController {
   static PostController get instance => Get.find<PostController>();
@@ -30,6 +40,8 @@ class PostController extends GetxController {
   var selectedDate = ''.obs;
   var selectedTime = ''.obs;
 
+  final selectedStatus = 'Open'.obs;
+
   // General information
   final title = TextEditingController();
   final description = TextEditingController();
@@ -40,21 +52,21 @@ class PostController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    initializedPost();
-    Get.put(CalendarController());
-    Get.put(TimeController());
-    Get.put(InputController());
+    fetchPostUser();
   }
 
-  initializedPost() async {
+  fetchPostUser() async {
     try {
       isLoading.value = true;
-      final fetchedPost = await postRepository.getPostById();
-      posts.assignAll(fetchedPost);
+      final postsData = await postRepository.getPostCurrentUser();
+      posts.assignAll(postsData);
 
+      // filter
       postUser.assignAll(
-        fetchedPost.toList(),
+        posts.where((post) => post.status != StatusPost.Closed).toList(),
       );
+
+      Logger().i('Post : $postUser');
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
     } finally {
@@ -75,27 +87,116 @@ class PostController extends GetxController {
         return;
       }
 
-      // Initialize the post model
-      // final post = PostModel(
+      final inputController = Get.put(InputController());
+      final values = inputController.getAllValues();
 
-      // );
+      final title = GeneralInformationController.instance.title.text.trim();
+      final description =
+          GeneralInformationController.instance.description.text.trim();
+      final selectedTreatmentId =
+          GeneralInformationController.instance.selectedTreatmentId;
+      final requiredParticipant = GeneralInformationController.instance
+          .convertToInt(GeneralInformationController
+              .instance.requiredParticipant.text
+              .trim());
 
-      // Update the status of koas
+      // Initialize the model for general information post
+      final newPost = PostModel(
+        userId: UserController.instance.user.value.id,
+        koasId: UserController.instance.user.value.koasProfile!.id!,
+        title: title,
+        desc: description,
+        requiredParticipant: requiredParticipant,
+        patientRequirement: values,
+        treatmentId: selectedTreatmentId,
+      );
 
-      // Send notification
+      final post = await PostRepository.instance.createPost(newPost);
+
+      // Get current postId from the server
+      final postId = post.id;
+      final postRequiredParticipant = post.requiredParticipant;
+
+      if (postId == null) {
+        TLoaders.errorSnackBar(
+          title: 'Error',
+          message: 'Failed to fetch post id from the server',
+        );
+        return;
+      }
+
+      final dateStartValue = SchedulePostController.instance.dateStartValue;
+      final dateEndValue = SchedulePostController.instance.dateEndValue;
+
+      // Create the post schedule
+      final schedulePost = SchedulesModel(
+        postId: postId,
+        dateStart: dateStartValue,
+        dateEnd: dateEndValue,
+      );
+
+      // Send the data to the server
+      final scheduleRepository = Get.put(SchedulesRepository());
+      final newPostSchedule =
+          await scheduleRepository.createSchedule(schedulePost);
+
+      final currentScheduleId = newPostSchedule.id;
+
+      if (currentScheduleId == null) {
+        TFullScreenLoader.stopLoading();
+        TLoaders.errorSnackBar(
+          title: 'Error',
+          message: 'Failed to create post schedule',
+        );
+        return;
+      }
+
+      // Init timeslots controller to get all timeslots
+      final timeslotController = Get.put(PostTimeslotController());
+      final newTimeslots =
+          timeslotController.getAllTimeSlotsForApi(newPostSchedule.id!);
+
+      // Create batch timeslots
+      final timeslotRepository = Get.put(TimeslotRepository());
+      await timeslotRepository.createBatchTimeslots(
+          newPostSchedule.id!, newTimeslots);
+
+      final postStatus = PostModel(
+        id: postId,
+        status: StatusPost.values.firstWhere(
+            (e) => e.toString() == 'StatusPost.${selectedStatus.value}'),
+      );
+
+      // Update post status
+      await postRepository.updatePost(postId, postStatus);
 
       // Close loading
       TFullScreenLoader.stopLoading();
 
       // Success message
       TLoaders.successSnackBar(
-        title: 'Success',
-        message: 'Koas has been rejected',
+        title: 'Congratulations!',
+        message: 'Post has been created',
       );
 
-      Navigator.of(Get.overlayContext!).pop();
+      // Navigate to next screen
+      Get.off(() => StateScreen(
+            image: TImages.successCreatePost,
+            title: 'Your post has been created successfully!',
+            subtitle:
+                'Congratulations! Your post is now live and ready for participants.',
+            showButton: true,
+            primaryButtonTitle: 'Go to Dashboard',
+            onPressed: () => Get.to(() => const NavigationMenu()),
+          ));
+
+      // Auto redirect after a delay
+      Future.delayed(const Duration(seconds: 3), () {
+        Get.to(() => const NavigationMenu());
+      });
     } catch (e) {
       TFullScreenLoader.stopLoading();
+      Logger().e('Error creating post: $e');
       TLoaders.errorSnackBar(
         title: 'Error',
         message: e.toString(),
@@ -375,15 +476,17 @@ class TimeController extends GetxController {
 }
 
 class InputController extends GetxController {
+  static InputController get instance => Get.find<InputController>();
   // List of TextEditingController to manage dynamic inputs
   RxList<TextEditingController> patientRequirements =
       <TextEditingController>[].obs;
 
   /// Initialize the inputs with a default count
   void initializeInputs(int count) {
-    patientRequirements.clear();
-    for (int i = 0; i < count; i++) {
-      patientRequirements.add(TextEditingController());
+    if (patientRequirements.isEmpty) {
+      for (int i = 0; i < count; i++) {
+        patientRequirements.add(TextEditingController());
+      }
     }
   }
 

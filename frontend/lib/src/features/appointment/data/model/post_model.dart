@@ -2,11 +2,15 @@ import 'package:denta_koas/src/features/appointment/data/model/likes_model.dart'
 import 'package:denta_koas/src/features/appointment/data/model/review-model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/schedules_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/treatment.dart';
+import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 
 class PostModel {
   String? id;
   String? userId;
+  UserModel? user;
   String? koasId;
+  KoasProfileModel? koasProfile;
   String? treatmentId;
   TreatmentModel? treatment;
   String? title;
@@ -16,6 +20,7 @@ class PostModel {
   StatusPost? status;
   bool? published;
   List<SchedulesModel>? schedule;
+  
   List<Review>? review;
   List<Like>? likes;
   DateTime? createdAt;
@@ -25,6 +30,8 @@ class PostModel {
     this.id,
     this.userId,
     this.koasId,
+    this.user,
+    this.koasProfile,
     this.treatmentId,
     this.treatment,
     this.title,
@@ -40,37 +47,41 @@ class PostModel {
     this.updatedAt,
   });
 
-  factory PostModel.fromJson(Map<String, dynamic> json) {
-    final post = json['post'] ?? {};
+  factory PostModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      throw Exception('Invalid JSON data');
+    }
     return PostModel(
-      id: post['id'],
-      userId: post['userId'],
-      koasId: post['koasId'],
-      treatmentId: post['treatmentId'],
-      treatment: post['treatment'],
-      title: post['title'],
-      desc: post['desc'],
-      patientRequirement: post['patientRequirement'],
-      requiredParticipant: post['requiredParticipant'] ?? 0,
-      status: post['status'] == 'Pending'
+      id: json['id'],
+      userId: json['userId'],
+      koasId: json['koasId'],
+      treatmentId: json['treatmentId'],
+      user: json['user'] != null ? UserModel.fromJson(json['user']) : null, 
+      koasProfile: json['koas'] != null ? KoasProfileModel.fromJson(json['koas']) : null,
+      treatment: json['treatment'] != null
+          ? TreatmentModel.fromJson(json['treatment'])
+          : null,
+      title: json['title'],
+      desc: json['desc'],
+      patientRequirement: List<String>.from(json['patientRequirement']),
+      requiredParticipant: json['requiredParticipant'],
+      status: json['status'] == 'Pending'
           ? StatusPost.Pending
-          : post['status'] == 'Open'
+          : json['status'] == 'Open'
               ? StatusPost.Open
               : StatusPost.Closed,
-      published: post['published'] ?? false,
-      schedule: (post['Schedule'] as List?)
-          ?.map((e) => SchedulesModel.fromJson(e))
-          .toList(),
-      review:
-          (post['Review'] as List?)?.map((e) => Review.fromJson(e)).toList(),
-      likes: (post['likes'] as List?)?.map((e) => Like.fromJson(e)).toList(),
-      createdAt: DateTime.tryParse(post['createdAt'] ?? ''),
-      updatedAt: DateTime.tryParse(post['updateAt'] ?? ''),
+      published: json['published'],
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'])
+          : null,
+      updatedAt:
+          json['updateAt'] != null ? DateTime.tryParse(json['updateAt']) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'userId': userId,
       'koasId': koasId,
       'treatmentId': treatmentId,
@@ -106,6 +117,9 @@ class PostModel {
   }
 
   static List<PostModel> postsFromJson(dynamic data) {
+    if (data == null) {
+      throw Exception('Data is null');
+    }
     // Pastikan data adalah Map dan memiliki key "posts".
     if (data is Map<String, dynamic> && data.containsKey("posts")) {
       final posts = data["posts"] as List;

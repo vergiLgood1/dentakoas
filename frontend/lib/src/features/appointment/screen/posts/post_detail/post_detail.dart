@@ -1,5 +1,6 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/post_detail_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/widgets/booking_success.dart';
@@ -60,10 +61,16 @@ class PostDetailScreen extends StatelessWidget {
     }
   ];
 
-  const PostDetailScreen({super.key});
+  const PostDetailScreen({super.key, this.postId, this.scheduleId});
+
+  final String? postId;
+  final String? scheduleId;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(PostDetailController());
+
+    
     return Scaffold(
       appBar: DAppBar(
         title: const Text(
@@ -79,8 +86,8 @@ class PostDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BottomBookAppointment(
-        name: 'Dr. John Doe',
+      bottomNavigationBar: BottomBookAppointment(
+        name: controller.postDetail.value.user!.fullName,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -90,38 +97,38 @@ class PostDetailScreen extends StatelessWidget {
               child: Column(
                 children: [
                   // Doctor Profile
-                  const KoasProfileCard(
-                    name: 'Dr. John Doe',
-                    university: 'University of Dental Sciences',
-                    koasNumber: '123456',
+                  KoasProfileCard(
+                    name: controller.postDetail.value.user!.fullName,
+                    university:
+                        controller.postDetail.value.koasProfile!.university ??
+                            'Unknown University',
+                    koasNumber:
+                        controller.postDetail.value.koasProfile!.koasNumber ??
+                            'Unknown Koas Number',
                     image: TImages.userProfileImage3,
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
 
                   // Post Title
-                  const TitlePost(
-                    title: 'Post Title',
+                  TitlePost(
+                    title: controller.postDetail.value.title!,
                     content:
-                        'The koas was very professional and attentive throughout the entire appointment. They took the time to explain each step of the procedure and made sure I was comfortable at all times. Their expertise and friendly demeanor made the experience much more pleasant. I would highly recommend them to anyone seeking dental care.',
+                        controller.postDetail.value.desc ?? 'No content',
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   // Post Badges
-                  const PostBadges(
-                    category: 'Dental Care',
-                    requiredParticipants: 5,
+                  PostBadges(
+                    category: controller.postDetail.value.treatment!.alias!,
+                    requiredParticipants:
+                        controller.postDetail.value.requiredParticipant!,
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   // Patient Requirements
-                  const PatientRequirments(patientRequirements: [
-                    'Hand sanitizer',
-                    '12',
-                    'Datang ke lokasi',
-                    'Umur min 18 tahun',
-                    'Membawa KTP',
-                    'Membawa masker',
-                  ]),
+                  PatientRequirments(
+                      patientRequirements:
+                          controller.postDetail.value.patientRequirement!),
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   // Calendar Horizontal
@@ -132,7 +139,19 @@ class PostDetailScreen extends StatelessWidget {
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   // Available time
-                  TimeStamp(timeslots: schedule),
+                  TimeStamp(
+                    timeslots: controller.schedule.value.timeslot!
+                        .map((timeslot) => {
+                              'id': timeslot.id,
+                              'startTime': timeslot.startTime,
+                              'endTime': timeslot.endTime,
+                              'maxParticipants': timeslot.maxParticipants,
+                              'currentParticipants':
+                                  timeslot.currentParticipants,
+                              'isAvailable': timeslot.isAvailable,
+                            })
+                        .toList(),
+                  ),
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   // Reviews and Ratings
@@ -166,6 +185,8 @@ class ReviewSummaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(PostDetailController());
+    
     return Scaffold(
       appBar: const DAppBar(
         title: Text(
@@ -181,34 +202,36 @@ class ReviewSummaryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile Section
-            const Row(
+            Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 40,
                   backgroundImage: AssetImage(TImages.userProfileImage3),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Dr. Jonny Wilson",
-                      style: TextStyle(
+                      controller.postDetail.value.user!.fullName,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      "Dentist",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                      controller.postDetail.value.koasProfile!.koasNumber!,
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                     Row(
                       children: [
-                        Icon(Icons.location_pin, size: 16, color: Colors.blue),
-                        SizedBox(width: 4),
+                        const Icon(Icons.location_pin,
+                            size: 16, color: Colors.blue),
+                        const SizedBox(width: 4),
                         Text(
-                          "New York, United States",
-                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                          controller.postDetail.value.koasProfile!.university!,
+                          style:
+                              const TextStyle(fontSize: 14, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -226,7 +249,8 @@ class ReviewSummaryScreen extends StatelessWidget {
               showActionButton: false,
             ),
             const SizedBox(height: TSizes.spaceBtwItems),
-            buildInfoRow("Date & Hour", "August 24, 2023 | 10:00 AM"),
+            // buildInfoRow("Date",
+            //     "${controller.postDetail.value.schedule!.dateStart} | ${controller.postDetail.value.schedule!.dateEnd}"),
             buildInfoRow("Category", "Perawatan gigi"),
             buildInfoRow("Duration", "1 hours"),
 

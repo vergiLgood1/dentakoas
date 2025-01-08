@@ -14,7 +14,7 @@ class UserProfileTile extends StatelessWidget {
     return ListTile(
       leading: const CircularImage(
         image: TImages.user,
-        widht: 50,
+        width: 50,
         height: 50,
         padding: 0,
       ),

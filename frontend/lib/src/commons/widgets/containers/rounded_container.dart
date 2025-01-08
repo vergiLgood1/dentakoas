@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class RoundedContainer extends StatelessWidget {
   const RoundedContainer({
     super.key,
-    this.widht,
+    this.width,
     this.height,
     this.radius = TSizes.cardRadiusLg,
     this.child,
@@ -16,7 +16,7 @@ class RoundedContainer extends StatelessWidget {
     this.margin,
   });
 
-  final double? widht;
+  final double? width;
   final double? height;
   final double radius;
   final Widget? child;
@@ -29,7 +29,7 @@ class RoundedContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: widht,
+      width: width,
       height: height,
       padding: padding,
       margin: margin,

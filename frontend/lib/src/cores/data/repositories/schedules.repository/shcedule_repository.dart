@@ -36,4 +36,34 @@ class SchedulesRepository extends GetxController {
     }
     throw 'Failed to create schedule.';
   }
+
+  Future<SchedulesModel> updateSchedule(SchedulesModel schedule) async {
+    try {
+      final response = await DioClient().put(
+          '${Endpoints.schedules}/${schedule.id}',
+          data: schedule.toJson());
+
+      if (response.statusCode == 200) {
+        return SchedulesModel.fromJson(response.data);
+      }
+    } catch (e) {
+      Logger().e(e);
+      throw e.toString();
+    }
+    throw 'Failed to update schedule.';
+  }
+
+  Future<SchedulesModel> getScheduleById(String scheduleId) async {
+    try {
+      final response = await DioClient().get(Endpoints.schedule(scheduleId));
+
+      if (response.statusCode == 200) {
+        return SchedulesModel.fromJson(response.data);
+      }
+    } catch (e) {
+      Logger().e(e);
+      throw e.toString();
+    }
+    throw 'Failed to fetch schedule.';
+  } 
 }

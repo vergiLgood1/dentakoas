@@ -11,7 +11,7 @@ class CircularImage extends StatelessWidget {
     this.isNetworkImage = false,
     this.overlayColor,
     this.backgroundColor,
-    this.widht = 56,
+    this.width = 56,
     this.height = 56,
     this.padding = TSizes.sm,
     this.radius = 100,
@@ -22,14 +22,14 @@ class CircularImage extends StatelessWidget {
   final bool isNetworkImage;
   final Color? overlayColor;
   final Color? backgroundColor;
-  final double widht, height, padding, radius;
+  final double width, height, padding, radius;
 
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
 
     return Container(
-      width: widht,
+      width: width,
       height: height,
       padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(

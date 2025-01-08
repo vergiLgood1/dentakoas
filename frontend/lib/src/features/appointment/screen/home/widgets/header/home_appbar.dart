@@ -26,7 +26,7 @@ class HomeAppBar extends StatelessWidget {
         children: [
           Obx(() {
             if (controller.profileLoading.value) {
-              return const TShimmerEffect(widht: 80, height: 15);
+              return const TShimmerEffect(width: 80, height: 15);
             } else {
             final greeting = controller.updateGreetingMessage();
             return Text(
@@ -40,7 +40,7 @@ class HomeAppBar extends StatelessWidget {
           }),
           Obx(() {
             if (controller.profileLoading.value) {
-              return const TShimmerEffect(widht: 80, height: 15);
+              return const TShimmerEffect(width: 80, height: 15);
             } else {
               return Text(
                 controller.user.value.fullName,

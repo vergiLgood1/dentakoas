@@ -1,7 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/schedule_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
-import 'package:denta_koas/src/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -98,13 +97,18 @@ class DateRangePicker extends StatelessWidget {
               key: controller.schedulePostFormKey,
               child: TextFormField(
                 readOnly: true,
-                controller: controller.selectedDateRange.toString().isNotEmpty
-                    ? TextEditingController(
-                        text: dateRange,
-                      )
-                    : null,
-                validator: (value) =>
-                    TValidator.validateEmptyText('Date range', value),
+                controller: TextEditingController(
+                  text: dateRange,
+                ),
+                validator: (value) {
+                  if (controller.selectedDateRange.isEmpty ||
+                      controller.selectedDateRange[0] == null ||
+                      (controller.selectedDateRange.length > 1 &&
+                          controller.selectedDateRange[1] == null)) {
+                    return 'Date range cannot be empty';
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.calendar_today),
                   hintText: dateRange,

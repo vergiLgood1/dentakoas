@@ -23,11 +23,11 @@ class TreatmentShimmer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Image treatment
-                TShimmerEffect(widht: 55, height: 55, radius: 55),
+                TShimmerEffect(width: 55, height: 55, radius: 55),
                 SizedBox(height: TSizes.spaceBtwItems / 2),
 
                 // Text treatment
-                TShimmerEffect(widht: 55, height: 5),
+                TShimmerEffect(width: 55, height: 5),
               ],
             );
           },

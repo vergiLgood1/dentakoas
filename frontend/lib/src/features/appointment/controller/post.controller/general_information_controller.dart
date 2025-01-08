@@ -57,49 +57,48 @@ class GeneralInformationController extends GetxController {
         return;
       }
 
-      final inputController = Get.put(InputController());
-      final values = inputController.getAllValues();
+      // final inputController = Get.put(InputController());
+      // final values = inputController.getAllValues();
 
-      // Initialize the model for the post
-      final newPost = PostModel(
-        userId: UserController.instance.user.value.id,
-        koasId: UserController.instance.user.value.koasProfile!.id!,
-        title: title.text.trim(),
-        desc: description.text.trim(),
-        requiredParticipant: convertToInt(requiredParticipant.text.trim()),
-        patientRequirement: values,
-        treatmentId: selectedTreatmentId,
-      );
+      // // Initialize the model for the post
+      // final newPost = PostModel(
+      //   userId: UserController.instance.user.value.id,
+      //   koasId: UserController.instance.user.value.koasProfile!.id!,
+      //   title: title.text.trim(),
+      //   desc: description.text.trim(),
+      //   requiredParticipant: convertToInt(requiredParticipant.text.trim()),
+      //   patientRequirement: values,
+      //   treatmentId: selectedTreatmentId,
+      // );
 
-      Logger().i(newPost);
+      // Logger().i(newPost);
 
-      // Send the data to the server
-      final post = await PostRepository.instance.createPost(newPost);
+      // // Send the data to the server
+      // final post = await PostRepository.instance.createPost(newPost);
 
-      // Get current postId from the server
-      final postId = post.id;
-      final postRequiredParticipant = post.requiredParticipant;
+      // // Get current postId from the server
+      // final postId = post.id;
+      // final postRequiredParticipant = post.requiredParticipant;
 
-      if (postId == null) {
-        TLoaders.errorSnackBar(
-          title: 'Error',
-          message: 'Failed to fetch post id from the server',
-        );
-        return;
-      }
+      // if (postId == null) {
+      //   TLoaders.errorSnackBar(
+      //     title: 'Error',
+      //     message: 'Failed to fetch post id from the server',
+      //   );
+      //   return;
+      // }
 
       // Close loading
       TFullScreenLoader.stopLoading();
 
       // Success message
-      TLoaders.successSnackBar(
-        title: 'Success',
-        message: 'Post has been created',
-      );
+      // TLoaders.successSnackBar(
+      //   title: 'Success',
+      //   message: 'Post has been created',
+      // );
 
       // Navigate to next screen
-      Get.to(() => CreateSchedulePost(
-          postId: postId, requiredParticipants: postRequiredParticipant));
+      Get.to(() => const CreateSchedulePost());
     } catch (e) {
       TFullScreenLoader.stopLoading();
       TLoaders.errorSnackBar(

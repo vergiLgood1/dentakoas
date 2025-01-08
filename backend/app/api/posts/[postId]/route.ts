@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { StatusKoas } from "@/config/enum";
-import { Prisma } from "@prisma/client";
+import { Prisma, StatusPost } from "@prisma/client";
 
-export async function GET(req: Request, props: { params: Promise<{ postId: string }> }) {
+export async function GET(
+  req: Request,
+  props: { params: Promise<{ postId: string }> }
+) {
   const params = await props.params;
   const { searchParams } = new URL(req.url);
   const postId = searchParams.get("postId") || params.postId;
@@ -49,7 +52,10 @@ export async function GET(req: Request, props: { params: Promise<{ postId: strin
   }
 }
 
-export async function PATCH(req: Request, props: { params: Promise<{ postId: string }> }) {
+export async function PATCH(
+  req: Request,
+  props: { params: Promise<{ postId: string }> }
+) {
   const params = await props.params;
   const { searchParams } = new URL(req.url);
   const postId = searchParams.get("postId") || params.postId;
@@ -89,12 +95,21 @@ export async function PATCH(req: Request, props: { params: Promise<{ postId: str
       } as Prisma.PostUpdateInput,
     });
 
-    if (!title && !desc && !patientRequirement) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+    if (updatedPost.status === StatusPost.Open) {
+      await db.post.update({
+        where: { id: postId },
+        data: {
+          published: true,
+        },
+      });
     }
+
+    // if (!title && !desc && !patientRequirement) {
+    //   return NextResponse.json(
+    //     { error: "Missing required fields" },
+    //     { status: 400 }
+    //   );
+    // }
 
     return NextResponse.json(updatedPost, { status: 200 });
   } catch (error) {

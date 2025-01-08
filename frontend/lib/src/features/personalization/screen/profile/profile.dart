@@ -43,7 +43,7 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     const CircularImage(
                       image: TImages.user,
-                      widht: 80,
+                      width: 80,
                       height: 80,
                     ),
                     TextButton(

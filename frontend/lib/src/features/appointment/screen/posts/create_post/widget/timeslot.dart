@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/general_information_controller.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/timeslot_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/dropdown.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:logger/logger.dart';
+import 'package:intl/intl.dart';
 
 class TimeSlotWidget extends StatelessWidget {
   const TimeSlotWidget({super.key, this.requiredParticipants});
@@ -17,17 +18,16 @@ class TimeSlotWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
+    return const Padding(
+      padding: EdgeInsets.all(0.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RequiredParticipantSection(
-              requiredParticipants: requiredParticipants),
-          const SizedBox(height: TSizes.spaceBtwSections),
-          const DurationSection(),
-          const SizedBox(height: TSizes.spaceBtwSections),
-          const TimeSlotSelection()
+          RequiredParticipantSection(),
+          SizedBox(height: TSizes.spaceBtwSections),
+          DurationSection(),
+          SizedBox(height: TSizes.spaceBtwSections),
+          TimeSlotSelection()
         ],
       ),
     );
@@ -35,15 +35,11 @@ class TimeSlotWidget extends StatelessWidget {
 }
 
 class RequiredParticipantSection extends StatelessWidget {
-  const RequiredParticipantSection({super.key, this.requiredParticipants});
-
-  final int? requiredParticipants;
+  const RequiredParticipantSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(PostTimeslotController());
-
-    controller.requiredParticipants.value = requiredParticipants!;
+    final controller = Get.put(GeneralInformationController());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +57,7 @@ class RequiredParticipantSection extends StatelessWidget {
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly
           ],
-          initialValue: requiredParticipants.toString(),
+          initialValue: controller.requiredParticipant.text,
           enabled: false,
         ),
       ],
@@ -152,7 +148,8 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
   Widget _buildSection(BuildContext context, String title, List<String> slots) {
     int totalMaxParticipants = controller.totalMaxParticipants;
     int requiredParticipants =
-        controller.requiredParticipants.value;
+        int.parse(
+        GeneralInformationController.instance.requiredParticipant.text);
     final totalAvailableTimeSlots =
         controller.totalAvailableTimeSlots;
     int totalSlots = controller.calculateTotalSlots();
@@ -299,4 +296,7 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
     await Future.delayed(const Duration(seconds: 4));
     tooltip?.deactivate();
   }
+
+
+
 }

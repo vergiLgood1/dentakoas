@@ -1,8 +1,4 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:denta_koas/src/cores/data/repositories/schedules.repository/shcedule_repository.dart';
-import 'package:denta_koas/src/cores/data/repositories/timeslot.repository/timeslot_repository.dart';
-import 'package:denta_koas/src/features/appointment/controller/post.controller/timeslot_controller.dart';
-import 'package:denta_koas/src/features/appointment/data/model/schedules_model.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/post.preview/post_preview.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
@@ -32,7 +28,7 @@ class SchedulePostController extends GetxController {
     controlsTextStyle: const TextStyle(color: TColors.primary),
   );
 
-  void createPostSchedule(String postId) async {
+  void createPostSchedule() async {
     try {
       // Start loading
       TFullScreenLoader.openLoadingDialog(
@@ -54,51 +50,50 @@ class SchedulePostController extends GetxController {
       }
 
       // Initialize the model for the schedule post
-      Logger().d('Initializing schedule post model');
-      final schedulePost = SchedulesModel(
-        postId: postId,
-        dateStart: dateStartValue,
-        dateEnd: dateEndValue,
-      );
+      // Logger().d('Initializing schedule post model');
+      // final schedulePost = SchedulesModel(
+      //   postId: postId,
+      //   dateStart: dateStartValue,
+      //   dateEnd: dateEndValue,
+      // );
 
-      // Create the post schedule
-      final scheduleRepository = Get.put(SchedulesRepository());
-      final newPostSchedule =
-          await scheduleRepository.createSchedule(schedulePost);
+      // // Create the post schedule
+      // final scheduleRepository = Get.put(SchedulesRepository());
+      // final newPostSchedule =
+      //     await scheduleRepository.createSchedule(schedulePost);
 
-      final currentScheduleId = newPostSchedule.id;
+      // final currentScheduleId = newPostSchedule.id;
  
-      if (currentScheduleId == null) {
-        TFullScreenLoader.stopLoading();
-        TLoaders.errorSnackBar(
-          title: 'Error',
-          message: 'Failed to create post schedule',
-        );
-        return;
-      }
+      // if (currentScheduleId == null) {
+      //   TFullScreenLoader.stopLoading();
+      //   TLoaders.errorSnackBar(
+      //     title: 'Error',
+      //     message: 'Failed to create post schedule',
+      //   );
+      //   return;
+      // }
 
-      // Init timeslots controller to get all timeslots
-      final timeslotController = Get.put(PostTimeslotController());
-      final newTimeslots =
-          timeslotController.getAllTimeSlotsForApi(newPostSchedule.id!);
+      // // Init timeslots controller to get all timeslots
+      // final timeslotController = Get.put(PostTimeslotController());
+      // final newTimeslots =
+      //     timeslotController.getAllTimeSlotsForApi(newPostSchedule.id!);
 
-      // Create batch timeslots
-      final timeslotRepository = Get.put(TimeslotRepository());
-      await timeslotRepository.createBatchTimeslots(
-          newPostSchedule.id!, newTimeslots);
+      // // Create batch timeslots
+      // final timeslotRepository = Get.put(TimeslotRepository());
+      // await timeslotRepository.createBatchTimeslots(
+      //     newPostSchedule.id!, newTimeslots);
  
       // Stop loading
       TFullScreenLoader.stopLoading();
 
       // Success message
-      Logger().d('Showing success snackbar');
       // TLoaders.successSnackBar(
       //   title: 'Success',
       //   message: 'Post has been created',
       // );
 
       // Navigate to next screen
-      Get.to(() => PostPreviewScren());
+      Get.to(() => const PostPreviewScren());
     } catch (e) {
       // Stop loading
       TFullScreenLoader.stopLoading();

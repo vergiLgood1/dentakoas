@@ -2,10 +2,14 @@
 
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/post_library_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
+import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/posts_controller.dart';
+import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/general.information/create_general_information.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/card_post_user.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -20,8 +24,8 @@ class CreatePostScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PostController());
-    final statusKoas = UserController.instance.user.value.koasProfile!.status;
-    
+    final statusKoas = UserController.instance.user.value.koasProfile?.status;
+
     return Scaffold(
       appBar: DAppBar(
         title: const Text('Post'),
@@ -45,59 +49,71 @@ class CreatePostScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: controller.postUser.isEmpty
-          ? statusKoas == 'Pending'
-              ? const StateScreen(
-                  image: TImages.emptyPost,
-                  title: 'Pending Status',
-                  subtitle:
-                      'Your profile verification is still pending. Please wait until your profile is approved by your fasilitator.',
-                )
-              : GestureDetector(
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return ShimmerPostLibrary(
+            itemCount: controller.postUser.length,
+          );
+        }
+        if (controller.postUser.isEmpty) {
+          if (statusKoas == 'Pending') {
+            return const StateScreen(
+              image: TImages.emptyPost,
+              title: 'Pending Status',
+              subtitle:
+                  'Your profile verification is still pending. Please wait until your profile is approved by your fasilitator.',
+            );
+          } else {
+            return GestureDetector(
               onTap: () => Get.to(() => const CreateGeneralInformation()),
               child: const StateScreen(
                 image: TImages.emptyPost,
                 title: 'Empty Post',
                 subtitle: 'You don\'t have any post yet. Click to create one.',
               ),
-            )
-          : GestureDetector(
-              onTap: () => Get.to(() => const CreateGeneralInformation()),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(
-                    TSizes.defaultSpace,
+            );
+          }
+        }
+
+        return GestureDetector(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(TSizes.defaultSpace),
+              child: Column(
+                children: [
+                  SectionHeading(
+                    title: '',
+                    showActionButton: true,
+                    onPressed: () {},
                   ),
-                  child: Column(
-                    children: [
-                      DGridLayout(
-                        crossAxisCount: 1,
-                        mainAxisExtent: 250,
-                        itemCount: controller.postUser.length,
-                        itemBuilder: (context, index) {
-                          final post = controller.postUser[index];
-                          return CardPostUser(
-                            title: post.title!,
-                            desc: post.desc!,
-                            treatment: post.treatment!.name!,
-                            status: post.status.toString().split('.').last,
-                            statusColor:
-                                controller.setStatusColor(post.status!),
-                            updatedAt: post.updatedAt!,
-                          );
-                        },
-                      )
-                    ],
+                  const SizedBox(height: TSizes.spaceBtwItems / 2),
+                  DGridLayout(
+                    crossAxisCount: 1,
+                    mainAxisExtent: 250,
+                    itemCount: 3,
+                    itemBuilder: (context, index) {
+                      final post = controller.postUser[index];
+                      return CardPostUser(
+                        title: post.title!,
+                        desc: post.desc!,
+                        treatment: post.treatment!.name!,
+                        status: post.status.toString().split('.').last,
+                        statusColor: post.status == StatusPost.Pending
+                            ? Colors.orange
+                            : post.status == StatusPost.Open
+                                ? Colors.green
+                                : Colors.red,
+                        updatedAt: post.updatedAt!,
+                        onTap: () => PostDetailScreen(postId: post.id!),
+                      );
+                    },
                   ),
-                ),
+                ],
               ),
             ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => Get.to(() => const CreateGeneralInformation()),
-      //   child: const Icon(Icons.add),
-      // ),
+          ),
+        );
+      }),
     );
   }
 }
-
-

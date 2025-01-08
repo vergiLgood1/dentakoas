@@ -22,8 +22,11 @@ export async function GET(
         treatment: true,
         likes: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
-
+    
     if (!posts || posts.length === 0) {
       return NextResponse.json(
         { error: "No posts found for this user" },
