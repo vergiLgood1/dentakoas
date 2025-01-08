@@ -27,6 +27,7 @@ class SchedulesRepository extends GetxController {
           await DioClient().post(Endpoints.schedules, data: schedule.toJson());
 
       if (response.statusCode == 201) {
+        Logger().i('Response data: ${response.data}');
         return SchedulesModel.fromJson(response.data);
       }
     } catch (e) {
@@ -34,35 +35,5 @@ class SchedulesRepository extends GetxController {
       throw e.toString();
     }
     throw 'Failed to create schedule.';
-  }
-
-  Future<SchedulesModel> updateSchedule(SchedulesModel schedule) async {
-    try {
-      final response = await DioClient().put(
-          '${Endpoints.schedules}/${schedule.id}',
-          data: schedule.toJson());
-
-      if (response.statusCode == 200) {
-        return SchedulesModel.fromJson(response.data);
-      }
-    } catch (e) {
-      Logger().e(e);
-      throw e.toString();
-    }
-    throw 'Failed to update schedule.';
-  }
-
-  Future<void> deleteSchedule(String id) async {
-    try {
-      final response = await DioClient().delete('${Endpoints.schedules}/$id');
-
-      if (response.statusCode == 200) {
-        return;
-      }
-    } catch (e) {
-      Logger().e(e);
-      throw e.toString();
-    }
-    throw 'Failed to delete schedule.';
   }
 }

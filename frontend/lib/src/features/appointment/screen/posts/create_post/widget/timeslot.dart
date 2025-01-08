@@ -160,15 +160,15 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
     bool isAvailable = totalMaxParticipants < requiredParticipants &&
         totalSlots < requiredParticipants;
 
-    Logger().i({
-      'totalSlots': totalSlots,
-      'totalAvailableTimeSlots': totalAvailableTimeSlots,
-      'requiredParticipants': requiredParticipants,
-      'totalMaxParticipants': totalMaxParticipants,
-      'isAvailable': isAvailable,
-      'slots': slots,
-      'title': title,
-    });
+    // Logger().i({
+    //   'totalSlots': totalSlots,
+    //   'totalAvailableTimeSlots': totalAvailableTimeSlots,
+    //   'requiredParticipants': requiredParticipants,
+    //   'totalMaxParticipants': totalMaxParticipants,
+    //   'isAvailable': isAvailable,
+    //   'slots': slots,
+    //   'title': title,
+    // });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

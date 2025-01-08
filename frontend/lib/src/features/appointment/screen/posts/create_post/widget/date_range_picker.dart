@@ -1,9 +1,9 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/schedule_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:denta_koas/src/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 
 class DateRangePicker extends StatelessWidget {
   const DateRangePicker({super.key});
@@ -94,41 +94,42 @@ class DateRangePicker extends StatelessWidget {
                 ? '$startDate - $endDate'
                 : 'Select Date Range';
 
-            return TextFormField(
-              readOnly: true,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.calendar_today),
-                hintText: dateRange,
-              ),
-              onTap: () async {
-                final selectedDates = await showDialog<List<DateTime?>>(
-                  context: context,
-                  builder: (context) => Dialog(
-                    child: CalendarDatePicker2(
-                      config: config,
-                      value: controller.selectedDateRange,
-                      onValueChanged: (dates) {
-                        controller.selectedDateRange.value =
-                            dates;
-                      },
+            return Form(
+              key: controller.schedulePostFormKey,
+              child: TextFormField(
+                readOnly: true,
+                controller: controller.selectedDateRange.toString().isNotEmpty
+                    ? TextEditingController(
+                        text: dateRange,
+                      )
+                    : null,
+                validator: (value) =>
+                    TValidator.validateEmptyText('Date range', value),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.calendar_today),
+                  hintText: dateRange,
+                ),
+                onTap: () async {
+                  final selectedDates = await showDialog<List<DateTime?>>(
+                    context: context,
+                    builder: (context) => Dialog(
+                      child: CalendarDatePicker2(
+                        config: config,
+                        value: controller.selectedDateRange,
+                        onValueChanged: (dates) {
+                          controller.selectedDateRange.value = dates;
+                        },
+                      ),
                     ),
-                  ),
-                );
-                if (selectedDates != null) {
-                  controller.selectedDateRange.value = selectedDates;
-                }
-              },
+                  );
+                  if (selectedDates != null) {
+                    controller.selectedDateRange.value = selectedDates;
+                  }
+                },
+              ),
             );
           }),
           const SizedBox(height: 20),
-
-          ElevatedButton(
-              onPressed: () {
-                Logger().w(
-                  controller.formatSelectedDateRange(),
-                );
-              },
-              child: const Text('Submit'))
         ],
       ),
     );

@@ -74,9 +74,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       {
-        status: "Success",
-        message: "Schedule created successfully",
-        data: { schedule },
+        schedule,
       },
       { status: 201 }
     );

@@ -250,4 +250,79 @@ class PostTimeslotController extends GetxController {
   void updateSelectedTimeStamp(int index) {
     selectedTimeStamp.value = index;
   }
+
+  // get all timeslots
+  Future<List<Map<String, dynamic>>> createAllTimeSlots(
+      String scheduleId) async {
+    final List<Map<String, dynamic>> allTimeSlots = [];
+
+    try {
+      timeSlots.forEach((section, slots) {
+        for (var slot in slots) {
+          if (slot.contains(' - ')) {
+            final startTime = slot.split(' - ')[0];
+            final endTime = slot.split(' - ')[1];
+            final maxParticipantsForSlot = maxParticipants[section]?[slot] ?? 1;
+
+            if (scheduleId != null && startTime != null && endTime != null) {
+              allTimeSlots.add({
+                "scheduleId": scheduleId,
+                "startTime": startTime,
+                "endTime": endTime,
+                "maxParticipants": maxParticipantsForSlot,
+              });
+            } else {
+              Logger().w('Invalid slot data: section=$section, slot=$slot');
+            }
+          } else {
+            Logger().w('Invalid slot format: $slot');
+          }
+        }
+      });
+    } catch (e) {
+      Logger()
+          .e('Error creating timeslots for scheduleId: $scheduleId, error: $e');
+      return [];
+    }
+
+    Logger().d({
+      'Timeslot': allTimeSlots,
+    });
+    return allTimeSlots;
+  }
+
+  List<Map<String, dynamic>> getAllTimeSlotsForApi(String scheduleId) {
+    final List<Map<String, dynamic>> allTimeSlots = [];
+
+    timeSlots.forEach((section, slots) {
+      for (var slot in slots) {
+        if (slot.contains(' - ')) {
+          final startTime = slot.split(' - ')[0];
+          final endTime = slot.split(' - ')[1];
+          final maxParticipantsForSlot = maxParticipants[section]?[slot] ?? 1;
+
+          if (scheduleId != null && startTime != null && endTime != null) {
+            allTimeSlots.add({
+              "scheduleId": scheduleId,
+              "startTime": startTime,
+              "endTime": endTime,
+              "maxParticipants": maxParticipantsForSlot,
+            });
+          } else {
+            Logger().w('Invalid slot data: section=$section, slot=$slot');
+          }
+        } else {
+          Logger().w('Invalid slot format: $slot');
+          throw 'Invalid slot format: $slot';
+        }
+      }
+    });
+
+    Logger().d({
+      'All time slots': allTimeSlots,
+    });
+
+    return allTimeSlots;
+  }
+
 }

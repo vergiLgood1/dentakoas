@@ -25,21 +25,26 @@ class SchedulesModel {
     this.appointment,
   });
 
+  // Helper function to format DateTime
+  String _formatDate(DateTime date) {
+    return '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
   factory SchedulesModel.fromJson(Map<String, dynamic> json) {
+    final schedule = json['schedule']; // Mengakses properti 'schedule'.
     return SchedulesModel(
-      id: json['id'],
-      postId: json['postId'],
-      dateStart: json['dateStart'],
-      dateEnd: json['dateEnd'],
-      createdAt: json['createdAt'],
-      updateAt: json['updateAt'],
-      post: PostModel.fromJson(json['Post']),
-      timeslot: (json['timeslots'] as List)
-          .map((e) => TimeslotModel.fromJson(e))
-          .toList(),
-      appointment: (json['Appointment'] as List)
-          .map((e) => Appointment.fromJson(e))
-          .toList(),
+      id: schedule['id'],
+      postId: schedule['postId'],
+      // dateStart: schedule['dateStart'],
+      // dateEnd: schedule['dateEnd'],
+      // createdAt: schedule['createdAt'],
+      // updateAt: schedule['updateAt'],
+      // timeslot: (json['timeslots'] as List)
+      //     .map((e) => TimeslotModel.fromJson(e))
+      //     .toList(),
+      // appointment: (json['Appointment'] as List)
+      //     .map((e) => Appointment.fromJson(e))
+      //     .toList(),
     );
   }
 
@@ -47,13 +52,8 @@ class SchedulesModel {
     return {
       'id': id,
       'postId': postId,
-      'dateStart': dateStart,
-      'dateEnd': dateEnd,
-      'createdAt': createdAt,
-      'updateAt': updateAt,
-      'Post': post?.toJson(),
-      'timeslots': timeslot?.map((e) => e.toJson()).toList(),
-      'Appointment': appointment?.map((e) => e.toJson()).toList(),
+      'dateStart': dateStart != null ? _formatDate(dateStart!) : null,
+      'dateEnd': dateEnd != null ? _formatDate(dateStart!) : null,
     };
   }
 

@@ -52,6 +52,31 @@ class TimeslotRepository extends GetxController {
     throw 'Failed to update timeslot.';
   }
 
+  Future<void> createBatchTimeslots(
+    String scheduleId, List<Map<String, dynamic>> timeslots) async {
+  try {
+    // Bungkus timeslots dalam sebuah objek JSON tunggal
+    final payload = {
+      "scheduleId": scheduleId,
+      "timeslots": timeslots,
+    };
+
+    final response = await DioClient().post(Endpoints.timeslots, data: payload);
+
+    if (response.statusCode == 200) {
+      Logger().i('Successfully created batch timeslots');
+    } else {
+      Logger().w(
+          'Unexpected response code: ${response.statusCode}, response: ${response.data}');
+    }
+  } catch (e) {
+    Logger().e('Failed to create batch timeslots: $e');
+    throw e.toString();
+  }
+}
+
+
+
   Future<void> deleteTimeslot(String id) async {
     try {
       final response = await DioClient().delete('${Endpoints.timeslots}/$id');
