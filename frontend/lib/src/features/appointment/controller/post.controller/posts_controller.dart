@@ -96,19 +96,26 @@ class PostController extends GetxController {
 
   void createPost() async {
     try {
+      // Log action start
+      Logger().i('Starting createPost process...');
+    
       // Start loading
       TFullScreenLoader.openLoadingDialog(
-          'Proceccing your action....', TImages.loadingHealth);
+          'Processing your action....', TImages.loadingHealth);
+      Logger().i('Opened loading dialog');
 
       // Check connection
       final isConected = await NetworkManager.instance.isConnected();
+      Logger().i('Network status: $isConected');
       if (!isConected) {
         TFullScreenLoader.stopLoading();
+        Logger().w('No internet connection');
         return;
       }
 
       final inputController = Get.put(InputController());
       final values = inputController.getAllValues();
+      Logger().i('Input values: $values');
 
       final title = GeneralInformationController.instance.title.text.trim();
       final description =
@@ -119,6 +126,8 @@ class PostController extends GetxController {
           .convertToInt(GeneralInformationController
               .instance.requiredParticipant.text
               .trim());
+      Logger().i('Title: $title, Description: $description, '
+          'SelectedTreatmentId: $selectedTreatmentId, RequiredParticipant: $requiredParticipant');
 
       // Initialize the model for general information post
       final newPost = PostModel(
@@ -130,20 +139,28 @@ class PostController extends GetxController {
         patientRequirement: values,
         treatmentId: selectedTreatmentId,
       );
+      Logger().i('Initialized new PostModel: ${newPost.toJson()}');
 
+      // Create post
       final post = await PostRepository.instance.createPost(newPost);
+      Logger().i('Created post response: ${post.toJson()}');
 
       // Get current postId from the server
       final postId = post.id;
       final postRequiredParticipant = post.requiredParticipant;
 
       if (postId == null) {
+        TFullScreenLoader.stopLoading();
+        Logger().e('Failed to fetch post id from the server');
         TLoaders.errorSnackBar(
           title: 'Error',
           message: 'Failed to fetch post id from the server',
         );
         return;
       }
+
+      Logger().i(
+          'Post ID: $postId, Required Participant: $postRequiredParticipant');
 
       final dateStartValue = SchedulePostController.instance.dateStartValue;
       final dateEndValue = SchedulePostController.instance.dateEndValue;
@@ -154,44 +171,49 @@ class PostController extends GetxController {
         dateStart: dateStartValue,
         dateEnd: dateEndValue,
       );
+      Logger().i('SchedulePost: ${schedulePost.toJson()}');
 
-      // Send the data to the server
-      final scheduleRepository = Get.put(SchedulesRepository());
-      final newPostSchedule =
-          await scheduleRepository.createSchedule(schedulePost);
+        final scheduleRepository = Get.put(SchedulesRepository());
+        final newPostSchedule =
+            await scheduleRepository.createSchedule(schedulePost);
+        Logger().i('New Post Schedule: ${newPostSchedule.toJson()}');
 
-      final currentScheduleId = newPostSchedule.id;
+        final currentScheduleId = newPostSchedule.id;
 
-      if (currentScheduleId == null) {
-        TFullScreenLoader.stopLoading();
-        TLoaders.errorSnackBar(
-          title: 'Error',
-          message: 'Failed to create post schedule',
-        );
-        return;
-      }
+        if (currentScheduleId == null) {
+          TFullScreenLoader.stopLoading();
+          Logger().e('Failed to create post schedule');
+          TLoaders.errorSnackBar(
+            title: 'Error',
+            message: 'Failed to create post schedule',
+          );
+          return;
+        }
 
       // Init timeslots controller to get all timeslots
       final timeslotController = Get.put(PostTimeslotController());
       final newTimeslots =
           timeslotController.getAllTimeSlotsForApi(newPostSchedule.id!);
+      Logger().i('Generated timeslots: $newTimeslots');
 
       // Create batch timeslots
       final timeslotRepository = Get.put(TimeslotRepository());
       await timeslotRepository.createBatchTimeslots(
           newPostSchedule.id!, newTimeslots);
+      Logger().i('Batch timeslots created successfully');
 
       final postStatus = PostModel(
         id: postId,
         status: StatusPost.values.firstWhere(
             (e) => e.toString() == 'StatusPost.${selectedStatus.value}'),
       );
+      Logger().i('Updating post status to: ${postStatus.toJson()}');
 
-      // Update post status
       await postRepository.updatePost(postId, postStatus);
 
       // Close loading
       TFullScreenLoader.stopLoading();
+      Logger().i('Post creation process completed successfully');
 
       // Success message
       TLoaders.successSnackBar(
@@ -216,13 +238,16 @@ class PostController extends GetxController {
       });
     } catch (e) {
       TFullScreenLoader.stopLoading();
-      Logger().e('Error creating post: $e');
+      Logger().e(
+        'Error creating post: $e',
+      );
       TLoaders.errorSnackBar(
         title: 'Error',
         message: e.toString(),
       );
     }
   }
+
 
   // Fungsi untuk menyimpan data General Information
   void setGeneralInfo(Map<String, dynamic> generalInformation) {

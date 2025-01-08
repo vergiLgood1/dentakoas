@@ -52,34 +52,40 @@ class PostModel {
     if (json == null) {
       throw Exception('Invalid JSON data');
     }
+
+    final data = json['post'] ?? json; // Ambil data dari 'post' jika ada.
     return PostModel(
-      id: json['id'],
-      userId: json['userId'],
-      koasId: json['koasId'],
-      treatmentId: json['treatmentId'],
-      user: json['user'] != null ? UserModel.fromJson(json['user']) : null, 
-      koasProfile: json['koas'] != null ? KoasProfileModel.fromJson(json['koas']) : null,
-      treatment: json['treatment'] != null
-          ? TreatmentModel.fromJson(json['treatment'])
+      id: data['id'],
+      userId: data['userId'],
+      koasId: data['koasId'],
+      treatmentId: data['treatmentId'],
+      user: data['user'] != null ? UserModel.fromJson(data['user']) : null,
+      koasProfile:
+          data['koas'] != null ? KoasProfileModel.fromJson(data['koas']) : null,
+      treatment: data['treatment'] != null
+          ? TreatmentModel.fromJson(data['treatment'])
           : null,
-      title: json['title'],
-      desc: json['desc'],
-      patientRequirement: List<String>.from(json['patientRequirement']),
-      requiredParticipant: json['requiredParticipant'],
-      status: json['status'] == 'Pending'
+      title: data['title'],
+      desc: data['desc'],
+      patientRequirement: data['patientRequirement'] != null &&
+              data['patientRequirement'] is List
+          ? List<String>.from(data['patientRequirement'])
+          : [],
+      requiredParticipant: data['requiredParticipant'],
+      status: data['status'] == 'Pending'
           ? StatusPost.Pending
-          : json['status'] == 'Open'
+          : data['status'] == 'Open'
               ? StatusPost.Open
               : StatusPost.Closed,
-       
-      published: json['published'],
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'])
+      published: data['published'] ?? false,
+      createdAt: data['createdAt'] != null
+          ? DateTime.tryParse(data['createdAt'])
           : null,
       updatedAt:
-          json['updateAt'] != null ? DateTime.tryParse(json['updateAt']) : null,
+          data['updateAt'] != null ? DateTime.tryParse(data['updateAt']) : null,
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -123,8 +129,8 @@ class PostModel {
       throw Exception('Data is null');
     }
     // Pastikan data adalah Map dan memiliki key "posts".
-    if (data is Map<String, dynamic> && data.containsKey("posts")) {
-      final posts = data["posts"] as List;
+    if (data is Map<String, dynamic> && data.containsKey("post")) {
+      final posts = data["post"] as List;
       return posts.map((item) => PostModel.fromJson(item)).toList();
     }
     throw Exception('Invalid data format for posts');
