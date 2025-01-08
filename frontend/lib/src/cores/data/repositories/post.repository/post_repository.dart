@@ -1,5 +1,6 @@
 import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
+import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
 import 'package:denta_koas/src/utils/constants/api_urls.dart';
 import 'package:denta_koas/src/utils/dio.client/dio_client.dart';
 import 'package:denta_koas/src/utils/exceptions/exceptions.dart';
@@ -41,13 +42,21 @@ class PostRepository extends GetxController {
     throw 'Failed to fetch posts data.';
   }
 
-  Future<List<PostModel>> getPostById() async {
+  Future<List<Post>> getPostByUser2() async {
     try {
-      final response = await DioClient()
-          .get(Endpoints.post(AuthenticationRepository.instance.authUser!.uid));
+      final response = await DioClient().get(
+        Endpoints.postWithSpecificUser(
+          AuthenticationRepository.instance.authUser!.uid,
+        ),
+      );
 
       if (response.statusCode == 200) {
-        return PostModel.postsFromJson(response.data);
+        // Ambil array posts dari data
+        final data = response.data as Map<String, dynamic>;
+        final posts = data['posts'] as List<dynamic>;
+        return posts
+            .map((json) => Post.fromJson(json as Map<String, dynamic>))
+            .toList();
       }
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
@@ -60,14 +69,18 @@ class PostRepository extends GetxController {
     } on PlatformException catch (e) {
       throw TPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again later.';
+      Logger().e(['Error fetching post: $e']);
+      throw e.toString();
     }
     throw 'Failed to fetch post data.';
   }
 
+
+
   Future<PostModel> getPostByPostId(String postId) async {
     try {
-      final response = await DioClient().get(Endpoints.post(postId));
+      final response =
+          await DioClient().get(Endpoints.postWithSpecificUser(postId));
 
       if (response.statusCode == 200) {
         return PostModel.fromJson(response.data);

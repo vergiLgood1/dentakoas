@@ -9,6 +9,7 @@ import 'package:denta_koas/src/features/appointment/controller/post.controller/s
 import 'package:denta_koas/src/features/appointment/controller/post.controller/timeslot_controller.dart';
 import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/schedules_model.dart';
+import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
@@ -26,8 +27,8 @@ class PostController extends GetxController {
   final timeController = TimeController();
   final inputController = InputController();
 
-  RxList<PostModel> posts = <PostModel>[].obs;
-  RxList<PostModel> postUser = <PostModel>[].obs;
+  RxList<Post> posts = <Post>[].obs;
+  RxList<Post> postUser = <Post>[].obs;
 
   final isLoading = false.obs;
 
@@ -55,10 +56,10 @@ class PostController extends GetxController {
     fetchPostUser();
   }
 
-  fetchPostUser() async {
+  Future<void> fetchPostUser() async {
     try {
-      isLoading.value = true;
-      final postsData = await postRepository.getPostCurrentUser();
+      isLoading.value = true; // Replace with actual post ID
+      final postsData = await postRepository.getPostByUser2();
       posts.assignAll(postsData);
 
       // filter
@@ -73,6 +74,25 @@ class PostController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  // fetchPostUser() async {
+  //   try {
+  //     isLoading.value = true;
+  //     final postsData = await postRepository.getPostCurrentUser();
+  //     posts.assignAll(postsData);
+
+  //     // filter
+  //     postUser.assignAll(
+  //       posts.where((post) => post.status != StatusPost.Closed).toList(),
+  //     );
+
+  //     Logger().i('Post : $postUser');
+  //   } catch (e) {
+  //     TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   void createPost() async {
     try {

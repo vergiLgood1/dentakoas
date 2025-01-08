@@ -1,9 +1,9 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/post_detail_controller.dart';
+import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
-import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/widgets/booking_success.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/widgets/koas_profile.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/widgets/post_detail_badge.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/widgets/title_post_detail.dart';
@@ -70,6 +70,7 @@ class PostDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(PostDetailController());
 
+    final Post post = Get.arguments;
     
     return Scaffold(
       appBar: DAppBar(
@@ -87,7 +88,7 @@ class PostDetailScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: BottomBookAppointment(
-        name: controller.postDetail.value.user!.fullName,
+        name: post.user.name,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -98,37 +99,35 @@ class PostDetailScreen extends StatelessWidget {
                 children: [
                   // Doctor Profile
                   KoasProfileCard(
-                    name: controller.postDetail.value.user!.fullName,
+                    name: post.user.name,
                     university:
-                        controller.postDetail.value.koasProfile!.university ??
-                            'Unknown University',
+                        post.user.koasProfile.university,
                     koasNumber:
-                        controller.postDetail.value.koasProfile!.koasNumber ??
-                            'Unknown Koas Number',
+                        post.user.koasProfile.koasNumber,
                     image: TImages.userProfileImage3,
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
 
                   // Post Title
                   TitlePost(
-                    title: controller.postDetail.value.title!,
+                    title: post.title,
                     content:
-                        controller.postDetail.value.desc ?? 'No content',
+                        post.desc,
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   // Post Badges
                   PostBadges(
-                    category: controller.postDetail.value.treatment!.alias!,
+                    category: post.treatment.alias,
                     requiredParticipants:
-                        controller.postDetail.value.requiredParticipant!,
+                        post.requiredParticipant,
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   // Patient Requirements
                   PatientRequirments(
                       patientRequirements:
-                          controller.postDetail.value.patientRequirement!),
+                          post.patientRequirement),
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   // Calendar Horizontal
@@ -140,7 +139,8 @@ class PostDetailScreen extends StatelessWidget {
 
                   // Available time
                   TimeStamp(
-                    timeslots: controller.schedule.value.timeslot!
+                    timeslots: post.schedule
+                        .expand((schedule) => schedule.timeslot)
                         .map((timeslot) => {
                               'id': timeslot.id,
                               'startTime': timeslot.startTime,
@@ -180,138 +180,138 @@ class PostDetailScreen extends StatelessWidget {
   }
 }
 
-class ReviewSummaryScreen extends StatelessWidget {
-  const ReviewSummaryScreen({super.key});
+// class ReviewSummaryScreen extends StatelessWidget {
+//   const ReviewSummaryScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(PostDetailController());
+//   @override
+//   Widget build(BuildContext context) {
+//     final controller = Get.put(PostDetailController());
     
-    return Scaffold(
-      appBar: const DAppBar(
-        title: Text(
-          'Review Summary',
-          textAlign: TextAlign.center,
-        ),
-        centerTitle: true,
-        showBackArrow: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Section
-            Row(
-              children: [
-                const CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage(TImages.userProfileImage3),
-                ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      controller.postDetail.value.user!.fullName,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      controller.postDetail.value.koasProfile!.koasNumber!,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                    Row(
-                      children: [
-                        const Icon(Icons.location_pin,
-                            size: 16, color: Colors.blue),
-                        const SizedBox(width: 4),
-                        Text(
-                          controller.postDetail.value.koasProfile!.university!,
-                          style:
-                              const TextStyle(fontSize: 14, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const Divider(height: 32, thickness: 1),
+//     return Scaffold(
+//       appBar: const DAppBar(
+//         title: Text(
+//           'Review Summary',
+//           textAlign: TextAlign.center,
+//         ),
+//         centerTitle: true,
+//         showBackArrow: true,
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             // Profile Section
+//             Row(
+//               children: [
+//                 const CircleAvatar(
+//                   radius: 40,
+//                   backgroundImage: AssetImage(TImages.userProfileImage3),
+//                 ),
+//                 const SizedBox(width: 16),
+//                 Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text(
+//                       controller.postDetail.value.user!.fullName,
+//                       style: const TextStyle(
+//                         fontSize: 18,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                     ),
+//                     Text(
+//                       controller.postDetail.value.koasProfile!.koasNumber!,
+//                       style: const TextStyle(fontSize: 16, color: Colors.grey),
+//                     ),
+//                     Row(
+//                       children: [
+//                         const Icon(Icons.location_pin,
+//                             size: 16, color: Colors.blue),
+//                         const SizedBox(width: 4),
+//                         Text(
+//                           controller.postDetail.value.koasProfile!.university!,
+//                           style:
+//                               const TextStyle(fontSize: 14, color: Colors.grey),
+//                         ),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//             const Divider(height: 32, thickness: 1),
 
-            const SizedBox(height: TSizes.spaceBtwItems),
+//             const SizedBox(height: TSizes.spaceBtwItems),
 
-            // Date & Hour Section
-            const SectionHeading(
-              title: "Appointment Information",
-              showActionButton: false,
-            ),
-            const SizedBox(height: TSizes.spaceBtwItems),
-            // buildInfoRow("Date",
-            //     "${controller.postDetail.value.schedule!.dateStart} | ${controller.postDetail.value.schedule!.dateEnd}"),
-            buildInfoRow("Category", "Perawatan gigi"),
-            buildInfoRow("Duration", "1 hours"),
+//             // Date & Hour Section
+//             const SectionHeading(
+//               title: "Appointment Information",
+//               showActionButton: false,
+//             ),
+//             const SizedBox(height: TSizes.spaceBtwItems),
+//             // buildInfoRow("Date",
+//             //     "${controller.postDetail.value.schedule!.dateStart} | ${controller.postDetail.value.schedule!.dateEnd}"),
+//             buildInfoRow("Category", "Perawatan gigi"),
+//             buildInfoRow("Duration", "1 hours"),
 
-            const Divider(height: 32, thickness: 1),
-            const SectionHeading(
-              title: "Patient Information",
-              showActionButton: false,
-            ),
-            const SizedBox(height: TSizes.spaceBtwItems),
-            // Pasien Section
-            buildInfoRow('name', 'Anri'),
-            buildInfoRow('Phone', '08123456789'),
-            buildInfoRow('Email', 'example@email.com'),
-            buildInfoRow('Address', 'Jl. Jendral Sudirman No. 1'),
+//             const Divider(height: 32, thickness: 1),
+//             const SectionHeading(
+//               title: "Patient Information",
+//               showActionButton: false,
+//             ),
+//             const SizedBox(height: TSizes.spaceBtwItems),
+//             // Pasien Section
+//             buildInfoRow('name', 'Anri'),
+//             buildInfoRow('Phone', '08123456789'),
+//             buildInfoRow('Email', 'example@email.com'),
+//             buildInfoRow('Address', 'Jl. Jendral Sudirman No. 1'),
 
-            // const Divider(height: 32, thickness: 1),
-            // Payment Method Section
+//             // const Divider(height: 32, thickness: 1),
+//             // Payment Method Section
 
-            const Spacer(),
-            // Pay Now Button
-            Center(
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Get.to(() => const BookingSuccessScreen()),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.blue,
-                  ),
-                  child: const Text(
-                    "Booking now",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+//             const Spacer(),
+//             // Pay Now Button
+//             Center(
+//               child: SizedBox(
+//                 width: double.infinity,
+//                 child: ElevatedButton(
+//                   onPressed: () => Get.to(() => const BookingSuccessScreen()),
+//                   style: ElevatedButton.styleFrom(
+//                     padding: const EdgeInsets.symmetric(vertical: 16),
+//                     backgroundColor: Colors.blue,
+//                   ),
+//                   child: const Text(
+//                     "Booking now",
+//                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
 
-  Widget buildInfoRow(String title, String value, {bool isBold = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   Widget buildInfoRow(String title, String value, {bool isBold = false}) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(vertical: 8.0),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Text(
+//             title,
+//             style: const TextStyle(fontSize: 16, color: Colors.grey),
+//           ),
+//           Text(
+//             value,
+//             style: TextStyle(
+//               fontSize: 16,
+//               fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

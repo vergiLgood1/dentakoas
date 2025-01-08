@@ -73,7 +73,7 @@ class BottomBookAppointment extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () =>
-                            Get.to(() => const ReviewSummaryScreen()),
+                            {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: TColors.primary,
                           padding: const EdgeInsets.symmetric(

@@ -13,12 +13,6 @@ class PostDetailController extends GetxController {
 
   Rx<SchedulesModel> schedule = SchedulesModel.empty().obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    fetchDetailPost(Get.arguments);
-    fetchSpecificSchedule(Get.arguments);
-  }
 
   fetchDetailPost(String postId) async {
     try {
@@ -35,12 +29,12 @@ class PostDetailController extends GetxController {
   fetchSpecificSchedule(String scheduleId) async {
     try {
       isLoading(true);
-      final schedulesData =
+      final shcedulesData =
           await SchedulesRepository.instance.getScheduleById(scheduleId);
 
-      schedule(schedulesData);
+      schedule(shcedulesData);
     } catch (e) {
-      TLoaders.errorSnackBar(title: 'Failed to fetch schedule');
+      TLoaders.errorSnackBar(title: 'Failed to fetch post');
     } finally {
       isLoading(false);
     }
@@ -56,4 +50,6 @@ class PostDetailController extends GetxController {
       "isAvailable": timeslot.isAvailable,
     }).toList();
   }
+
+  
 }

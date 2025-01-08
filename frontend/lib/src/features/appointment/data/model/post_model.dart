@@ -20,7 +20,7 @@ class PostModel {
   StatusPost? status;
   bool? published;
   List<SchedulesModel>? schedule;
-  
+  SchedulesModel? scheduleDetail;
   List<Review>? review;
   List<Like>? likes;
   DateTime? createdAt;
@@ -41,6 +41,7 @@ class PostModel {
     this.status = StatusPost.Pending,
     this.published = false,
     this.schedule,
+    this.scheduleDetail,
     this.review,
     this.likes,
     this.createdAt,
@@ -70,6 +71,7 @@ class PostModel {
           : json['status'] == 'Open'
               ? StatusPost.Open
               : StatusPost.Closed,
+       
       published: json['published'],
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])

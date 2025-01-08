@@ -94,17 +94,18 @@ class CreatePostScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final post = controller.postUser[index];
                       return CardPostUser(
-                        title: post.title!,
-                        desc: post.desc!,
-                        treatment: post.treatment!.name!,
+                        title: post.title,
+                        desc: post.desc,
+                        treatment: post.treatment.name,
                         status: post.status.toString().split('.').last,
                         statusColor: post.status == StatusPost.Pending
                             ? Colors.orange
                             : post.status == StatusPost.Open
                                 ? Colors.green
                                 : Colors.red,
-                        updatedAt: post.updatedAt!,
-                        onTap: () => PostDetailScreen(postId: post.id!),
+                        updatedAt: post.updateAt,
+                        onTap: () => Get.to(() => const PostDetailScreen(),
+                            arguments: post),
                       );
                     },
                   ),

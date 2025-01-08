@@ -16,9 +16,16 @@ export async function GET(
         userId: userId, // Filter posts based on userId
       },
       include: {
-        Schedule: true,
-        user: true,
-        koas: true,
+        Schedule: {
+          include: {
+            timeslot: true, // Include timeslots in the Schedule
+          },
+        },
+        user: {
+          include: {
+            KoasProfile: true,
+          },
+        },
         treatment: true,
         likes: true,
       },
@@ -26,7 +33,7 @@ export async function GET(
         createdAt: "desc",
       },
     });
-    
+
     if (!posts || posts.length === 0) {
       return NextResponse.json(
         { error: "No posts found for this user" },
