@@ -1,11 +1,8 @@
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/posts_controller.dart';
-import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
-import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 
 class DynamicInputForm extends StatelessWidget {
   const DynamicInputForm({super.key});

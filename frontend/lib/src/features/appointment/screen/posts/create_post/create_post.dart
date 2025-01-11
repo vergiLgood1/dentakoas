@@ -6,7 +6,6 @@ import 'package:denta_koas/src/commons/widgets/shimmer/post_library_shimmer.dart
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/posts_controller.dart';
-import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/general.information/create_general_information.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/card_post_user.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
@@ -90,22 +89,23 @@ class CreatePostScreen extends StatelessWidget {
                   DGridLayout(
                     crossAxisCount: 1,
                     mainAxisExtent: 250,
-                    itemCount: 3,
+                    itemCount: controller.postUser.length,
                     itemBuilder: (context, index) {
                       final post = controller.postUser[index];
                       return CardPostUser(
                         title: post.title,
                         desc: post.desc,
-                        treatment: post.treatment.name,
+                        treatment: post.treatment.alias,
                         status: post.status.toString().split('.').last,
-                        statusColor: post.status == StatusPost.Pending
+                        statusColor: post.status == "Pending"
                             ? Colors.orange
-                            : post.status == StatusPost.Open
+                            : post.status == "Open"
                                 ? Colors.green
                                 : Colors.red,
                         updatedAt: post.updateAt,
                         onTap: () => Get.to(() => const PostDetailScreen(),
                             arguments: post),
+                        post: post,
                       );
                     },
                   ),

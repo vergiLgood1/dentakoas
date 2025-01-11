@@ -52,12 +52,14 @@ class PostRepository extends GetxController {
 
       if (response.statusCode == 200) {
         // Ambil array posts dari data
-        final data = response.data as Map<String, dynamic>;
-        final posts = data['posts'] as List<dynamic>;
+        final data = response.data as Map<String, dynamic>?;
+        final posts = data?['posts'] as List<dynamic>? ?? [];
         return posts
             .map((json) => Post.fromJson(json as Map<String, dynamic>))
             .toList();
       }
+
+      throw 'Unexpected status code: ${response.statusCode}';
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
@@ -69,11 +71,13 @@ class PostRepository extends GetxController {
     } on PlatformException catch (e) {
       throw TPlatformException(e.code).message;
     } catch (e) {
+      // Log error untuk debugging
+      // TLoaders.errorSnackBar(title: 'Failed to fetch post');
       Logger().e(['Error fetching post: $e']);
       throw e.toString();
     }
-    throw 'Failed to fetch post data.';
-  }
+}
+
 
 
 
@@ -201,13 +205,11 @@ class PostRepository extends GetxController {
     throw 'Failed to update post.';
   }
 
-  Future<void> deletePost(String id) async {
+  Future<void> deletePost(String postId) async {
     try {
-      final response = await DioClient().delete('${Endpoints.posts}/$id');
+      final response = await DioClient().delete(Endpoints.post(postId));
 
-      if (response.statusCode == 200) {
-        return;
-      }
+      return;
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
@@ -219,7 +221,8 @@ class PostRepository extends GetxController {
     } on PlatformException catch (e) {
       throw TPlatformException(e.code).message;
     } catch (e) {
-      throw 'Something went wrong. Please try again later.';
+      Logger().e(['Error deleting post: $e']);
+      throw e.toString();
     }
     throw 'Failed to delete post.';
   }

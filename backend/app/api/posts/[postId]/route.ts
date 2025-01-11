@@ -185,19 +185,18 @@ export async function DELETE(req: Request, props: { params: Promise<{ postId: st
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    await db.post.delete({
+    const postDeleted = await db.post.delete({
       where: { id: postId },
     });
-
-    return NextResponse.json(
-      { message: "Post deleted successfully" },
-      { status: 200 }
-    );
+    
+    return NextResponse.json(postDeleted, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json(
+    NextResponse.json(
       { error: "An error occurred while deleting the post" },
       { status: 500 }
     );
+    if (error instanceof Error) {
+      console.log("Error: ", error.stack);
+    }
   }
 }

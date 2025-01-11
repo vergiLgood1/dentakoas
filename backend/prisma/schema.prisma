@@ -220,9 +220,9 @@ model Post {
   createdAt           DateTime   @default(now()) @map("created_at")
   updateAt            DateTime   @updatedAt @map("updated_at")
 
-  koas      KoasProfile   @relation(fields: [koasId], references: [id])
-  user      User          @relation(fields: [userId], references: [id])
-  treatment TreatmentType @relation(fields: [treatmentId], references: [id])
+  koas      KoasProfile   @relation(fields: [koasId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  treatment TreatmentType @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
 
   @@index([userId], name: "user_id")
   @@index([koasId], name: "koas_id")
@@ -237,7 +237,7 @@ model Like {
   createdAt DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id])
-  Post Post @relation(fields: [postId], references: [id])
+  Post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([postId], name: "post_id")
   @@index([userId], name: "user_id")
@@ -281,7 +281,7 @@ model Schedule {
   createdAt DateTime @default(now()) @map("created_at")
   updateAt  DateTime @updatedAt @map("updated_at")
 
-  post        Post          @relation(fields: [postId], references: [id])
+  post        Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
   timeslot    Timeslot[]
   Appointment Appointment[]
 
@@ -298,7 +298,7 @@ model Timeslot {
   currentParticipants Int     @default(0) @map("current_participants")
   isAvailable         Boolean @default(true) @map("is_available")
 
-  schedule    Schedule      @relation(fields: [scheduleId], references: [id])
+  schedule    Schedule      @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   Appointment Appointment[]
 
   @@unique([scheduleId, startTime, endTime], name: "unique_timeslot")
@@ -313,7 +313,7 @@ model Review {
   comment   String?
   createdAt DateTime @default(now()) @map("created_at")
 
-  post Post @relation(fields: [postId], references: [id])
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id])
 
   @@index([postId], name: "post_id")

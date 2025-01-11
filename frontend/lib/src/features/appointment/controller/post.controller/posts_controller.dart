@@ -13,6 +13,7 @@ import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
+import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
 import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
@@ -29,6 +30,7 @@ class PostController extends GetxController {
 
   RxList<Post> posts = <Post>[].obs;
   RxList<Post> postUser = <Post>[].obs;
+  
 
   final isLoading = false.obs;
 
@@ -64,10 +66,11 @@ class PostController extends GetxController {
 
       // filter
       postUser.assignAll(
-        posts.where((post) => post.status != StatusPost.Closed).toList(),
+        posts.where((post) => post.status != "Closed").toList(),
       );
+      
+      postUser(postsData);
 
-      Logger().i('Post : $postUser');
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
     } finally {
@@ -221,21 +224,22 @@ class PostController extends GetxController {
         message: 'Post has been created',
       );
 
-      // Navigate to next screen
-      Get.off(() => StateScreen(
-            image: TImages.successCreatePost,
-            title: 'Your post has been created successfully!',
-            subtitle:
-                'Congratulations! Your post is now live and ready for participants.',
-            showButton: true,
-            primaryButtonTitle: 'Go to Dashboard',
-            onPressed: () => Get.to(() => const NavigationMenu()),
-          ));
+      // Refresh post list
+      await fetchPostUser();
 
-      // Auto redirect after a delay
-      Future.delayed(const Duration(seconds: 3), () {
-        Get.to(() => const NavigationMenu());
-      });
+      // Navigate to next screen but remove routes until CreateGeneralInformation
+      Get.offAll(
+          () => StateScreen(
+                image: TImages.successCreatePost,
+                title: 'Your post has been created successfully!',
+                subtitle:
+                    'Congratulations! Your post is now live and ready for participants.',
+                showButton: true,
+                primaryButtonTitle: 'Go to Dashboard',
+                onPressed: () => Get.to(() => const NavigationMenu()),
+              ),
+          predicate: (route) =>
+              route.settings.name != '/CreateGeneralInformation');
     } catch (e) {
       TFullScreenLoader.stopLoading();
       Logger().e(
@@ -246,6 +250,75 @@ class PostController extends GetxController {
         message: e.toString(),
       );
     }
+  }
+
+  void deletePost(String postId) async {
+    try {
+      // Start loading
+      TFullScreenLoader.openLoadingDialog(
+          'Processing your action....', TImages.loadingHealth);
+
+      // Check connection
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        Logger().e('No internet connection');
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // debug
+      Logger().i('Deleting post with ID: $postId');
+
+      final deletedPost = await PostRepository.instance.deletePost(postId);
+
+      // Stop loading
+      TFullScreenLoader.stopLoading();
+
+      // Success message
+      TLoaders.successSnackBar(
+        title: 'Success',
+        message: 'Post has been deleted',
+      );
+
+      // Refresh post list
+      await fetchPostUser();
+
+      // Navigate to next screen
+      Get.to(() => const NavigationMenu());
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoaders.errorSnackBar(
+        title: 'Error',
+        message: e.toString(),
+      );
+    }
+  }
+
+  void confirmDeletePost(String postId) {
+    Get.defaultDialog(
+      backgroundColor: TColors.white,
+      contentPadding: const EdgeInsets.all(TSizes.md),
+      title: 'Delete Account',
+      middleText: 'Are you sure you want to delete your account?',
+      confirm: ElevatedButton(
+        onPressed: () {
+          Navigator.of(Get.overlayContext!).pop();
+          deletePost(postId);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          side: const BorderSide(color: Colors.red),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: TSizes.lg),
+          child: Text('Delete'),
+        ),
+      ),
+      cancel: OutlinedButton(
+        onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+        child: const Text('Cancel'),
+      ),
+    );
   }
 
 

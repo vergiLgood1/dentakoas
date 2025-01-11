@@ -123,14 +123,17 @@ class PostTimeslotController extends GetxController {
   }
 
 // Perbarui semua slot waktu berdasarkan durasi terbaru
-  void _updateAllTimeSlots() {
+void _updateAllTimeSlots() {
     final updatedSlots = <String, List<String>>{};
 
     timeSlots.forEach((section, slots) {
       final updatedSectionSlots = <String>[];
 
       for (var slot in slots) {
+        // Pisahkan startTime dan endTime dari timeslot
         final startTime = _parseTime(slot.split(' - ')[0]);
+
+        // Hitung endDateTime baru berdasarkan durasi
         final startDateTime = DateTime(
           DateTime.now().year,
           DateTime.now().month,
@@ -140,19 +143,38 @@ class PostTimeslotController extends GetxController {
         );
         final endDateTime = startDateTime.add(sessionDuration.value);
 
+        // Buat timeslot baru dengan endTime yang diperbarui
         final updatedSlot =
             "${startDateTime.hour.toString().padLeft(2, '0')}:${startDateTime.minute.toString().padLeft(2, '0')} - "
             "${endDateTime.hour.toString().padLeft(2, '0')}:${endDateTime.minute.toString().padLeft(2, '0')}";
         updatedSectionSlots.add(updatedSlot);
       }
 
+      // Tetap simpan semua timeslot untuk section saat ini
       updatedSlots[section] = updatedSectionSlots;
     });
 
+    // Hanya update endTime tanpa menyentuh maxParticipants
+    updatedSlots.forEach((section, slots) {
+      for (int i = 0; i < slots.length; i++) {
+        final originalTimeslot = timeSlots[section]?[i];
+        final updatedTimeslot = slots[i];
+
+        // Update hanya jika timeslot yang sama ditemukan
+        if (originalTimeslot != null) {
+          maxParticipants[section]?[updatedTimeslot] =
+              maxParticipants[section]?[originalTimeslot] ?? 1;
+          maxParticipants[section]?.remove(originalTimeslot);
+        }
+      }
+    });
+
     timeSlots.value = updatedSlots;
-    timeSlots.refresh(); // Update UI
-    update(); // Update UI
+    timeSlots.refresh(); // Perbarui UI
+    update(); // Perbarui GetX controller
   }
+
+
 
   // Update jumlah peserta maksimal untuk sesi tertentu
   // void setMaxParticipants(String section, int max) {
@@ -331,7 +353,6 @@ class PostTimeslotController extends GetxController {
     return allTimeSlots;
   }
 
-  
   List<String> getTempTimeslot() {
     final List<String> tempTimeslot = [];
 
@@ -349,7 +370,7 @@ class PostTimeslotController extends GetxController {
         'slots': entry.value.map((slot) {
           final startTime = DateFormat("HH:mm").parse(slot);
           final endTime = startTime
-              .add(const Duration(minutes: 30)); // Add 30 minutes as an example
+              .add(sessionDuration.value); // Add 30 minutes as an example
           return {
             'startTime': DateFormat("HH:mm").format(startTime),
             'endTime': DateFormat("HH:mm").format(endTime),

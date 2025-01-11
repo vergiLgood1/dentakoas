@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/action_modal_bottom.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -14,6 +15,7 @@ class CardPostUser extends StatelessWidget {
       required this.statusColor,
     required this.updatedAt,
     this.onTap,
+    this.post,
   });
 
   final String title;
@@ -23,6 +25,7 @@ class CardPostUser extends StatelessWidget {
   final Color statusColor;
   final DateTime updatedAt;
   final Function()? onTap;
+  final Post? post;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +73,7 @@ class CardPostUser extends StatelessWidget {
                           style: Theme.of(context).textTheme.labelSmall!.apply(
                                 color: TColors.textSecondary,
                               )),
-                      const ShowActionModal(),
+                      ShowActionModal(post: post!),
                     ],
                   ),
                 ],

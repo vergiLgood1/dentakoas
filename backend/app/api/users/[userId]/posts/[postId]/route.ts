@@ -51,7 +51,7 @@ export async function GET(
       })
     );
 
-    return NextResponse.json({ posts: postsWithLikeCount });
+    return NextResponse.json({ posts: postsWithLikeCount }, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -60,6 +60,7 @@ export async function GET(
     );
   }
 }
+
 
 export async function PATCH(
   req: Request,
@@ -183,6 +184,8 @@ export async function DELETE(
   const postId = searchParams.get("postId") || params.postId;
   const userId = searchParams.get("userId") || params.userId;
 
+  console.log("Receive DELETE request", postId, userId);
+
   try {
     // Check if the post belongs to the user
     const post = await db.post.findFirst({
@@ -205,10 +208,9 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "An error occurred while deleting the post" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.log(error.stack);
+      console.error("Failed to create content interaction:", error);
+    }
   }
 }
