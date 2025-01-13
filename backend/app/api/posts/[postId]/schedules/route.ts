@@ -9,6 +9,8 @@ export async function POST(req: Request, props: { params: Promise<{ postId: stri
   const body = await req.json();
   const { dateStart, dateEnd } = body;
 
+  console.log("Receive Body", body);
+
   try {
     const post = await db.post.findUnique({
       where: { id: postId },
@@ -22,8 +24,8 @@ export async function POST(req: Request, props: { params: Promise<{ postId: stri
     // Create schedule
     const schedule = await db.schedule.create({
       data: {
-        dateStart: new Date(dateStart),
-        dateEnd: new Date(dateEnd),
+        dateStart: dateStart,
+        dateEnd: dateEnd,
         post: {
           connect: {
             id: postId,

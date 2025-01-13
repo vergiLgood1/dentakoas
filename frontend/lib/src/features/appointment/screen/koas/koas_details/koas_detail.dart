@@ -59,6 +59,7 @@ class KoasDetailScreen extends StatelessWidget {
               // Koas upcoming event
 
               UserReviewSection(),
+              
               BookAppointmentButton(),
             ],
           ),

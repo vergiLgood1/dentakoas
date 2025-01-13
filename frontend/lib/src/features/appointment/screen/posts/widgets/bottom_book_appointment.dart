@@ -1,5 +1,5 @@
 import 'package:denta_koas/src/features/appointment/controller/post.controller/posts_controller.dart';
-import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
@@ -19,7 +19,11 @@ class BottomBookAppointment extends StatelessWidget {
     final dark = THelperFunctions.isDarkMode(context);
     final controller = Get.put(PostController());
     return Obx(
-      () => controller.selectedDate.value != '' &&
+      () {
+      if (UserController.instance.user.value.role != 'Pasien') {
+        return const SizedBox.shrink();
+      }
+      return controller.selectedDate.value != '' &&
               controller.selectedTime.value != ''
           ? Container(
               height: 130,
@@ -92,7 +96,8 @@ class BottomBookAppointment extends StatelessWidget {
                 ],
               ),
             )
-          : const SizedBox.shrink(),
+          : const SizedBox.shrink();
+    } 
     );
   }
 }

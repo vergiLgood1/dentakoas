@@ -1,4 +1,6 @@
 import 'package:denta_koas/src/commons/widgets/text/title_text.dart';
+import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:denta_koas/src/utils/constants/enums.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,16 +29,22 @@ class TitleSection extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             'Posted $timePosted',
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
+            style: const TextStyle(color: TColors.textSecondary, fontSize: 12),
           ),
         ]),
-        const SizedBox(height: 8),
+        const SizedBox(height: TSizes.spaceBtwInputFields),
         Text(
           title,
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        const SizedBox(height: 4),
-        TitleText(title: description, maxLines: 2),
+        const SizedBox(height: TSizes.spaceBtwInputFields / 2),
+        TitleText(
+          title: description,
+          maxLines: 4,
+          textSizes: TextSizes.base,
+          color: TColors.textSecondary,
+          textAlign: TextAlign.justify,
+        ),
       ],
     );
   }

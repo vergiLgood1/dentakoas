@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -20,22 +21,22 @@ class StatsSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(children: [
-          const Icon(CupertinoIcons.person_2, color: Colors.grey),
-          const SizedBox(width: 8),
-          Text('$participantCount / $requiredParticipant',
-              style: Theme.of(context).textTheme.bodyMedium),
-        ]),
-        Row(children: [
-          const Icon(Iconsax.category, color: Colors.grey),
+          const Icon(Iconsax.category, color: TColors.textSecondary),
           const SizedBox(width: 8),
           Text(category, style: Theme.of(context).textTheme.bodyMedium),
         ]),
         Row(children: [
-          const Icon(Iconsax.like, color: Colors.grey),
+          const Icon(CupertinoIcons.person_2, color: TColors.textSecondary),
           const SizedBox(width: 8),
-          Text('$likesCount likes',
+          Text('$participantCount / $requiredParticipant',
               style: Theme.of(context).textTheme.bodyMedium),
         ]),
+        // Row(children: [
+        //   const Icon(Iconsax.like, color: TColors.textSecondary),
+        //   const SizedBox(width: 8),
+        //   Text('$likesCount likes',
+        //       style: Theme.of(context).textTheme.bodyMedium),
+        // ]),
       ],
     );
   }

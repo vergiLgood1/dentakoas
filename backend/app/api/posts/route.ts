@@ -15,6 +15,11 @@ export async function GET(req: Request) {
         ...queStr,
       } as Prisma.PostWhereInput,
       include: {
+        user: {
+          include: {
+            KoasProfile: true,
+          },
+        },
         Schedule: {
           select: {
             id: true,
@@ -32,25 +37,44 @@ export async function GET(req: Request) {
             },
           },
         },
+        treatment: {
+          select: {
+            id: true,
+            name: true,
+            alias: true,
+          },
+        },
         _count: {
           select: { likes: true }, // Menghitung jumlah likes untuk setiap post
         },
       },
     });
 
-    // if (!posts.length) {
-    //   return NextResponse.json({ error: "Post not found" }, { status: 404 });
-    // }
+    // Proses untuk menambahkan totalCurrentParticipants
+    const postsWithLikeCountAndTotalParticipants = posts.map(
+      ({ _count, Schedule, ...post }) => {
+        const scheduleWithTotalParticipants = Schedule.map((schedule) => {
+          const totalCurrentParticipants = schedule.timeslot.reduce(
+            (acc, timeslot) => acc + (timeslot.currentParticipants || 0),
+            0
+          );
+          return {
+            ...schedule,
+            totalCurrentParticipants, // Tambahkan totalCurrentParticipants ke setiap schedule
+          };
+        });
 
-    // Map hanya untuk menambahkan properti `likeCount` tanpa `_count`
-    const postsWithLikeCount = posts.map(({ _count, ...post }) => ({
-      ...post,
-      likes: _count.likes,
-    }));
+        return {
+          ...post,
+          likes: _count.likes, // Tambahkan jumlah likes
+          Schedule: scheduleWithTotalParticipants, // Update Schedule dengan totalCurrentParticipants
+        };
+      }
+    );
 
     return NextResponse.json(
       {
-        posts: postsWithLikeCount,
+        posts: postsWithLikeCountAndTotalParticipants,
       },
       { status: 200 }
     );
@@ -149,6 +173,83 @@ export async function POST(
         post,
       },
       { status: 201 }
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("Error: ", error.stack);
+    }
+  }
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const body = await req.json();
+  const {
+    title,
+    desc,
+    patientRequirement,
+    requiredParticipant,
+    dateRangeStart,
+    dateRangeEnd,
+    published,
+    status,
+    koasStartTime, // Waktu mulai koas
+    koasEndTime, // Waktu selesai koas
+  } = body;
+
+  try {
+    const post = await db.post.update({
+      where: { id: params.id },
+      data: {
+        title,
+        desc,
+        patientRequirement,
+        requiredParticipant,
+        status,
+        published,
+      } as Prisma.PostUpdateInput,
+    });
+
+    // // Generate jadwal berdasarkan dateRangeStart hingga dateRangeEnd
+    // const scheduleDates = genSchedules(
+    //   new Date(dateRangeStart),
+    //   new Date(dateRangeEnd)
+    // );
+
+    // // Create schedules first using createMany
+    // const schedulesData = scheduleDates.map((scheduleDate) => ({
+    //   date: scheduleDate,
+    //   postId: post.id,
+    // }));
+
+    // await db.schedule.createMany({
+    //   data: schedulesData,
+    // });
+
+    return NextResponse.json(
+      {
+        post,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("Error: ", error.stack);
+    }
+  }
+}
+
+export async function DELETE() {
+  try {
+    const post = await db.post.deleteMany({});
+
+    return NextResponse.json(
+      {
+        post,
+      },
+      { status: 200 }
     );
   } catch (error) {
     if (error instanceof Error) {

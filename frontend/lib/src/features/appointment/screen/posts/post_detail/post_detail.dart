@@ -18,49 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PostDetailScreen extends StatelessWidget {
-  static List<Map<String, dynamic>> schedule = [
-    {
-      "id": "cm401n1xj0002cn6acp61qbpz",
-      "startTime": "09:00",
-      "endTime": "12:00",
-      "maxParticipants": 3,
-      "currentParticipants": 3,
-      "isAvailable": true
-    },
-    {
-      "id": "cm401ne990003cn6ao29oocuw",
-      "startTime": "13:00",
-      "endTime": "14:00",
-      "maxParticipants": 2,
-      "currentParticipants": 1,
-      "isAvailable": true
-    },
-    {
-      "id": "cm401ne990003cn6ao29oocuw",
-      "startTime": "19:00",
-      "endTime": "20:00",
-      "maxParticipants": 2,
-      "currentParticipants": 1,
-      "isAvailable": true
-    },
-    {
-      "id": "cm401ne990003cn6ao29oocuw",
-      "startTime": "21:00",
-      "endTime": "22:00",
-      "maxParticipants": 2,
-      "currentParticipants": 1,
-      "isAvailable": true
-    },
-    {
-      "id": "cm401ne990003cn6ao29oocuw",
-      "startTime": "23:00",
-      "endTime": "00:00",
-      "maxParticipants": 2,
-      "currentParticipants": 1,
-      "isAvailable": false
-    }
-  ];
-
   const PostDetailScreen({super.key, this.postId, this.scheduleId});
 
   final String? postId;
@@ -88,7 +45,7 @@ class PostDetailScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: BottomBookAppointment(
-        name: post.user.name,
+        name: post.user.fullName,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -99,11 +56,11 @@ class PostDetailScreen extends StatelessWidget {
                 children: [
                   // Doctor Profile
                   KoasProfileCard(
-                    name: post.user.name,
+                    name: post.user.fullName,
                     university:
-                        post.user.koasProfile.university,
+                        post.user.koasProfile!.university!,
                     koasNumber:
-                        post.user.koasProfile.koasNumber,
+                        post.user.koasProfile!.koasNumber!,
                     image: TImages.userProfileImage3,
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
@@ -132,8 +89,8 @@ class PostDetailScreen extends StatelessWidget {
 
                   // Calendar Horizontal
                   CalendarHorizontal(
-                    startDate: DateTime(2024, 12, 1),
-                    endDate: DateTime(2024, 12, 10),
+                    startDate: post.schedule[0].dateStart,
+                    endDate: post.schedule[0].dateEnd,
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
 

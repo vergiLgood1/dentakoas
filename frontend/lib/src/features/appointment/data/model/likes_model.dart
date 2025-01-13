@@ -1,36 +1,34 @@
-class Like {
-  String id;
-  String postId;
+class LikesModel {
+  String? id;
+  String? postId;
   String userId;
-  DateTime createdAt;
+  DateTime? createdAt;
 
-  Like({
-    required this.id,
-    required this.postId,
+  LikesModel({
+    this.id,
+    this.postId,
     required this.userId,
-    required this.createdAt,
+    this.createdAt,
   });
 
-  factory Like.fromJson(Map<String, dynamic> json) {
-    return Like(
-      id: json['id'],
-      postId: json['post_id'],
-      userId: json['user_id'],
-      createdAt: DateTime.parse(json['created_at']),
+  factory LikesModel.fromJson(Map<String, dynamic> json) {
+    return LikesModel(
+      id: json['id'] ?? '',
+      postId: json['postId'] ?? '',
+      userId: json['userId'] ?? '',
+      createdAt:
+          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'post_id': postId,
-      'user_id': userId,
-      'created_at': createdAt.toIso8601String(),
+      'userId': userId,  
     };
   }
 
-  static Like empty() {
-    return Like(
+  static LikesModel empty() {
+    return LikesModel(
       id: '',
       postId: '',
       userId: '',

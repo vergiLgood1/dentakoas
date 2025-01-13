@@ -45,9 +45,11 @@ class Endpoints {
   static const String posts = '$baseUrl/posts';
   static String post(String postId) => '$baseUrl/posts/$postId';
   static String postWithSpecificUser(String id) => '$baseUrl/users/$id/posts';
+  static String postWithSpecificUserAndPostId(String id, String postId) =>
+      '$baseUrl/users/$id/posts/$postId';
   static String deleteSpecificPost(String id, String postId) =>
       '$baseUrl/users/$id/posts/$postId';
-  static const String likes = '$baseUrl/posts/:id/likes';
+  static String likePost(String postId) => '$baseUrl/posts/$postId/likes';
 
   // Schedule Endpoints
   static const String schedules = '$baseUrl/schedules';

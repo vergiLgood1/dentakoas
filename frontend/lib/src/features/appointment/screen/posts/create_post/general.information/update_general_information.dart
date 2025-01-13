@@ -4,6 +4,7 @@ import 'package:denta_koas/src/features/appointment/controller/post.controller/g
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/dropdown.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/dynamic_input.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
+import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:denta_koas/src/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +19,14 @@ class UpdateGeneralInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UpdateGeneralInformationController());
-    controller.initializedGeneralInformation(postId!);
+
+    if (postId == null) {
+      TLoaders.errorSnackBar(title: 'Error', message: 'Post id is null');
+    }
+
+    final id = Get.arguments as String?;
+
+    controller.initializedGeneralInformation(id!);
     return Scaffold(
       appBar: DAppBar(
         title: const Text('Create Post'),

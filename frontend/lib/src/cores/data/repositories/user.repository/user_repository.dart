@@ -256,7 +256,7 @@ class UserRepository extends GetxController {
       final response =
           await DioClient().post(Endpoints.users, data: user.toJson());
 
-      Logger().e(['User: ${user.toJson()}']);
+      // Logger().e(['User: ${user.toJson()}']);
       if (response.statusCode != 201) {
         AuthenticationRepository.instance.authUser!.delete();
         throw 'Failed to save user data.';

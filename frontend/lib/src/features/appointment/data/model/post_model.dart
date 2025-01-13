@@ -22,7 +22,7 @@ class PostModel {
   List<SchedulesModel>? schedule;
   SchedulesModel? scheduleDetail;
   List<Review>? review;
-  List<Like>? likes;
+  List<LikesModel>? likes;
   DateTime? createdAt;
   DateTime? updatedAt;
 

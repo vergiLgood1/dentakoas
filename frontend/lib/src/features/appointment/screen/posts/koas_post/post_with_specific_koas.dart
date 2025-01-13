@@ -44,6 +44,7 @@ class PostWithSpecificKoas extends StatelessWidget {
                 crossAxisCount: 1,
                 mainAxisExtent: 330,
                 itemBuilder: (_, index) => PostCard(
+                  postId: '1',
                   name: 'Dr. John Doe',
                   university: 'Politeknik Negeri Jember',
                   image: TImages.userProfileImage4,

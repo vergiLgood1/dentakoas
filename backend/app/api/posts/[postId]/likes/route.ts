@@ -40,13 +40,18 @@ export async function GET(req: Request, props: { params: Promise<{ id: string }>
   }
 }
 
-export async function POST(req: Request, props: { params: Promise<{ id: string }> }) {
+export async function POST(
+  req: Request,
+  props: { params: Promise<{ postId: string }> }
+) {
   const params = await props.params;
   const body = await req.json();
   const { userId } = body;
 
+  console.log("Receive Body", body);
+
   const { searchParams } = new URL(req.url);
-  const postId = searchParams.get("id") || params.id;
+  const postId = searchParams.get("postId") || params.postId;
 
   let like;
 
@@ -97,3 +102,4 @@ export async function POST(req: Request, props: { params: Promise<{ id: string }
     );
   }
 }
+

@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/cores/data/repositories/post.repository/post_repository.dart';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/general_information_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/schedule/create_schedule.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
@@ -6,6 +7,7 @@ import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 class UpdateGeneralInformationController extends GetxController {
   static UpdateGeneralInformationController get instance => Get.find();
@@ -29,6 +31,16 @@ class UpdateGeneralInformationController extends GetxController {
   final GlobalKey<FormState> updateGeneralInformationFormKey =
       GlobalKey<FormState>();
 
+  final generalInformationController = Get.put(GeneralInformationController());
+
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   final postId = Get.arguments;
+  //   initializedGeneralInformation(postId);
+  //   generalInformationController.getTreatments();
+  // }
+
   void initializedGeneralInformation(String postId) async {
     final generalInformation =
         await PostRepository.instance.getPostByPostId(postId);
@@ -44,6 +56,7 @@ class UpdateGeneralInformationController extends GetxController {
         patientRequirements.add(TextEditingController(text: element));
       });
     } catch (e) {
+      Logger().e(e);
       TLoaders.errorSnackBar(
         title: 'Error',
         message: "Something went wrong, please try again",

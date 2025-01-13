@@ -128,4 +128,6 @@ class SchedulePostController extends GetxController {
   DateTime? get dateEndValue =>
       selectedDateRange.length > 1 ? selectedDateRange.last : null;
 
+
+
 }

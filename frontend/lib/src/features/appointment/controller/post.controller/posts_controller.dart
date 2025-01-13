@@ -1,12 +1,14 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:denta_koas/navigation_menu.dart';
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/post.repository/post_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/schedules.repository/shcedule_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/timeslot.repository/timeslot_repository.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/general_information_controller.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/schedule_controller.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/timeslot_controller.dart';
+import 'package:denta_koas/src/features/appointment/data/model/likes_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/schedules_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
@@ -29,8 +31,9 @@ class PostController extends GetxController {
   final inputController = InputController();
 
   RxList<Post> posts = <Post>[].obs;
+  RxList<Post> featurePost = <Post>[].obs;
   RxList<Post> postUser = <Post>[].obs;
-  
+
 
   final isLoading = false.obs;
 
@@ -56,6 +59,24 @@ class PostController extends GetxController {
   void onInit() {
     super.onInit();
     fetchPostUser();
+  }
+
+  Future<void> fetchAllPosts() async {
+    try {
+      isLoading.value = true;
+      final postsData = await postRepository.getPosts();
+
+      posts.assignAll(postsData);
+
+      // filter
+      featurePost.assignAll(
+        posts.where((post) => post.status == "Ope...n").toList(),
+      );
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> fetchPostUser() async {
@@ -230,13 +251,14 @@ class PostController extends GetxController {
       // Navigate to next screen but remove routes until CreateGeneralInformation
       Get.offAll(
           () => StateScreen(
+                key: UniqueKey(),
                 image: TImages.successCreatePost,
                 title: 'Your post has been created successfully!',
                 subtitle:
                     'Congratulations! Your post is now live and ready for participants.',
                 showButton: true,
                 primaryButtonTitle: 'Go to Dashboard',
-                onPressed: () => Get.to(() => const NavigationMenu()),
+                onPressed: () => Get.off(() => const NavigationMenu()),
               ),
           predicate: (route) =>
               route.settings.name != '/CreateGeneralInformation');
@@ -352,6 +374,24 @@ class PostController extends GetxController {
         break;
     }
   }
+
+  void createLike(String postId) async {
+    try {
+      final user = LikesModel(
+        userId: AuthenticationRepository.instance.authUser!.uid,
+      );
+      final like = await postRepository.likePost(user, postId);
+
+      TLoaders.successSnackBar(
+        title: 'Success',
+        message: 'Post has been liked',
+      );
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    }
+  }
+
+  
 }
 
 class CalendarController extends GetxController {
@@ -595,13 +635,23 @@ class TimeController extends GetxController {
 
 class InputController extends GetxController {
   static InputController get instance => Get.find<InputController>();
+
   // List of TextEditingController to manage dynamic inputs
   RxList<TextEditingController> patientRequirements =
       <TextEditingController>[].obs;
 
-  /// Initialize the inputs with a default count
-  void initializeInputs(int count) {
-    if (patientRequirements.isEmpty) {
+  /// Initialize the inputs with a default count or data from previous
+  void initializeInputs(int count, {List<String>? initialData}) {
+    // Clear existing controllers first to prevent adding duplicates
+    patientRequirements.clear();
+
+    if (initialData != null && initialData.isNotEmpty) {
+      // If initialData is provided, initialize with that
+      for (var data in initialData) {
+        patientRequirements.add(TextEditingController(text: data));
+      }
+    } else {
+      // Otherwise, initialize with a default count
       for (int i = 0; i < count; i++) {
         patientRequirements.add(TextEditingController());
       }
@@ -626,6 +676,24 @@ class InputController extends GetxController {
     return patientRequirements.map((controller) => controller.text).toList();
   }
 
+  /// Update the general information with new data
+  void updateGeneralInformation({required String postId}) {
+    // Here, you would retrieve the existing data based on postId (from a repository or API)
+    // Assuming you have a method to fetch this data (you can replace it with your actual logic)
+
+    List<String> fetchedData = fetchDataFromPostId(
+        postId); // This should return a List<String> from your API or data source
+
+    // Initialize the inputs with the fetched data
+    initializeInputs(fetchedData.length, initialData: fetchedData);
+  }
+
+  /// Simulate fetching data based on postId (replace with your actual logic)
+  List<String> fetchDataFromPostId(String postId) {
+    // Example of fetching data; replace with your actual fetching logic
+    return ["John Doe", "1234 Main St", "555-1234"];
+  }
+
   @override
   void onClose() {
     // Dispose all controllers to free memory
@@ -635,3 +703,5 @@ class InputController extends GetxController {
     super.onClose();
   }
 }
+
+

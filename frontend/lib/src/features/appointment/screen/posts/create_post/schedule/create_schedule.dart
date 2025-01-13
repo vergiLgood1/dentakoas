@@ -1,12 +1,12 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/schedule_controller.dart';
-import 'package:denta_koas/src/features/appointment/controller/post.controller/timeslot_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/date_range_picker.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/timeslot.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:time_slot/controller/day_part_controller.dart';
 
 class CreateSchedulePost extends StatelessWidget {
@@ -15,7 +15,6 @@ class CreateSchedulePost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SchedulePostController());
-    final controller2 = Get.put(PostTimeslotController());
     DateTime selectTime = DateTime.now();
 
     DayPartController dayPartController = DayPartController();
@@ -58,7 +57,8 @@ class CreateSchedulePost extends StatelessWidget {
                       ),
                       onPressed: () {
                         controller.createPostSchedule();
-
+                        Logger().e('Date Start: ${controller.dateStartValue}');
+                        Logger().e('Date End: ${controller.dateEndValue}');
                         // controller2.createAllTimeSlots(postId);
                       },
                       child: const Text('Submit'),

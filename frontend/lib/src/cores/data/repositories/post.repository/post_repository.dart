@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
+import 'package:denta_koas/src/features/appointment/data/model/likes_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
 import 'package:denta_koas/src/utils/constants/api_urls.dart';
@@ -16,16 +17,16 @@ import 'package:logger/logger.dart';
 class PostRepository extends GetxController {
   static PostRepository get instance => Get.find();
 
-  Future<PostModel> getPosts() async {
+
+  Future<List<Post>> getPosts() async {
     try {
       final response = await DioClient().get(Endpoints.posts);
 
-      if (response.statusCode == 200) {
-        final data = response.data['data']['post']; // Perbaikan akses
-        if (data is Map<String, dynamic>) {
-          return PostModel.fromJson(data);
-        }
+      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+        final List<dynamic> postData = response.data['posts'] ?? [];
+        return Post.postsFromJson(postData);
       }
+
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
@@ -37,6 +38,7 @@ class PostRepository extends GetxController {
     } on PlatformException catch (e) {
       throw TPlatformException(e.code).message;
     } catch (e) {
+      Logger().e(['Error fetching post: $e']);
       throw 'Something went wrong. Please try again later.';
     }
     throw 'Failed to fetch posts data.';
@@ -78,13 +80,12 @@ class PostRepository extends GetxController {
     }
 }
 
-
-
-
   Future<PostModel> getPostByPostId(String postId) async {
     try {
       final response =
-          await DioClient().get(Endpoints.postWithSpecificUser(postId));
+          await DioClient().get(
+        Endpoints.post(postId),
+      );
 
       if (response.statusCode == 200) {
         return PostModel.fromJson(response.data);
@@ -100,6 +101,7 @@ class PostRepository extends GetxController {
     } on PlatformException catch (e) {
       throw TPlatformException(e.code).message;
     } catch (e) {
+      Logger().e(['Error fetching post: $e']);
       throw 'Something went wrong. Please try again later.';
     }
     throw 'Failed to fetch post data.';
@@ -253,4 +255,34 @@ class PostRepository extends GetxController {
     }
     throw 'Failed to fetch post data.';
   }
+
+  Future<LikesModel> likePost(LikesModel post, String postId) async {
+    try {
+      final response = await DioClient().post(
+        Endpoints.likePost(postId),
+        data: post.toJson(),
+      );
+
+      if (response.statusCode == 200) {
+        return LikesModel.fromJson(response.data);
+      }
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on TExceptions catch (e) {
+      throw TExceptions(e.message);
+    } on FormatException catch (_) {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      Logger().e(['Error liking post: $e']);
+      throw e.toString();
+    }
+    throw 'Failed to like post.';
+  }
+
+  
 }
+

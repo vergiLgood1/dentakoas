@@ -6,6 +6,8 @@ import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 class PostCard extends StatelessWidget {
+ 
+  final String postId;
   final String name,
       image,
       university,
@@ -22,6 +24,8 @@ class PostCard extends StatelessWidget {
 
   const PostCard({
     super.key,
+ 
+    required this.postId,
     required this.name,
     required this.image,
     required this.university,
@@ -62,6 +66,7 @@ class PostCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HeaderSection(
+                postId: postId,
                 name: name,
                 image: image,
                 university: university,
@@ -71,7 +76,7 @@ class PostCard extends StatelessWidget {
                   timePosted: timePosted,
                   title: title,
                   description: description),
-              const SizedBox(height: TSizes.spaceBtwItems),
+              const SizedBox(height: TSizes.spaceBtwSections),
               StatsSection(
                 participantCount: participantCount,
                 requiredParticipant: requiredParticipant,
@@ -81,7 +86,11 @@ class PostCard extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwItems),
               const Divider(),
               const SizedBox(height: TSizes.spaceBtwItems),
-              FooterSection(dateStart: dateStart, dateEnd: dateEnd),
+              FooterSection(
+                  dateStart: dateStart,
+                  dateEnd: dateEnd,
+                  likesCount: likesCount,
+                  onPressed: onPressed),
             ],
           ),
         ),

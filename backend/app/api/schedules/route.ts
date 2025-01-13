@@ -50,6 +50,8 @@ export async function POST(req: Request) {
 
   const { postId, dateStart, dateEnd } = body;
 
+  console.log("Receive Body", body);
+
   try {
     const post = await db.post.findUnique({
       where: { id: postId },

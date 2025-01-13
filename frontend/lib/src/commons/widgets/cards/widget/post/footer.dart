@@ -6,12 +6,14 @@ import 'package:iconsax/iconsax.dart';
 
 class FooterSection extends StatelessWidget {
   final String dateStart, dateEnd;
+  final int likesCount;
   final void Function()? onPressed;
 
   const FooterSection({
     super.key,
     required this.dateStart,
     required this.dateEnd,
+    required this.likesCount,
     this.onPressed,
   });
 
@@ -20,12 +22,28 @@ class FooterSection extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
           const Icon(Iconsax.calendar_1, color: Colors.grey),
           const SizedBox(width: 8),
           Text('$dateStart - $dateEnd',
               style: Theme.of(context).textTheme.bodyMedium),
-        ]),
+              ],
+            ),
+            const SizedBox(height: 8),
+            // Row(
+            //   children: [
+            //     const Icon(Iconsax.like, color: Colors.grey),
+            //     const SizedBox(width: 8),
+            //     Text('$likesCount likes',
+            //         style: Theme.of(context).textTheme.bodyMedium),
+            //   ],
+            // ),
+          ],
+        ),
         OutlinedButton(
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
@@ -42,8 +60,11 @@ class FooterSection extends StatelessWidget {
                   style: TextStyle(
                       fontSize: TSizes.fontSizeMd, color: TColors.white)),
               SizedBox(width: 4),
-              Icon(CupertinoIcons.arrow_right_square,
-                  size: TSizes.iconMd, color: TColors.white),
+              Icon(
+                CupertinoIcons.chevron_right,
+                size: TSizes.iconSm,
+                color: TColors.white,
+              ),
             ],
           ),
         ),

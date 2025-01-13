@@ -53,7 +53,7 @@ class SchedulesModel {
       'id': id,
       'postId': postId,
       'dateStart': dateStart != null ? _formatDate(dateStart!) : null,
-      'dateEnd': dateEnd != null ? _formatDate(dateStart!) : null,
+      'dateEnd': dateEnd != null ? _formatDate(dateEnd!) : null,
     };
   }
 

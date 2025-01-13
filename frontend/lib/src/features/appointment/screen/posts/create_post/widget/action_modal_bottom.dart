@@ -4,6 +4,7 @@ import 'package:denta_koas/src/features/appointment/screen/posts/create_post/gen
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:logger/logger.dart';
 
 class ShowActionModal extends StatelessWidget {
   const ShowActionModal({
@@ -16,6 +17,8 @@ class ShowActionModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = PostController.instance;
+
+    // Logger().e('post id: ${post!.id}');
 
     return IconButton(
       icon: const Icon(Icons.more_vert),
@@ -44,12 +47,14 @@ class ShowActionModal extends StatelessWidget {
                     leading: const Icon(Iconsax.edit),
                     title: const Text('Edit'),
                     onTap: () {
-                      Navigator.of(Get.overlayContext!).pop();
-                      Get.to(
-                        () => UpdateGeneralInformation(
-                          postId: post!.id,
-                        ),
-                      );
+                      if (post != null) {
+                        Navigator.of(Get.overlayContext!).pop();
+                        Logger().e('post id after pop : ${post!.id}');
+                        Get.to(() => UpdateGeneralInformation(postId: post!.id),
+                            arguments: post!.id);
+                      } else {
+                        Logger().e('post is null');
+                      }
                     },
                   ),
                 if (post!.status != 'Open')

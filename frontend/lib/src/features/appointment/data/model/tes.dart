@@ -1,3 +1,5 @@
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
+
 class Post {
   final String id;
   final String userId;
@@ -12,10 +14,12 @@ class Post {
   final DateTime createdAt;
   final DateTime updateAt;
   final List<Schedule> schedule;
-  final User user;
+  final UserModel user;
   final Treatment treatment;
   final List<dynamic> likes;
-  final int likeCount;
+  final int? likeCount;
+  final int totalCurrentParticipants;
+
 
   Post({
     required this.id,
@@ -34,8 +38,10 @@ class Post {
     required this.user,
     required this.treatment,
     required this.likes,
-    required this.likeCount,
+    this.likeCount,
+    this.totalCurrentParticipants = 0,
   });
+
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
@@ -59,12 +65,23 @@ class Post {
               .map((item) => Schedule.fromJson(item))
               .toList()
           : [],
-      user: User.fromJson(json['user'] ?? {}),
+      user: UserModel.fromJson(json['user'] ?? {}),
       treatment: Treatment.fromJson(json['treatment'] ?? {}),
-      likes: json['likes'] ?? [],
+      likes: json['likes'] is List ? json['likes'] : [],
       likeCount: json['likeCount'] ?? 0,
+      totalCurrentParticipants: json['totalCurrentParticipants'] ?? 0,
     );
   }
+
+
+  static Post postFromJson(Map<String, dynamic> json) {
+    return Post.fromJson(json);
+  }
+
+  static List<Post> postsFromJson(List<dynamic> jsonList) {
+    return jsonList.map((json) => Post.fromJson(json)).toList();
+  }
+  
 }
 
 class Schedule {

@@ -1,15 +1,20 @@
 import 'package:denta_koas/src/commons/controller/options.dart';
 import 'package:denta_koas/src/commons/widgets/buttons/like_button.dart';
 import 'package:denta_koas/src/commons/widgets/text/title_with_verified.dart';
+import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HeaderSection extends StatelessWidget {
+ 
+  final String postId;
   final String name, image, university;
   final bool isNetworkImage;
 
   const HeaderSection({
     super.key,
+ 
+    required this.postId,
     required this.name,
     required this.image,
     required this.university,
@@ -43,7 +48,9 @@ class HeaderSection extends StatelessWidget {
         ),
         StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return const LikeButton();
+            return LikeButton(
+              postId: postId,
+            );
           },
         ),
         IconButton(
