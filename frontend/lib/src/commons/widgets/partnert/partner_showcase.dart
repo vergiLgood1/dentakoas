@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/commons/widgets/cards/partner_card.dart';
+import 'package:denta_koas/src/commons/widgets/cards/treatment_card.dart';
 import 'package:denta_koas/src/commons/widgets/containers/rounded_container.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/enums.dart';
@@ -30,7 +30,7 @@ class CardShowcase extends StatelessWidget {
       child: Column(
         children: [
           // Partners with koas count
-          CategoryCard(
+          TreatmentCard(
             showBorder: false,
             showVerifiyIcon: false,
             title: title,

@@ -5,8 +5,8 @@ import 'package:denta_koas/src/utils/constants/enums.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
-class CategoryCard extends StatelessWidget {
-  const CategoryCard({
+class TreatmentCard extends StatelessWidget {
+  const TreatmentCard({
     super.key,
     this.showBorder = true,
     this.onTap,

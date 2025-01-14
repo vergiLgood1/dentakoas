@@ -17,9 +17,9 @@ class HomeCategories extends StatelessWidget {
     final controller = Get.put(TreatmentController());
     final bool isScrollable = controller.featuredTreatments.length > 5;
     return Obx(() {
-      if (controller.isLoading.value)
+      if (controller.isLoading.value) {
         TreatmentShimmer(itemCount: controller.featuredTreatments.length);
-
+      }
       if (controller.treatments.isEmpty) {
         return const Center(
           child: Text('No treatments found'),

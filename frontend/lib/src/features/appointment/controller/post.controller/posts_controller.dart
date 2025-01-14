@@ -33,6 +33,7 @@ class PostController extends GetxController {
   RxList<Post> posts = <Post>[].obs;
   RxList<Post> featurePost = <Post>[].obs;
   RxList<Post> postUser = <Post>[].obs;
+  RxList<Post> postWithSpecificTreatment = <Post>[].obs;
 
 
   final isLoading = false.obs;
@@ -72,6 +73,11 @@ class PostController extends GetxController {
       featurePost.assignAll(
         posts.where((post) => post.status == "Ope...n").toList(),
       );
+
+      // postWithSpecificTreatment.assignAll(
+      //   posts.where((post) => post.treatment.alias == treatment.alias).toList(),
+      // );
+
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
     } finally {

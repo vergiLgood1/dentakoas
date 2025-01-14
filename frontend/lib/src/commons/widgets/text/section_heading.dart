@@ -1,9 +1,11 @@
+import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class SectionHeading extends StatelessWidget {
   const SectionHeading({
     super.key,
     this.textColor,
+    this.textBtnColor,
     this.showActionButton = true,
     this.isSuffixIcon = false,
     this.suffixIcon,
@@ -13,7 +15,7 @@ class SectionHeading extends StatelessWidget {
     this.color = Colors.black,
   });
 
-  final Color? textColor;
+  final Color? textColor, textBtnColor;
   final bool showActionButton;
   final bool isSuffixIcon;
   final IconData? suffixIcon;
@@ -48,8 +50,11 @@ class SectionHeading extends StatelessWidget {
                 )
               : TextButton(
                   onPressed: onPressed,
+                  style: TextButton.styleFrom(
+                    foregroundColor: textBtnColor ?? TColors.primary,
+                    overlayColor: TColors.primary.withAlpha(50),
+                  ),
                   child: Text(buttonTitle),
-                  
                 ),
       ],
     );

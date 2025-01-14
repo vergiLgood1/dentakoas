@@ -2,11 +2,13 @@ class TreatmentModel {
   final String? id;
   final String? name;
   final String? alias;
+  final String? description;
 
   TreatmentModel({
     this.id,
     this.name,
     this.alias,
+    this.description,
   });
 
   Map<String, dynamic> toMap() {
@@ -21,6 +23,7 @@ class TreatmentModel {
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       alias: json['alias'] ?? '',
+      description: json['description'] ?? '',
     );
   }
 
@@ -28,6 +31,7 @@ class TreatmentModel {
     return TreatmentModel(
       name: map['name'] ?? '',
       alias: map['alias'] ?? '',
+      
     );
   }
 

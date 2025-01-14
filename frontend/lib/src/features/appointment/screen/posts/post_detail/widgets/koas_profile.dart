@@ -54,7 +54,7 @@ class KoasProfileCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
 
-              // Specialty and Distance
+              // university and Distance
               Row(
                 children: [
                   Expanded(

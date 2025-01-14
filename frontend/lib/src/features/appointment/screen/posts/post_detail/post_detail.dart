@@ -78,6 +78,7 @@ class PostDetailScreen extends StatelessWidget {
                     category: post.treatment.alias,
                     requiredParticipants:
                         post.requiredParticipant,
+                    currentParticipants: post.totalCurrentParticipants,
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
 

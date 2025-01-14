@@ -14,6 +14,8 @@ class KoasProfileModel {
   final String? bio;
   final String? whatsappLink;
   final String? status;
+  final int? totalReviews;
+  final double? averageRating;
   final DateTime? createdAt;
   final DateTime? updateAt;
 
@@ -28,9 +30,10 @@ class KoasProfileModel {
     this.bio,
     this.whatsappLink,
     this.status,
+    this.totalReviews,
+    this.averageRating,
     this.createdAt,
     this.updateAt,
-
   });
 
   // Static function to create an empty user model
@@ -45,7 +48,8 @@ class KoasProfileModel {
       bio: '',
       whatsappLink: '',
       status: '',
-
+      totalReviews: 0,
+      averageRating: 0.0,
     );
   }
 
@@ -74,6 +78,9 @@ class KoasProfileModel {
       bio: json['bio'] ?? '',
       whatsappLink: json['whatsappLink'] ?? '',
       status: json['status'] ?? 'Pending',
+      totalReviews: json['totalReviews'] ?? 0,
+      averageRating:
+          (json['averageRating'] ?? 0).toDouble(), // Konversi ke double
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,

@@ -1,14 +1,23 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
-import 'package:denta_koas/src/commons/widgets/cards/partner_card.dart';
+import 'package:denta_koas/src/commons/widgets/cards/post_card.dart';
+import 'package:denta_koas/src/commons/widgets/cards/treatment_card.dart';
 import 'package:denta_koas/src/commons/widgets/koas/sortable/sortable_koas.dart';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/posts_controller.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
+import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class PostWithSpecificCategory extends StatelessWidget {
   const PostWithSpecificCategory({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final treatment = Get.arguments;
+    final controller = Get.put(PostController());
     return Scaffold(
       appBar: const DAppBar(
         title: Text('Category Post'),
@@ -21,20 +30,59 @@ class PostWithSpecificCategory extends StatelessWidget {
           ),
           child: Column(
             children: [
-              const CategoryCard(
-                title: 'Category 1',
+              TreatmentCard(
+                title: treatment.alias!,
                 showVerifiyIcon: false,
-                subtitle: 'Category 1 subtitle',
+                subtitle: treatment.name!,
               ),
               const SizedBox(
                 height: TSizes.spaceBtwSections,
               ),
-              SortableField(
-                itemCount: 10,
-                crossAxisCount: 1,
-                itemBuilder: (_, index) => const CategoryCard(
-                  title: 'Category 1',
-                ),
+              Obx(
+                () {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final filteredPosts = controller.posts
+                      .where((post) => post.treatment.alias == treatment.alias)
+                      .toList();
+                  if (filteredPosts.isEmpty) {
+                    return const Center(child: Text('No data'));
+                  }
+                  return SortableField(
+                    itemCount: filteredPosts.length,
+                    crossAxisCount: 1,
+                    mainAxisExtent: 400,
+                    itemBuilder: (_, index) {
+                      final post = filteredPosts[index];
+                      return PostCard(
+                        postId: post.id,
+                        name: post.user.fullName,
+                        image: TImages.userProfileImage2,
+                        university: post.user.koasProfile!.university!,
+                        title: post.title,
+                        description: post.desc,
+                        category: post.treatment.alias,
+                        timePosted: timeago.format(post.updateAt),
+                        participantCount: post.totalCurrentParticipants,
+                        requiredParticipant: post.requiredParticipant,
+                        dateStart: post.schedule.isNotEmpty
+                            ? DateFormat('dd')
+                                .format(post.schedule[0].dateStart)
+                            : 'N/A',
+                        dateEnd: post.schedule.isNotEmpty
+                            ? DateFormat('dd MMM yyyy')
+                                .format(post.schedule[0].dateEnd)
+                            : 'N/A',
+                        likesCount: post.likeCount ?? 0,
+                        onTap: () => Get.to(() => const PostDetailScreen(),
+                            arguments: post),
+                        onPressed: () => Get.to(() => const PostDetailScreen(),
+                            arguments: post),
+                      );
+                    },
+                  );
+                },
               )
             ],
           ),

@@ -1,27 +1,28 @@
+import 'package:denta_koas/src/commons/widgets/koas/rating/rating_bar_indicator.dart';
+import 'package:denta_koas/src/commons/widgets/text/title_with_verified.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:denta_koas/src/utils/constants/enums.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 class KoasCard extends StatelessWidget {
-  final String doctorName;
-  final String specialty;
+  final String name;
+  final String university;
   final String distance;
   final double rating;
-  final int reviewsCount;
-  final String openTime;
-  final String doctorImageUrl;
+  final int totalReviews;
+  final String image;
   final void Function()? onTap;
   final bool hideButton;
 
   const KoasCard({
     super.key,
-    required this.doctorName,
-    required this.specialty,
+    required this.name,
+    required this.university,
     required this.distance,
     required this.rating,
-    required this.reviewsCount,
-    required this.openTime,
-    required this.doctorImageUrl,
+    required this.totalReviews,
+    required this.image,
     this.onTap,
     this.hideButton = false,
   });
@@ -60,7 +61,7 @@ class KoasCard extends StatelessWidget {
                     color:
                         Colors.grey[200], // Placeholder color for missing image
                     child: Image.asset(
-                      doctorImageUrl,
+                      image,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -74,34 +75,37 @@ class KoasCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Doctor Name
-                      Text(
-                        doctorName,
-                        style: Theme.of(context).textTheme.titleMedium!.apply(
-                              color: TColors.textPrimary,
-                            ),
-                      ),
+                      Row(children: [
+                        Expanded(
+                          child: Text(
+                            name,
+                            style:
+                                Theme.of(context).textTheme.titleMedium!.apply(
+                                      color: TColors.textPrimary,
+                                    ),
+                          ),
+                          
+                        ),
+                        const Icon(Icons.location_on,
+                            size: TSizes.iconSm, color: TColors.primary),
+                        Text(
+                          distance,
+                          style: Theme.of(context).textTheme.labelMedium!.apply(
+                                color: TColors.textSecondary,
+                              ),
+                        ),
+                      ]),
                       const SizedBox(height: 4),
 
-                      // Specialty and Distance
+                      // University and Distance
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              specialty,
-                              style:
-                                  Theme.of(context).textTheme.bodyMedium!.apply(
-                                        color: TColors.textSecondary,
-                                      ),
+                            child: TitleWithVerified(
+                              title: university,
+                              textSizes: TextSizes.small,
+                              showIcon: false,
                             ),
-                          ),
-                          const Icon(Icons.location_on,
-                              size: TSizes.iconSm, color: TColors.primary),
-                          Text(
-                            distance,
-                            style:
-                                Theme.of(context).textTheme.labelMedium!.apply(
-                                      color: TColors.textSecondary,
-                                    ),
                           ),
                         ],
                       ),
@@ -113,16 +117,9 @@ class KoasCard extends StatelessWidget {
                           // Rating Section
                           Row(
                             children: [
-                              const Icon(Icons.star,
-                                  size: TSizes.iconBase, color: Colors.orange),
-                              const Icon(Icons.star,
-                                  size: TSizes.iconBase, color: Colors.orange),
-                              const Icon(Icons.star,
-                                  size: TSizes.iconBase, color: Colors.orange),
-                              const Icon(Icons.star,
-                                  size: TSizes.iconBase, color: Colors.orange),
-                              const Icon(Icons.star,
-                                  size: TSizes.iconBase, color: Colors.orange),
+                              DRatingBarIndicator(
+                                rating: rating,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 '$rating',
@@ -145,7 +142,7 @@ class KoasCard extends StatelessWidget {
 
                           // Open Time
                           Text(
-                            '$reviewsCount Reviews',
+                            '$totalReviews Reviews',
                             style: const TextStyle(
                               fontSize: TSizes.fontSizeSm,
                               color: TColors.textSecondary,

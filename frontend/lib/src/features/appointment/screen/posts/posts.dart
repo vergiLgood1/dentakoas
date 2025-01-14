@@ -47,7 +47,7 @@ class AllPostScreen extends StatelessWidget {
                     description: post.desc,
                     category: post.treatment.alias,
                     timePosted: timeago.format(post.updateAt),
-                    participantCount: 0,
+                    participantCount: post.totalCurrentParticipants,
                     requiredParticipant: post.requiredParticipant,
                     dateStart: post.schedule.isNotEmpty
                         ? DateFormat('dd').format(post.schedule[0].dateStart)

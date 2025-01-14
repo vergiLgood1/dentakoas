@@ -1,6 +1,7 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
-import 'package:denta_koas/src/commons/widgets/cards/partner_card.dart';
+import 'package:denta_koas/src/commons/widgets/cards/treatment_card.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/features/appointment/controller/treatment_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/category_post/post_with_specific_category.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class AllCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(TreatmentController());
     return Scaffold(
       appBar: const DAppBar(
         title: Text('All Categories'),
@@ -24,17 +26,33 @@ class AllCategoryScreen extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwItems),
 
               // Categories
-              DGridLayout(
-                itemCount: 10,
-                mainAxisExtent: 80,
-                itemBuilder: (_, index) => CategoryCard(
-                  title: 'Category 1',
-                  showBorder: true,
-                  showVerifiyIcon: false,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  maxLines: 2,
-                  onTap: () => Get.to(() => const PostWithSpecificCategory()),
-                ),
+              Obx(
+                () {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (controller.treatments.isEmpty) {
+                    return const Center(child: Text('No data'));
+                  }
+                  return DGridLayout(
+                    itemCount: controller.treatments.length,
+                    mainAxisExtent: 80,
+                    itemBuilder: (_, index) {
+                      final treatment = controller.featuredTreatments[index];
+                      return TreatmentCard(
+                        title: treatment.alias!,
+                        showBorder: true,
+                        showVerifiyIcon: false,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        maxLines: 2,
+                        onTap: () => Get.to(
+                          () => const PostWithSpecificCategory(),
+                          arguments: treatment,
+                        ),
+                      );
+                    },
+                  );
+                }, 
               ),
             ],
           ),

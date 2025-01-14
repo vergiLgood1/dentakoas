@@ -383,13 +383,12 @@ class KoasUpcomingEvent extends StatelessWidget {
             itemCount: 2,
             itemBuilder: (context, index) {
               return const KoasCard(
-                doctorName: 'Dr. John Doe',
-                specialty: 'Dentist',
+                name: 'Dr. John Doe',
+                university: 'Dentist',
                 distance: '2 km',
                 rating: 4.5,
-                reviewsCount: 120,
-                openTime: '9:00 AM - 5:00 PM',
-                doctorImageUrl: TImages.userProfileImage4,
+                totalReviews: 120,
+                image: TImages.userProfileImage4,
               );
             },
           ),
