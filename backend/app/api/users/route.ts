@@ -28,13 +28,26 @@ export async function GET(req: Request) {
         KoasProfile: true,
         PasienProfile: true,
         FasilitatorProfile: true,
+        Review: true,
       },
     });
 
     const users = user.map((user) => {
       if (user.role === Role.Koas) {
+        const totalReviews = user.Review.length;
+        const averageRating: number =
+          totalReviews > 0
+            ? user.Review.reduce((sum, review) => sum + review.rating, 0) /
+              totalReviews
+            : 0;
+
         return {
           ...user,
+          KoasProfile: {
+            ...user.KoasProfile,
+            totalReviews,
+            averageRating,
+          },
           PasienProfile: undefined, // sembunyikan pasien profile
           FasilitatorProfile: undefined, // sembunyikan fasilitator profile
         };

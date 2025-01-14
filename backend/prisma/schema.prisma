@@ -5,8 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["tracing"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -80,11 +79,11 @@ model User {
   Post               Post[]
   Like               Like[]
   sessions           Session[]
-  Review             Review[]
   sender             Notification[]      @relation("Sender")
   recipient          Notification[]      @relation("Recipient")
   createdAt          DateTime            @default(now()) @map("created_at")
   updateAt           DateTime            @updatedAt @map("updated_at")
+  Review             Review[]
 
   @@map("users")
 }
@@ -145,14 +144,13 @@ model Otp {
 }
 
 model KoasProfile {
-  id          String  @id @default(cuid())
-  userId      String  @unique @map("user_id")
-  koasNumber  String? @unique @map("koas_number")
-  age         String?
-  gender      String?
-  departement String?
-  university  String?
-
+  id           String     @id @default(cuid())
+  userId       String     @unique @map("user_id")
+  koasNumber   String?    @unique @map("koas_number")
+  age          String?
+  gender       String?
+  departement  String?
+  university   String?
   bio          String?
   whatsappLink String?    @map("whatsapp_link")
   status       StatusKoas @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
@@ -164,6 +162,7 @@ model KoasProfile {
   Post         Post[]
   Appointment  Appointment[]
   Notification Notification[]
+  Review       Review[]
 
   @@map("koas-profile")
 }
@@ -313,8 +312,10 @@ model Review {
   comment   String?
   createdAt DateTime @default(now()) @map("created_at")
 
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id])
+  post          Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user          User         @relation(fields: [userId], references: [id])
+  KoasProfile   KoasProfile? @relation(fields: [koasProfileId], references: [id])
+  koasProfileId String
 
   @@index([postId], name: "post_id")
   @@index([userId], name: "user_id")
