@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/koas_card_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/screen/dentist/all_koas.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/doctor_card.dart';
@@ -33,22 +34,23 @@ class HomePopularKoasSection extends StatelessWidget {
           Obx(
             () {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return const KoasCardShimmer();
               }
-              if (controller.topKoas.isEmpty) {
-                return const Center(child: Text('No data'));
+              if (controller.popularKoas.isEmpty) {
+                // return const Center(child: Text('No data'));
+                return const KoasCardShimmer();
               }
               return DGridLayout(
                 itemCount: 2,
                 crossAxisCount: 1,
                 itemBuilder: (_, index) {
-                  final topKoas = controller.topKoas[index];
+                  final popularKoas = controller.popularKoas[index];
                   return KoasCard(
-                    name: topKoas.fullName,
-                    university: topKoas.koasProfile!.university!,
+                    name: popularKoas.fullName,
+                    university: popularKoas.koasProfile!.university!,
                     distance: '1 KM',
-                    rating: topKoas.koasProfile!.averageRating!,
-                    totalReviews: topKoas.koasProfile!.totalReviews!,
+                    rating: popularKoas.koasProfile!.averageRating!,
+                    totalReviews: popularKoas.koasProfile!.totalReviews!,
                     image: TImages.userProfileImage3,
                     onTap: () => Get.to(() => const KoasDetailScreen()),
                   );

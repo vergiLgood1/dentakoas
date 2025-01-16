@@ -26,24 +26,45 @@ class TabKoas extends StatelessWidget {
           child: Column(
             children: [
               // Partners showcase
-              const CardShowcase(
-                title: 'Top Koas',
-                subtitle: 'Find the best koas in your area',
-                images: [
-                  TImages.userProfileImage4,
-                  TImages.userProfileImage4,
-                  TImages.userProfileImage4,
-                ],
-              ),
-              const CardShowcase(
-                title: 'Newest Koas',
-                subtitle: 'Find the newest koas in your area',
-                images: [
-                  TImages.userProfileImage4,
-                  TImages.userProfileImage4,
-                  TImages.userProfileImage4,
-                ],
-              ),
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.popularKoas.isEmpty) {
+                  return const CardShowcase(
+                    title: 'Top koas is empty',
+                    subtitle: 'Unfortunately, there are no top koas',
+                  );
+                }
+                return CardShowcase(
+                  title: 'Top Koas',
+                  subtitle: 'Find the best koas in your area',
+                  images: controller.popularKoas
+                      .take(3)
+                      .map((user) => user.image!)
+                      .toList(),
+                );
+              }),
+              const SizedBox(height: TSizes.spaceBtwItems),
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.newestKoas.isEmpty) {
+                  return const CardShowcase(
+                    title: 'Newest koas is empty',
+                    subtitle: 'Unfortunately, there are no newest koas',
+                  );
+                }
+                return CardShowcase(
+                  title: 'Newest Koas',
+                  subtitle: 'Find the newest koas in your area',
+                  images: controller.newestKoas
+                      .take(3)
+                      .map((user) => user.image!)
+                      .toList(),
+                );
+              }),
               const SizedBox(height: TSizes.spaceBtwItems),
 
               // Posts

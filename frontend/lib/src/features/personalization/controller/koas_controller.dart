@@ -9,7 +9,7 @@ class KoasController extends GetxController {
   RxList<UserModel> allKoas = <UserModel>[].obs;
   RxList<UserModel> koas = <UserModel>[].obs;
   RxList<UserModel> featuredKoas = <UserModel>[].obs;
-  RxList<UserModel> topKoas = <UserModel>[].obs;
+  RxList<UserModel> popularKoas = <UserModel>[].obs;
   RxList<UserModel> newestKoas = <UserModel>[].obs;
 
 
@@ -35,7 +35,7 @@ class KoasController extends GetxController {
         fetchedKoas.where((koas) => koas.id != null).toList(),
       );
 
-      topKoas.assignAll(
+      popularKoas.assignAll(
         fetchedKoas
             .where((koas) => koas.koasProfile!.totalReviews! > 0)
             .toList()
@@ -52,6 +52,10 @@ class KoasController extends GetxController {
             },
           ),
       );
+
+      newestKoas.assignAll(
+          fetchedKoas.where((koas) => koas.updateAt != null).toList()
+            ..sort((a, b) => b.updateAt!.compareTo(a.updateAt!)));
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
     } finally {

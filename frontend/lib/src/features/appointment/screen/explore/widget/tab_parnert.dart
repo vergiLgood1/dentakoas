@@ -1,5 +1,6 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/partnert/partner_showcase.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/card_showcase_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/university.controller/university_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas/all_koas.dart';
@@ -34,10 +35,10 @@ class TabParnert extends StatelessWidget {
               // Partners showcase
               Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const CardShowcaseShimmer();
                 }
                 if (controller.popularUniversities.isEmpty) {
-                  return const Center(child: Text('No data'));
+                  return const CardShowcaseShimmer();
                 }
                 final popularImages = controller.popularUniversities
                     .take(3)
@@ -58,7 +59,10 @@ class TabParnert extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (controller.featuredUniversities.isEmpty) {
-                  return const Center(child: Text('No data'));
+                  return const CardShowcase(
+                    title: 'Newest Universities is empty',
+                    subtitle: 'Unfortunately, there are no newest universities',
+                  );
                 }
                 final newestImages = controller.newestUniversities
                     .take(3)

@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 class CardShowcase extends StatelessWidget {
   const CardShowcase({
     super.key,
-    required this.images,
+    this.images,
     required this.title,
     required this.subtitle,
     this.prefixImage,
   });
 
-  final List<String> images;
+  final List<String>? images;
   final String title, subtitle;
   final String? prefixImage;
 
@@ -39,9 +39,10 @@ class CardShowcase extends StatelessWidget {
             textSizes: TextSizes.large,
           ),
 
+          if(images != null)
           Row(
             children: [
-              ...images.map((image) => partnertTopKoasWidget(image, context))
+              ...images!.map((image) => partnertTopKoasWidget(image, context))
             ],
           ),
         ],

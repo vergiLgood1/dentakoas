@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:denta_koas/src/features/personalization/model/fasilitator_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
+import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/formatters/formatter.dart';
 import 'package:logger/logger.dart';
 
@@ -189,7 +190,7 @@ class UserModel {
       password: json['password'] ?? '',
       confirmPassword: json['confirmPassword'] ?? '',
       phone: json['phone'] ?? '',
-      image: json['image'] ?? '',
+      image: json['image'] ?? TImages.userProfileImage1,
       role: json['role'] ?? '',
       koasProfile: json['KoasProfile'] != null
           ? KoasProfileModel.fromJson(json['KoasProfile'])
