@@ -1,14 +1,24 @@
+import 'package:denta_koas/src/utils/constants/image_strings.dart';
+
 class UniversityModel {
   final String id;
   final String name;
   final String alias;
   final String location;
+  final String? image;
+  final int koasCount;
+  final String? createdAt;
+  final String? updatedAt;
 
   UniversityModel({
     required this.id,
     required this.name,
     required this.alias,
     required this.location,
+    this.image,
+    this.koasCount = 0,
+    this.createdAt,
+    this.updatedAt,
   });
 
   static UniversityModel empty() {
@@ -17,6 +27,10 @@ class UniversityModel {
       name: '',
       alias: '',
       location: '',
+      image: '',
+      koasCount: 0,
+      createdAt: '',
+      updatedAt: '',
     );
   }
 
@@ -26,6 +40,10 @@ class UniversityModel {
       'name': name,
       'alias': alias,
       'location': location,
+      'image': image,
+      'koasCount': koasCount,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
@@ -43,7 +61,22 @@ class UniversityModel {
       name: universityJson['name'] ?? '',
       alias: universityJson['alias'] ?? '',
       location: universityJson['location'] ?? '',
+      image: universityJson['image'] ?? TImages.appleLogo,
+      koasCount: universityJson['koasCount'] ?? 0,
+      createdAt: universityJson['createdAt'] ?? '',
+      updatedAt: universityJson['updatedAt'] ?? '',
     );
+  }
+
+  static List<UniversityModel> universitiesFromJson(dynamic data) {
+    // Pastikan data adalah Map dan memiliki key "treatments".
+    if (data is Map<String, dynamic> && data.containsKey("universities")) {
+      final universities = data["universities"] as List;
+      return universities
+          .map((item) => UniversityModel.fromJson(item))
+          .toList();
+    }
+    throw Exception('Invalid data format for treatments');
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +85,8 @@ class UniversityModel {
       'name': name,
       'alias': alias,
       'location': location,
+      'image': image,
+      
     };
   }
 }

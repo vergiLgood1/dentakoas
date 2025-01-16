@@ -1,35 +1,19 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/features/appointment/controller/university.controller/university_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/explore/widget/tab_parnert.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/parnert_post/post_with_specific_university.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class AllKoasScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> hospitals = [
-    {
-      'name': 'Serenity Wellness Clinic',
-      'major': 'Dental, Skin care',
-      'address': '8502 Preston Rd. Inglewood, Maine 98380',
-      'distance': '1.5km',
-      'time': '15 min',
-      'koasCount': 100,
-      'imageUrl': 'https://via.placeholder.com/300x200', // Placeholder image
-    },
-    {
-      'name': 'Radiant Health Family Clinic',
-      'major': 'Dental, Skin care',
-      'address': '8502 Preston Rd. Inglewood, Maine 98380',
-      'distance': '1.5km',
-      'time': '15 min',
-      'koasCount': 100,
-      'imageUrl': 'https://via.placeholder.com/300x200', // Placeholder image
-    },
-  ];
+class AllUniversitiesScreen extends StatelessWidget {
 
-  AllKoasScreen({super.key});
+  const AllUniversitiesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(UniversityController());
     return Scaffold(
       appBar: const DAppBar(
         title: Text('University'),
@@ -43,18 +27,23 @@ class AllKoasScreen extends StatelessWidget {
             children: [
               // Categories
               DGridLayout(
-                itemCount: hospitals.length,
+                itemCount: controller.universities.length,
                 crossAxisCount: 1,
                 mainAxisExtent: 330,
                 itemBuilder: (_, index) {
-                  final hospital = hospitals[index];
+                  final university = controller.featuredUniversities[index];
                   return UniversityCard(
-                    image: hospital['imageUrl'],
-                    title: hospital['name'],
-                    subtitle: hospital['major'],
-                    address: hospital['address'],
-                    distance: hospital['distance'],
-                    koasCount: hospital['koasCount'],
+                    title: university.name,
+                    subtitle: university.alias,
+                    address: university.location,
+                    distance: '1.5km',
+                    time: '15 min',
+                    koasCount: university.koasCount,
+                    image: university.image ?? '',
+                    onTap: () => Get.to(
+                      () => const PostWithSpecificUniversity(),
+                      arguments: university,
+                    ),
                   );
                 },
               )

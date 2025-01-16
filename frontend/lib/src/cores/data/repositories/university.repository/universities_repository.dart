@@ -6,20 +6,34 @@ import 'package:get/get.dart';
 class UniversitiesRepository extends GetxController {
   static UniversitiesRepository get instance => Get.find();
 
-  Future<UniversityModel> getUniversities() async {
+  // Future<UniversityModel> getUniversities() async {
+  //   try {
+  //     final response = await DioClient().get(Endpoints.universities);
+
+  //     if (response.statusCode == 200) {
+  //       final data = response.data['data']['university']; // Perbaikan akses
+  //       if (data is Map<String, dynamic>) {
+  //         return UniversityModel.fromJson(data);
+  //       }
+  //     }
+  //   } catch (e) {
+  //     throw 'Something went wrong. Please try again later.';
+  //   }
+  //   throw 'Failed to fetch universities data.';
+  // }
+
+
+  Future<List<UniversityModel>> getUniversities() async {
     try {
       final response = await DioClient().get(Endpoints.universities);
 
       if (response.statusCode == 200) {
-        final data = response.data['data']['university']; // Perbaikan akses
-        if (data is Map<String, dynamic>) {
-          return UniversityModel.fromJson(data);
-        }
+        return UniversityModel.universitiesFromJson(response.data);
       }
     } catch (e) {
-      throw 'Something went wrong. Please try again later.';
+      throw e.toString();
     }
-    throw 'Failed to fetch universities data.';
+    throw 'Failed to fetch treatment types.';
   }
 
   Future<UniversityModel> getUniversityById(String id) async {

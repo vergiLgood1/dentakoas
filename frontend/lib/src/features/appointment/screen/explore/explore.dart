@@ -110,10 +110,10 @@ class ExploreScreen extends StatelessWidget {
               ),
             ];
           },
-          body: TabBarView(
+          body: const TabBarView(
             children: [
-              const TabPost(),
-              const TabKoas(),
+              TabPost(),
+              TabKoas(),
               TabParnert(),
             ],
           ),

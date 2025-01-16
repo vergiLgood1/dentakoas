@@ -146,6 +146,7 @@ model Otp {
 model KoasProfile {
   id           String     @id @default(cuid())
   userId       String     @unique @map("user_id")
+  universityId String?
   koasNumber   String?    @unique @map("koas_number")
   age          String?
   gender       String?
@@ -163,6 +164,7 @@ model KoasProfile {
   Appointment  Appointment[]
   Notification Notification[]
   Review       Review[]
+  University   University?    @relation(fields: [universityId], references: [id])
 
   @@map("koas-profile")
 }
@@ -196,8 +198,11 @@ model University {
   name      String
   alias     String
   location  String
+  image     String?
   createdAt DateTime @default(now()) @map("created_at")
   updateAt  DateTime @updatedAt @map("updated_at")
+
+  koasProfile KoasProfile[]
 
   @@map("universities")
 }

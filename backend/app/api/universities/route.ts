@@ -3,24 +3,34 @@ import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  // const { searchParams } = new URL(req.url);
-  // const query: UniversityQueryString = parseSearchParams(searchParams);
-
   try {
-    const university = await db.university.findMany({
-      // where: {
-      //   ...query,
-      // } as Prisma.UniversityWhereInput,
+    const universities = await db.university.findMany({
       orderBy: {
         name: "asc",
       },
+      include: {
+        _count: {
+          select: {
+            koasProfile: true,
+          },
+        },
+      },
     });
+
+    const formattedUniversities = universities.map((university) => ({
+      id: university.id,
+      name: university.name,
+      alias: university.alias,
+      location: university.location,
+      image: university.image,
+      koasCount: university._count.koasProfile,
+      createdAt: university.createdAt,
+      updatedAt: university.updateAt,
+    }));
 
     return NextResponse.json(
       {
-        status: "Success",
-        message: "University retrived successfully",
-        data: { university },
+        universities: formattedUniversities,
       },
       { status: 200 }
     );
