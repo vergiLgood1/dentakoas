@@ -113,6 +113,7 @@ flutter:
     - assets/icons/payment_methods/
     - assets/images/on_boarding_images/
 
+
   #--------------- LOCAL FONTS ------------------#
   fonts:
     - family: Poppins
