@@ -21,6 +21,21 @@ class CalendarHorizontal extends StatelessWidget {
   Widget build(BuildContext context) {
     final calendarController = Get.put(CalendarController());
     final postController = Get.put(PostController());
+    final today = DateTime.now();
+    final ScrollController scrollController = ScrollController();
+
+    // Inisialisasi selectedIndex berdasarkan today
+    calendarController.initializeSelectedIndex(startDate, today);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final selectedIndex = calendarController.selectedIndex.value;
+      final totalDays = endDate.difference(startDate).inDays + 1;
+      final isNearEndDate = selectedIndex >= totalDays - 5;
+      final scrollPosition = isNearEndDate
+          ? selectedIndex * 60.0
+          : selectedIndex * 88.0; // 80 + margin horizontal
+      scrollController.jumpTo(scrollPosition);
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,10 +43,9 @@ class CalendarHorizontal extends StatelessWidget {
         // Heading Section
         GestureDetector(
           onTap: () async {
-            // Show Date Picker
             final selectedDate = await showDatePicker(
               context: context,
-              initialDate: startDate,
+              initialDate: today.isAfter(startDate) ? today : startDate,
               firstDate: startDate,
               lastDate: endDate,
               builder: (BuildContext context, Widget? child) {
@@ -48,13 +62,11 @@ class CalendarHorizontal extends StatelessWidget {
               },
             );
 
-            // Update header text if a date is selected
             if (selectedDate != null) {
               calendarController.updateSelectedDay(
                 selectedDate.difference(startDate).inDays,
               );
 
-              // 
               postController.selectedDate.value =
                   DateFormat('dd MMM yyyy').format(selectedDate);
             }
@@ -76,15 +88,14 @@ class CalendarHorizontal extends StatelessWidget {
             ]);
           }),
         ),
-        const SizedBox(
-            height:
-                TSizes.spaceBtwItems), // Spacing between heading and calendar
+        const SizedBox(height: TSizes.spaceBtwItems),
 
         // Calendar
         Row(
           children: [
             Expanded(
               child: SingleChildScrollView(
+                controller: scrollController, // Tambahkan ScrollController
                 scrollDirection: Axis.horizontal,
                 child: Obx(() {
                   final totalDays = endDate.difference(startDate).inDays + 1;
@@ -96,13 +107,18 @@ class CalendarHorizontal extends StatelessWidget {
                             startDate.add(Duration(days: index));
                         final isSelected =
                             index == calendarController.selectedIndex.value;
+                        final isPastDate = currentDate
+                            .isBefore(today.subtract(const Duration(days: 1)));
 
                         return GestureDetector(
-                          onTap: () {
-                            calendarController.updateSelectedDay(index);
-                            postController.selectedDate.value =
-                                DateFormat('dd MMM yyyy').format(currentDate);
-                          },
+                          onTap: isPastDate
+                              ? null
+                              : () {
+                                  calendarController.updateSelectedDay(index);
+                                  postController.selectedDate.value =
+                                      DateFormat('dd MMM yyyy')
+                                          .format(currentDate);
+                                },
                           child: Container(
                             width: 80,
                             height: 90,
@@ -128,7 +144,9 @@ class CalendarHorizontal extends StatelessWidget {
                                       .apply(
                                         color: isSelected
                                             ? TColors.textWhite
-                                            : TColors.darkGrey,
+                                            : isPastDate
+                                                ? TColors.grey
+                                                : TColors.darkGrey,
                                       ),
                                 ),
                                 const SizedBox(height: 4),
@@ -142,7 +160,9 @@ class CalendarHorizontal extends StatelessWidget {
                                       .apply(
                                         color: isSelected
                                             ? TColors.textWhite
-                                            : TColors.darkGrey,
+                                            : isPastDate
+                                                ? TColors.grey
+                                                : TColors.darkGrey,
                                       ),
                                 ),
                               ],
@@ -161,3 +181,4 @@ class CalendarHorizontal extends StatelessWidget {
     );
   }
 }
+

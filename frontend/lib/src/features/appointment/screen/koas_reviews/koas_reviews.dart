@@ -41,10 +41,23 @@ class KoasReviewsScreen extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // User Reviews
-              const UserReviewsCard(),
-              const KoasReplyCard(),
-              const UserReviewsCard(),
-              const UserReviewsCard(),
+              // const UserReviewsCard(),
+              // const KoasReplyCard(),
+              // const UserReviewsCard(),
+              // const UserReviewsCard(),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return const Column(
+                    children: [
+                      UserReviewsCard(),
+                      KoasReplyCard(),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),

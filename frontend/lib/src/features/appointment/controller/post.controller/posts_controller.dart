@@ -417,6 +417,12 @@ class CalendarController extends GetxController {
     controlsTextStyle: const TextStyle(color: TColors.primary),
   );
 
+  void initializeSelectedIndex(DateTime startDate, DateTime today) {
+    // Hitung index berdasarkan hari ini, atau tetap 0 jika hari ini sebelum startDate
+    selectedIndex.value =
+        today.isBefore(startDate) ? 0 : today.difference(startDate).inDays;
+  }
+
   void updateSelectedDay(int index) {
     selectedIndex.value = index;
   }

@@ -22,6 +22,7 @@ class PostWithSpecificCategory extends StatelessWidget {
       appBar: const DAppBar(
         title: Text('Category Post'),
         showBackArrow: true,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
