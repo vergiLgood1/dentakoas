@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart';
 
 class TimeSlotWidget extends StatelessWidget {
   const TimeSlotWidget({super.key, this.requiredParticipants});
@@ -296,7 +295,4 @@ class _TimeSlotSelectionState extends State<TimeSlotSelection> {
     await Future.delayed(const Duration(seconds: 4));
     tooltip?.deactivate();
   }
-
-
-
 }

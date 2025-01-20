@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/card_reviews.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/post_detail_controller.dart';
 import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
@@ -120,12 +121,28 @@ class PostDetailScreen extends StatelessWidget {
                     onPressed: () => Get.to(() => const KoasReviewsScreen()),
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 2,
-                    itemBuilder: (context, index) {
-                      return const UserReviewsCard();
+                  Obx(
+                    () {
+                      if (controller.isLoading.value) {
+                        return ShimmerUserReviewsCard(
+                          itemCount: post.reviews!.length,
+                        );
+                      }
+                      if (post.reviews!.isEmpty) {
+                        return const Center(
+                          child:
+                              Text('Unfortunately, there are no reviews yet'),
+                        );
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: post.reviews!.length,
+                        itemBuilder: (context, index) {
+                          final review = post.reviews?[index];
+                          return const UserReviewsCard();
+                        },
+                      );
                     },
                   ),
                 ],

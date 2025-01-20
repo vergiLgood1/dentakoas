@@ -1,6 +1,8 @@
+import 'package:denta_koas/src/commons/widgets/image_text_widget/vertical_image_text.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/treatment_shimmer.dart';
 import 'package:denta_koas/src/features/appointment/controller/treatment_controller.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
+import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,26 +29,24 @@ class HomeCategories extends StatelessWidget {
             ),
           );
         }
-        return TreatmentShimmer(
-            itemCount: controller.featuredTreatments.length);
-        // return SizedBox(
-        //     height: 80,
-        //     child: ListView.builder(
-        //       shrinkWrap: true,
-        //       itemCount: 6,
-        //       scrollDirection: Axis.horizontal,
-        //       itemBuilder: (context, index) {
-        //         final treatment = controller.featuredTreatments[index];
-        //         return VerticalImageText(
-        //           image: TImages.appleLogo,
-        //           title: treatment.alias!,
-        //           textColor: TColors.textPrimary,
-        //           onTap: () {},
-        //           backgroundColor: TColors.primary.withAlpha((0.1 * 255).toInt()),
-        //         );
-        //       },
-        //     ),
-        //   );
+        return SizedBox(
+          height: 80,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: 6,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              final treatment = controller.featuredTreatments[index];
+              return VerticalImageText(
+                image: TImages.appleLogo,
+                title: treatment.alias!,
+                textColor: TColors.textPrimary,
+                onTap: () {},
+                backgroundColor: TColors.primary.withAlpha((0.1 * 255).toInt()),
+              );
+            },
+          ),
+        );
       },
     );
   }

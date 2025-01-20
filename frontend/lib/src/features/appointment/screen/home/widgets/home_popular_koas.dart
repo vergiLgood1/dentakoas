@@ -37,8 +37,8 @@ class HomePopularKoasSection extends StatelessWidget {
                 return const KoasCardShimmer();
               }
               if (controller.popularKoas.isEmpty) {
-                // return const Center(child: Text('No data'));
-                return const KoasCardShimmer();
+                return const Center(child: Text('No data'));
+                // return const KoasCardShimmer();
               }
               return DGridLayout(
                 itemCount: 2,

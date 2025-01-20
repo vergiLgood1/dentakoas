@@ -38,7 +38,11 @@ class TabParnert extends StatelessWidget {
                   return const CardShowcaseShimmer();
                 }
                 if (controller.popularUniversities.isEmpty) {
-                  return const CardShowcaseShimmer();
+                  return const CardShowcase(
+                    title: 'Popular Universities is empty',
+                    subtitle:
+                        'Unfortunately, there are no popular universities',
+                  );
                 }
                 final popularImages = controller.popularUniversities
                     .take(3)

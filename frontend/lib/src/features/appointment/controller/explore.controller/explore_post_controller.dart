@@ -8,6 +8,9 @@ class ExplorePostController extends GetxController {
 
   final postRepository = Get.put(PostRepository());
   final isLoading = false.obs;
+
+  RxList<Post> lastChangePost = <Post>[].obs;
+  RxList<Post> newestPosts = <Post>[].obs;
   RxList<Post> posts = <Post>[].obs;
   RxList<Post> featuredPosts = <Post>[].obs;
 
@@ -28,6 +31,13 @@ class ExplorePostController extends GetxController {
       featuredPosts.assignAll(
         fetchedPosts.where((post) => post.status == "Open").toList(),
       );
+
+      newestPosts.assignAll(
+        fetchedPosts.toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
+          ..take(3),
+      );
+
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
     } finally {

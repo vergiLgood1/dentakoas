@@ -1,6 +1,7 @@
 import 'package:denta_koas/src/commons/widgets/cards/post_card.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/partnert/partner_showcase.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/card_showcase_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/explore.controller/explore_post_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
@@ -29,23 +30,49 @@ class TabPost extends StatelessWidget {
           child: Column(
             children: [
               // Partners showcase
-              const CardShowcase(
-                title: 'Last Chance',
-                subtitle: 'Find the best koas in your area',
-                images: [
-                  TImages.userProfileImage4,
-                  TImages.userProfileImage4,
-                  TImages.userProfileImage4,
-                ],
+              Obx(
+                () {
+                  if (controller.isLoading.value) {
+                    return const CardShowcaseShimmer();
+                  }
+                  if (controller.lastChangePost.isEmpty) {
+                    return const CardShowcase(
+                      title: 'Last change Posts is empty',
+                      subtitle: 'Unfortunately, there are no last change posts',
+                    );
+                  }
+                  return const CardShowcase(
+                    title: 'Last Chance',
+                    subtitle: 'Find the best koas in your area',
+                    images: [
+                      TImages.userProfileImage4,
+                      TImages.userProfileImage4,
+                      TImages.userProfileImage4,
+                    ],
+                  );
+                }, 
               ),
-              const CardShowcase(
-                title: 'Newest Posts',
-                subtitle: 'Find the newest koas in your area',
-                images: [
-                  TImages.userProfileImage4,
-                  TImages.userProfileImage4,
-                  TImages.userProfileImage4,
-                ],
+              Obx(
+                () {
+                  if (controller.isLoading.value) {
+                    return const CardShowcaseShimmer();
+                  }
+                  if (controller.newestPosts.isEmpty) {
+                    return const CardShowcase(
+                      title: 'Newest Posts is empty',
+                      subtitle: 'Unfortunately, there are no newest posts',
+                    );
+                  }
+                  return const CardShowcase(
+                    title: 'Newest Posts',
+                    subtitle: 'Find the newest koas in your area',
+                    images: [
+                      TImages.userProfileImage4,
+                      TImages.userProfileImage4,
+                      TImages.userProfileImage4,
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: TSizes.spaceBtwItems),
 
@@ -57,7 +84,7 @@ class TabPost extends StatelessWidget {
 
               Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const CardShowcaseShimmer();
                 }
                 if (controller.posts.isEmpty) {
                   return const Center(child: Text('No data'));

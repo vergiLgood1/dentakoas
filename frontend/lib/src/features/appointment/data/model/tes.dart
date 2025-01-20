@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/features/appointment/data/model/review-model.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 
 class Post {
@@ -19,6 +20,7 @@ class Post {
   final List<dynamic> likes;
   final int? likeCount;
   final int totalCurrentParticipants;
+  final List<Review>? reviews;
 
 
   Post({
@@ -40,6 +42,7 @@ class Post {
     required this.likes,
     this.likeCount,
     this.totalCurrentParticipants = 0,
+    this.reviews,
   });
 
 
@@ -70,9 +73,36 @@ class Post {
       likes: json['likes'] is List ? json['likes'] : [],
       likeCount: json['likeCount'] ?? 0,
       totalCurrentParticipants: json['totalCurrentParticipants'] ?? 0,
+      reviews: (json['Review'] as List?)
+              ?.map((item) => Review.fromJson(item))
+              .toList() ??
+          [],
     );
   }
 
+  factory Post.empty() {
+    return Post(
+      id: '',
+      userId: '',
+      koasId: '',
+      treatmentId: '',
+      title: '',
+      desc: '',
+      patientRequirement: [],
+      requiredParticipant: 0,
+      status: '',
+      published: false,
+      createdAt: DateTime.now(),
+      updateAt: DateTime.now(),
+      schedule: [],
+      user: UserModel.empty(),
+      treatment: Treatment.empty(),
+      likes: [],
+      likeCount: 0,
+      totalCurrentParticipants: 0,
+      reviews: [],
+    );
+  }
 
   static Post postFromJson(Map<String, dynamic> json) {
     return Post.fromJson(json);
@@ -249,6 +279,14 @@ class Treatment {
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       alias: json['alias'] ?? '',
+    );
+  }
+
+  factory Treatment.empty() {
+    return Treatment(
+      id: '',
+      name: '',
+      alias: '',
     );
   }
 }
