@@ -1,66 +1,78 @@
-class Appointment {
-  String id;
+class AppointmentsModel {
+  String? id;
   String pasienId;
   String koasId;
   String scheduleId;
   String timeslotId;
-  DateTime date;
-  StatusAppointment status;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String date; // Tetap string jika tidak ingin mengubah ke DateTime
+  StatusAppointment? status;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
-  Appointment({
-    required this.id,
+  AppointmentsModel({
+    this.id,
     required this.pasienId,
     required this.koasId,
     required this.scheduleId,
     required this.timeslotId,
     required this.date,
     this.status = StatusAppointment.Pending,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  factory Appointment.fromJson(Map<String, dynamic> json) {
-    return Appointment(
-      id: json['id'],
-      pasienId: json['pasien_id'],
-      koasId: json['koas_id'],
-      scheduleId: json['schedule_id'],
-      timeslotId: json['timeslot_id'],
-      date: DateTime.parse(json['date']),
-      status: StatusAppointment.values.firstWhere((e) => e.toString() == 'StatusAppointment.' + json['status']),
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+  factory AppointmentsModel.fromJson(Map<String, dynamic> json) {
+    return AppointmentsModel(
+      id: json['id'] ?? '',
+      pasienId: json['pasienId'] ?? '',
+      koasId: json['koasId'] ?? '',
+      scheduleId: json['scheduleId'] ?? '',
+      timeslotId: json['timeslotId'] ?? '',
+      date: json['date'] ?? '',
+      status: json['status'] != null
+          ? StatusAppointment.values.firstWhere(
+              (e) => e.toString().split('.').last == json['status'],
+              orElse: () => StatusAppointment.Pending,
+            )
+          : StatusAppointment.Pending,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'pasien_id': pasienId,
-      'koas_id': koasId,
-      'schedule_id': scheduleId,
-      'timeslot_id': timeslotId,
-      'date': date.toIso8601String(),
-      'status': status.toString().split('.').last,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'pasienId': pasienId,
+      'koasId': koasId,
+      'scheduleId': scheduleId,
+      'timeslotId': timeslotId,
+      'date': date,
+      'status': status?.toString().split('.').last,
+ 
     };
   }
 
-  static Appointment empty() {
-    return Appointment(
+  static AppointmentsModel empty() {
+    return AppointmentsModel(
       id: '',
       pasienId: '',
       koasId: '',
       scheduleId: '',
       timeslotId: '',
-      date: DateTime.now(),
+      date: DateTime.now().toIso8601String(),
       status: StatusAppointment.Pending,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
+  }
+
+  static List<AppointmentsModel> appointmentsFromJson(dynamic data) {
+    if (data is Map<String, dynamic> && data.containsKey("appointments")) {
+      final appointments = data["appointments"] as List;
+      return appointments
+          .map((item) => AppointmentsModel.fromJson(item))
+          .toList();
+    }
+    throw Exception('Invalid data format for appointments');
   }
 }
 

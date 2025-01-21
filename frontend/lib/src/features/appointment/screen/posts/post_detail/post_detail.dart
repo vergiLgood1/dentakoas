@@ -2,6 +2,7 @@ import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/card_reviews.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/post_detail_controller.dart';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/posts_controller.dart';
 import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
@@ -47,6 +48,9 @@ class PostDetailScreen extends StatelessWidget {
       ),
       bottomNavigationBar: BottomBookAppointment(
         name: post.user.fullName,
+        koasId: post.user.koasProfile!.id!,
+        scheduleId: post.schedule[0].id,
+        timeslotId: post.schedule[0].timeslot[0].id,
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -10,7 +10,7 @@ class TimeslotModel {
   int? currentParticipants;
   bool? isAvailable;
   SchedulesModel? schedule;
-  List<Appointment>? appointment;
+  List<AppointmentsModel>? appointment;
 
   TimeslotModel({
     this.id,
@@ -35,7 +35,7 @@ class TimeslotModel {
       isAvailable: json['isAvailable'],
       schedule: SchedulesModel.fromJson(json['Schedule']),
       appointment: (json['Appointment'] as List)
-          .map((e) => Appointment.fromJson(e))
+          .map((e) => AppointmentsModel.fromJson(e))
           .toList(),
     );
   }

@@ -11,7 +11,7 @@ class SchedulesModel {
   String? updateAt;
   PostModel? post;
   List<TimeslotModel>? timeslot;
-  List<Appointment>? appointment;
+  List<AppointmentsModel>? appointment;
 
   SchedulesModel({
     this.id,

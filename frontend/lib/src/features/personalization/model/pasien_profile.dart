@@ -1,4 +1,5 @@
 class PasienProfileModel {
+  final String? id;
   final String? age;
   final String? gender;
   final String? bio;
@@ -6,6 +7,7 @@ class PasienProfileModel {
   final DateTime? createdAt;
 
   PasienProfileModel({
+    this.id,
     this.age,
     this.gender,
     this.bio,
@@ -32,6 +34,7 @@ class PasienProfileModel {
 
   factory PasienProfileModel.fromJson(Map<String, dynamic> json) {
     return PasienProfileModel(
+      id: json['id'] ?? '',
       age: json['age'] ?? '',
       gender: json['gender'] ?? '',
       bio: json['bio'] ?? '',

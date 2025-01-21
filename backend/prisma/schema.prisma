@@ -333,7 +333,7 @@ model Appointment {
   koasId     String            @map("koas_id")
   scheduleId String            @map("schedule_id")
   timeslotId String            @map("timeslot_id")
-  date       DateTime
+  date       String
   status     StatusAppointment @default(Pending)
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt

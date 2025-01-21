@@ -29,11 +29,11 @@ class AuthenticationRepository extends GetxController {
   // Variable
   final storage = GetStorage();
   final _auth = FirebaseAuth.instance;
+  final _userRepository = UserRepository();
 
   // Get Auth user 
   User? get authUser => _auth.currentUser;
-  
-  
+
 
   @override
   void onReady() {
@@ -52,10 +52,10 @@ screenRedirect() async {
       final userDetail = await userRepository.getUserProfile(uid);
       final userMap = userDetail.toJson();
 
-      final userProfile = filterProfileByRole(userMap);
-      final hasNullField = userController.hasEmptyFields(userProfile);
+      final users = filterProfileByRole(userMap);
+      final hasNullField = userController.hasEmptyFields(users);
 
-      Logger().i(['User Profile: $userProfile']);
+      Logger().i(['User Profile: $users']);
       Logger().i(['Has Null Field: $hasNullField']);
 
       final isOauth =

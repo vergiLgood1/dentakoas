@@ -105,9 +105,7 @@ export async function GET(req: Request) {
     // Mengembalikan data ke klien
     return NextResponse.json(
       {
-        status: "Success",
-        message: "Get all appointments successfully",
-        data: { appointments: updatedAppointments }, // Return updated appointments
+        appointments: updatedAppointments, // Return updated appointments
       },
       { status: 200 }
     );
@@ -125,6 +123,8 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json();
   const { scheduleId, pasienId, koasId, timeslotId, date } = body;
+
+  console.log("Creating appointment with data:", body);
 
   if (!scheduleId || !pasienId || !koasId || !timeslotId || !date) {
     return NextResponse.json(
@@ -150,6 +150,7 @@ export async function POST(req: Request) {
     });
 
     if (!schedule || !pasien || !koas) {
+      console.log("Invalid schedule, pasien or koas");
       return NextResponse.json(
         { error: "Invalid schedule, pasien or koas" },
         { status: 404 }
@@ -160,6 +161,7 @@ export async function POST(req: Request) {
       new Date(date) < new Date(schedule.dateStart) ||
       new Date(date) > new Date(schedule.dateEnd)
     ) {
+      console.log("Date is not within the schedule range");
       return NextResponse.json(
         { error: "Date is not within the schedule range" },
         { status: 400 }
@@ -172,6 +174,7 @@ export async function POST(req: Request) {
     );
 
     if (!selectedTimeslot) {
+      console.log("Timeslot not found for the given schedule");
       return NextResponse.json(
         { error: "Timeslot not found for the given schedule" },
         { status: 404 }
@@ -179,6 +182,7 @@ export async function POST(req: Request) {
     }
 
     if (!selectedTimeslot.isAvailable) {
+      console.log("Timeslot is fully booked or unavailable");
       return NextResponse.json(
         { error: "Timeslot is fully booked or unavailable." },
         { status: 400 }
@@ -200,21 +204,98 @@ export async function POST(req: Request) {
         timeslot: {
           connect: { id: timeslotId },
         },
-        date: new Date(date), // Pastikan untuk mengonversi date ke format Date
+        date: date,
         status: "Pending", // Status awal adalah pending
       },
     });
 
+    const appointments = {
+      ...appointment,
+      date: appointment.date.split("T")[0], // Jika disimpan sebagai string ISO dengan waktu
+    };
+
+    console.log("Appointment created successfully:", appointments);
+
     return NextResponse.json(
       {
-        status: "Success",
-        message: "Appointment created successfully.",
-        data: { appointment },
+        appointments,
       },
       { status: 201 }
     );
   } catch (error) {
     console.error("Error creating appointment:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: Request) {
+  const body = await req.json();
+  const { appointmentId, status } = body;
+
+  console.log("Updating appointment with data:", body);
+
+  if (!appointmentId || !status) {
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    // Cek apakah appointment valid
+    const appointment = await db.appointment.findUnique({
+      where: { id: appointmentId },
+    });
+
+    if (!appointment) {
+      console.log("Appointment not found");
+      return NextResponse.json(
+        { error: "Appointment not found" },
+        { status: 404 }
+      );
+    }
+
+    // Update status appointment
+    const updatedAppointment = await db.appointment.update({
+      where: { id: appointmentId },
+      data: {
+        status,
+      },
+    });
+
+    console.log("Appointment updated successfully:", updatedAppointment);
+
+    return NextResponse.json(
+      {
+        appointment: updatedAppointment,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    await db.appointment.deleteMany({});
+
+    return NextResponse.json(
+      {
+        status: "Success",
+        message: "All appointments deleted successfully",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting all appointments", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
