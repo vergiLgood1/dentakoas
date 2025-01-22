@@ -213,6 +213,7 @@ export async function POST(req: Request) {
       ...appointment,
       date: appointment.date.split("T")[0], // Jika disimpan sebagai string ISO dengan waktu
     };
+    
 
     console.log("Appointment created successfully:", appointments);
 
