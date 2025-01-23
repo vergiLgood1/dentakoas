@@ -89,12 +89,12 @@ class BottomBookAppointment extends StatelessWidget {
                           Logger().i([
                             'Book Appointment: $koasId, $scheduleId, $timeslotId, $controller.selectedDate.value'
                           ]),
-                          appointmentController.createAppointment(
+                          appointmentController.createAppointmentConfirmation(
                             koasId,
                             scheduleId,
                             timeslotId,
                             controller.selectedDate.value,
-                          )
+                          ),
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: TColors.primary,

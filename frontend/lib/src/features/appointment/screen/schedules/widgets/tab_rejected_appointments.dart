@@ -8,8 +8,8 @@ import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TabOngoingAppointments extends StatelessWidget {
-  const TabOngoingAppointments({
+class TabRejectedAppointments extends StatelessWidget {
+  const TabRejectedAppointments({
     super.key,
   });
 
@@ -27,7 +27,7 @@ class TabOngoingAppointments extends StatelessWidget {
                 if (controller.isLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (controller.ongoingAppointments.isEmpty) {
+                if (controller.rejectedAppointments.isEmpty) {
                   return Center(
                       child: Column(
                     children: [
@@ -37,12 +37,12 @@ class TabOngoingAppointments extends StatelessWidget {
                       ),
                       const SizedBox(height: TSizes.spaceBtwSections),
                       Text(
-                        'Empty ongoing appointment',
+                        'Empty Rejected koas',
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       const SizedBox(height: TSizes.spaceBtwSections),
                       Text(
-                        'You don\'t have any ongoing appointment yet.',
+                        'You don\'t have any Rejected koas yet.',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -50,11 +50,12 @@ class TabOngoingAppointments extends StatelessWidget {
                 }
                 {
                   return DGridLayout(
-                    itemCount: controller.ongoingAppointments.length,
+                    itemCount: controller.rejectedAppointments.length,
                     crossAxisCount: 1,
                     mainAxisExtent: 230,
                     itemBuilder: (_, index) {
-                      final appointment = controller.ongoingAppointments[index];
+                      final appointment =
+                          controller.rejectedAppointments[index];
                       return ScheduleCard(
                         imgUrl: TImages.user,
                         name: appointment.user!.fullName,

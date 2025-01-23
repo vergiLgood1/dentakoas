@@ -1,42 +1,93 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/features/appointment/controller/appointment.controller/appointments_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/my_appointment/my_appointment.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
+import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TabPendingSchedule extends StatelessWidget {
-  const TabPendingSchedule({
+class TabPendingAppointments extends StatelessWidget {
+  const TabPendingAppointments({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(AppointmentsController());
+
     return ListView(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
           child: Column(
             children: [
-              DGridLayout(
-                itemCount: 10,
-                crossAxisCount: 1,
-                mainAxisExtent: 230,
-                itemBuilder: (_, index) => ScheduleCard(
-                  imgUrl: TImages.user,
-                  name: 'Dr. John Doe',
-                  category: 'Scaling',
-                  date: 'Sunday, 12 June',
-                  timestamp: '10:00 - 11:00 AM',
-                  showSecondaryBtn: true,
-                  primaryBtnText: 'Confirm',
-                  secondaryBtnText: 'Reject',
-                  onPrimaryBtnPressed: () {},
-                  onSecondaryBtnPressed: () {},
-                  onTap: () => Get.to(() => const MyAppointmentScreen()),
-                ),
-              ),
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.pendingAppointments.isEmpty) {
+                  return Center(
+                      child: Column(
+                    children: [
+                      Image(
+                        image: const AssetImage(TImages.emptyPost),
+                        width: THelperFunctions.screenWidth(),
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwSections),
+                      Text(
+                        'Empty pending appointment',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwSections),
+                      Text(
+                        'You don\'t have any pending appointment yet.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ));
+                }
+                {
+                  return DGridLayout(
+                    itemCount: controller.pendingAppointments.length,
+                    crossAxisCount: 1,
+                    mainAxisExtent: 230,
+                    itemBuilder: (_, index) {
+                      final appointment = controller.pendingAppointments[index];
+                      return ScheduleCard(
+                        imgUrl: TImages.user,
+                        name: appointment.user!.fullName,
+                        category: appointment.post!.treatment.alias,
+                        date:
+                            controller.formatAppointmentDate(appointment.date),
+                        timestamp: controller
+                            .getAppointmentTimestampRange(appointment),
+                        showSecondaryBtn: true,
+                        primaryBtnText: 'Confirm',
+                        secondaryBtnText: 'Reject',
+                        onPrimaryBtnPressed: () {
+                          controller.confirmAppointmentConfirmation(
+                            appointment.user?.pasienProfile?.id ?? '',
+                            appointment.user?.koasProfile?.id ?? '',
+                            appointment.schedule?.id ?? '',
+                            appointment.schedule?.timeslot.first.id ?? '',
+                          );
+                        },
+                        onSecondaryBtnPressed: () {
+                          controller.rejectAppointmentConfirmation(
+                            appointment.user?.pasienProfile?.id ?? '',
+                            appointment.user?.koasProfile?.id ?? '',
+                            appointment.schedule?.id ?? '',
+                            appointment.schedule?.timeslot.first.id ?? '',
+                          );
+                        },
+                        onTap: () => Get.to(() => const MyAppointmentScreen()),
+                      );
+                    },
+                  );
+                }
+              }),
             ],
           ),
         ),

@@ -123,7 +123,7 @@ class NavigationController extends GetxController {
   final screens = [
     const HomeScreen(),
     const ExploreScreen(),
-    const ScheduleScreen(),
+    const AppointmentsScreen(),
     const SettingsScreen(),
     const CreatePostScreen()
   ];
@@ -140,7 +140,7 @@ class NavigationController extends GetxController {
   final List<String> labels = [
     'Home',
     'Explore',
-    'Bookings',
+    'Appointments',
     'Profile',
     '',
     'Verification',

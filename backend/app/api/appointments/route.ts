@@ -67,9 +67,28 @@ export async function GET(req: Request) {
       },
     });
 
-    // Mengolah data untuk memperbarui currentParticipants berdasarkan status dan timeslot
+    // Menggabungkan data pasien dan user, serta koas dan user
     const updatedAppointments = appointments.map((appointment) => {
-      const { schedule, timeslotId, date, status } = appointment;
+      const { pasien, koas, schedule, timeslotId, date, status } = appointment;
+
+      // Gabungkan pasien dan user
+      const mergedPasien = {
+        id: pasien.id,
+        userId: pasien.user.id,
+        name: pasien.user.name,
+        phone: pasien.user.phone,
+        age: pasien.age,
+        gender: pasien.gender,
+      };
+
+      // Gabungkan koas dan user
+      const mergedKoas = {
+        id: koas.id,
+        userId: koas.user.id,
+        name: koas.user.name,
+        phone: koas.user.phone,
+        koasNumber: koas.koasNumber,
+      };
 
       // Hitung jumlah peserta "Confirmed" untuk timeslot tertentu
       const currentParticipants = appointments.filter(
@@ -93,11 +112,17 @@ export async function GET(req: Request) {
       //       : timeslot.currentParticipants,
       // }));
 
+      // Kembalikan data appointment yang telah diperbarui
       return {
         ...appointment,
+        pasien: mergedPasien,
+        koas: mergedKoas,
         schedule: {
           ...schedule,
-          timeslot: relatedTimeslot,
+          timeslot: {
+            ...relatedTimeslot,
+            currentParticipants,
+          },
         },
       };
     });

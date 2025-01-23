@@ -17,12 +17,11 @@ class AppointmentsRepository extends GetxController {
 
   Future<List<AppointmentsModel>> getAppointments() async {
     try {
-      final response = await DioClient().get(Endpoints.posts);
-
+      final response = await DioClient().get(Endpoints.appointments);
+   
       if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        final List<dynamic> appointmentData =
-            response.data['appointments'] ?? [];
-        return AppointmentsModel.appointmentsFromJson(appointmentData);
+        final List<dynamic> appointments = response.data['appointments'] ?? [];
+        return AppointmentsModel.appointmentsFromJson(appointments);
       }
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
@@ -35,10 +34,10 @@ class AppointmentsRepository extends GetxController {
     } on PlatformException catch (e) {
       throw TPlatformException(e.code).message;
     } catch (e) {
-      Logger().e(['Error fetching post: $e']);
-      throw 'Something went wrong. Please try again later.';
+      Logger().e(['Error fetching appointments: $e']);
+      // throw 'Something went wrong. Please try again later.';
     }
-    throw 'Failed to fetch posts data.';
+    throw 'Failed to fetch appointments data.';
   }
 
   Future<List<AppointmentsModel>> getAppointmentByUser() async {

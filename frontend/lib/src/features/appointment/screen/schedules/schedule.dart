@@ -3,6 +3,7 @@ import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab_completed_schedule.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab_ongoing_schedule.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab_pending_shcedule.dart';
+import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab_rejected_appointments.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/tab_upcoming_schedules.dart';
 import 'package:denta_koas/src/features/appointment/screen/verification_koas.dart/tab_approved_koas.dart';
 import 'package:denta_koas/src/features/appointment/screen/verification_koas.dart/tab_pending.dart';
@@ -12,8 +13,8 @@ import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/device/device_utility.dart';
 import 'package:flutter/material.dart';
 
-class ScheduleScreen extends StatelessWidget {
-  const ScheduleScreen({super.key});
+class AppointmentsScreen extends StatelessWidget {
+  const AppointmentsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class ScheduleScreen extends StatelessWidget {
     final isFasilitator = role == 'Fasilitator';
 
     return DefaultTabController(
-      length: isFasilitator ? 3 : 5,
+      length: isFasilitator ? 3 : 6,
       initialIndex: 1,
       child: Scaffold(
         body: Column(
@@ -69,35 +70,42 @@ class ScheduleScreen extends StatelessWidget {
                         child: Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: TSizes.spaceBtwItems),
-                          child: const Text('Cancel Schedule'),
+                          child: const Text('Cancel Appointments'),
                         ),
                       ),
                       Tab(
                         child: Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: TSizes.spaceBtwItems),
-                          child: const Text('Pending Schedule'),
+                          child: const Text('Rejected Appointments'),
+                        ),
+                      ),
+                      Tab(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: TSizes.spaceBtwItems),
+                          child: const Text('Pending Appointments'),
+                        ),
+                      ),
+                      Tab(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: TSizes.spaceBtwItems),
+                          child: const Text('Upcoming Appointments'),
                         ),
                       ),
                       Tab(
                         child: Container(
                           margin: const EdgeInsets.symmetric(
                         horizontal: TSizes.spaceBtwItems),
-                          child: const Text('Upcoming Schedule'),
+                          child: const Text('Ongoing Appointments'),
                         ),
                       ),
                       Tab(
                         child: Container(
                           margin: const EdgeInsets.symmetric(
                         horizontal: TSizes.spaceBtwItems),
-                          child: const Text('Ongoing Schedule'),
-                        ),
-                      ),
-                      Tab(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                        horizontal: TSizes.spaceBtwItems),
-                          child: const Text('Completed Schedule'),
+                          child: const Text('Completed Appointments'),
                         ),
                       ),
                     ],
@@ -111,11 +119,12 @@ class ScheduleScreen extends StatelessWidget {
                         const TabApprovedKoas(),
                       ]
                     : [
-                        const TabCancelSchedule(),
-                        const TabPendingSchedule(),
-                        const TabUpcomingSchedules(),
-                        const TabOngoingSchedule(),
-                        const TabCompletedSchedule(),
+                        const TabCancelAppointments(),
+                        const TabRejectedAppointments(),
+                        const TabPendingAppointments(),
+                        const TabUpcomingAppointments(),
+                        const TabOngoingAppointments(),
+                        const TabCompletedAppointments(),
                       ],
               ),
             ),

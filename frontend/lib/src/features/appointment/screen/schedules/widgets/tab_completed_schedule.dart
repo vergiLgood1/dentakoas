@@ -1,41 +1,78 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
-import 'package:denta_koas/src/features/appointment/screen/koas_reviews/add_review/add_review.dart';
+import 'package:denta_koas/src/features/appointment/controller/appointment.controller/appointments_controller.dart';
+import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
+import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TabCompletedSchedule extends StatelessWidget {
-  const TabCompletedSchedule({
+class TabCompletedAppointments extends StatelessWidget {
+  const TabCompletedAppointments({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(AppointmentsController());
+
     return ListView(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
           child: Column(
             children: [
-              DGridLayout(
-                itemCount: 10,
-                crossAxisCount: 1,
-                mainAxisExtent: 230,
-                itemBuilder: (_, index) => ScheduleCard(
-                  onTap: () => Get.to(() => const KoasAddReviewScreen()),
-                  imgUrl: TImages.user,
-                  name: 'Dr. John Doe',
-                  category: 'Scaling',
-                  date: 'Sunday, 12 June',
-                  timestamp: '10:00 - 11:00 AM',
-                  primaryBtnText: 'Add Review',
-                  onPrimaryBtnPressed: () {},
-                  onSecondaryBtnPressed: () {},
-                 
-                ),
-              ),
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.completedAppointments.isEmpty) {
+                  return Center(
+                      child: Column(
+                    children: [
+                      Image(
+                        image: const AssetImage(TImages.emptyPost),
+                        width: THelperFunctions.screenWidth(),
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwSections),
+                      Text(
+                        'Empty completed koas',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwSections),
+                      Text(
+                        'You don\'t have any completed koas yet.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ));
+                }
+                {
+                  return DGridLayout(
+                    itemCount: controller.completedAppointments.length,
+                    crossAxisCount: 1,
+                    mainAxisExtent: 230,
+                    itemBuilder: (_, index) {
+                      final appointment =
+                          controller.completedAppointments[index];
+                      return ScheduleCard(
+                        imgUrl: TImages.user,
+                        name: appointment.user!.fullName,
+                        category: appointment.post!.treatment.alias,
+                        date:
+                            controller.formatAppointmentDate(appointment.date),
+                        timestamp: controller
+                            .getAppointmentTimestampRange(appointment),
+                        primaryBtnText: 'Details',
+                        onPrimaryBtnPressed: () {},
+                        onSecondaryBtnPressed: () {},
+                        onTap: () => Get.to(() => const KoasReviewsScreen()),
+                      );
+                    },
+                  );
+                }
+              }),
             ],
           ),
         ),

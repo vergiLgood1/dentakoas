@@ -1,22 +1,32 @@
+import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
+import 'package:logger/logger.dart';
+
 class AppointmentsModel {
   String? id;
-  String pasienId;
-  String koasId;
-  String scheduleId;
-  String timeslotId;
-  String date; // Tetap string jika tidak ingin mengubah ke DateTime
+  String? pasienId;
+  String? koasId;
+  String? scheduleId;
+  String? timeslotId;
+  String? date; // Tetap string jika tidak ingin mengubah ke DateTime
   StatusAppointment? status;
+  UserModel? user;
+  Post? post;
+  Schedule? schedule;
   DateTime? createdAt;
   DateTime? updatedAt;
 
   AppointmentsModel({
     this.id,
-    required this.pasienId,
-    required this.koasId,
-    required this.scheduleId,
-    required this.timeslotId,
-    required this.date,
+    this.pasienId,
+    this.koasId,
+    this.scheduleId,
+    this.timeslotId,
+    this.date,
     this.status = StatusAppointment.Pending,
+    this.user,
+    this.post,
+    this.schedule,
     this.createdAt,
     this.updatedAt,
   });
@@ -35,6 +45,21 @@ class AppointmentsModel {
               orElse: () => StatusAppointment.Pending,
             )
           : StatusAppointment.Pending,
+      user: json['user'] != null
+          ? UserModel.fromJson(json['user'] as Map<String, dynamic>)
+          : null,
+      post: json['post'] != null
+          ? Post.fromJson(json['post'] as Map<String, dynamic>)
+          : null,
+      schedule: json['schedule'] != null
+          ? Schedule.fromJson(json['schedule'] as Map<String, dynamic>)
+          : null,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : DateTime.now(),
     );
   }
 
@@ -65,15 +90,34 @@ class AppointmentsModel {
     );
   }
 
-  static List<AppointmentsModel> appointmentsFromJson(dynamic data) {
+static List<AppointmentsModel> appointmentsFromJson(dynamic data) {
+    print('Received data: $data');
+    try {
+      
     if (data is Map<String, dynamic> && data.containsKey("appointments")) {
-      final appointments = data["appointments"] as List;
+        final appointments = data["appointments"];
+        var logger = Logger();
+        logger.i('Appointments list: $appointments');
+        if (appointments is List) {
       return appointments
           .map((item) => AppointmentsModel.fromJson(item))
           .toList();
+        } else {
+          throw Exception('Key "appointments" is not a List');
+        }
+      }
+    } catch (e) {
+      throw Exception(e);
     }
-    throw Exception('Invalid data format for appointments');
+    throw Exception('Invalid data format for appointments' + data.toString());
   }
 }
 
-enum StatusAppointment { Pending, Confirmed, Canceled }
+enum StatusAppointment {
+  Canceled,
+  Rejected,
+  Pending,
+  Confirmed,
+  Ongoing,
+  Completed
+}
