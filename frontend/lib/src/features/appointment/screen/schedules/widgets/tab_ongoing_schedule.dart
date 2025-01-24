@@ -57,8 +57,8 @@ class TabOngoingAppointments extends StatelessWidget {
                       final appointment = controller.ongoingAppointments[index];
                       return ScheduleCard(
                         imgUrl: TImages.user,
-                        name: appointment.user!.fullName,
-                        category: appointment.post!.treatment.alias,
+                        name: appointment.koas!.user!.fullName,
+                        category: appointment.schedule!.post.treatment.alias,
                         date:
                             controller.formatAppointmentDate(appointment.date),
                         timestamp: controller
@@ -66,7 +66,8 @@ class TabOngoingAppointments extends StatelessWidget {
                         primaryBtnText: 'Details',
                         onPrimaryBtnPressed: () {},
                         onSecondaryBtnPressed: () {},
-                        onTap: () => Get.to(() => const MyAppointmentScreen()),
+                        onTap: () => Get.to(() => const MyAppointmentScreen(),
+                            arguments: appointment),
                       );
                     },
                   );

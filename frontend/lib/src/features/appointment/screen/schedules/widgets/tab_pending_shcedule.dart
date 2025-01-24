@@ -2,6 +2,7 @@ import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/features/appointment/controller/appointment.controller/appointments_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/my_appointment/my_appointment.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
@@ -48,6 +49,35 @@ class TabPendingAppointments extends StatelessWidget {
                     ],
                   ));
                 }
+                if (UserController.instance.user.value.role != 'Koas') {
+                  return DGridLayout(
+                    itemCount: controller.pendingAppointments.length,
+                    crossAxisCount: 1,
+                    mainAxisExtent: 230,
+                    itemBuilder: (_, index) {
+                      final appointment = controller.pendingAppointments[index];
+                      return ScheduleCard(
+                        imgUrl: TImages.user,
+                        name: appointment.koas!.user!.fullName,
+                        category: appointment.schedule!.post.treatment.alias,
+                        date:
+                            controller.formatAppointmentDate(appointment.date),
+                        timestamp: controller
+                            .getAppointmentTimestampRange(appointment),
+                        primaryBtnText: 'Details',
+                        onPrimaryBtnPressed: () => Get.to(
+                          () => const MyAppointmentScreen(),
+                          arguments: appointment,
+                        ),
+                        onSecondaryBtnPressed: () {},
+                        onTap: () => Get.to(
+                          () => const MyAppointmentScreen(),
+                          arguments: appointment,
+                        ),
+                      );
+                    },
+                  );
+                }
                 {
                   return DGridLayout(
                     itemCount: controller.pendingAppointments.length,
@@ -57,8 +87,8 @@ class TabPendingAppointments extends StatelessWidget {
                       final appointment = controller.pendingAppointments[index];
                       return ScheduleCard(
                         imgUrl: TImages.user,
-                        name: appointment.user!.fullName,
-                        category: appointment.post!.treatment.alias,
+                        name: appointment.koas!.user!.fullName,
+                        category: appointment.schedule!.post.treatment.alias,
                         date:
                             controller.formatAppointmentDate(appointment.date),
                         timestamp: controller
@@ -68,21 +98,22 @@ class TabPendingAppointments extends StatelessWidget {
                         secondaryBtnText: 'Reject',
                         onPrimaryBtnPressed: () {
                           controller.confirmAppointmentConfirmation(
-                            appointment.user?.pasienProfile?.id ?? '',
-                            appointment.user?.koasProfile?.id ?? '',
+                            appointment.pasien?.id ?? '',
+                            appointment.koas?.id ?? '',
                             appointment.schedule?.id ?? '',
                             appointment.schedule?.timeslot.first.id ?? '',
                           );
                         },
                         onSecondaryBtnPressed: () {
                           controller.rejectAppointmentConfirmation(
-                            appointment.user?.pasienProfile?.id ?? '',
-                            appointment.user?.koasProfile?.id ?? '',
+                            appointment.pasien?.id ?? '',
+                            appointment.koas?.id ?? '',
                             appointment.schedule?.id ?? '',
                             appointment.schedule?.timeslot.first.id ?? '',
                           );
                         },
-                        onTap: () => Get.to(() => const MyAppointmentScreen()),
+                        onTap: () => Get.to(() => const MyAppointmentScreen(),
+                            arguments: appointment),
                       );
                     },
                   );

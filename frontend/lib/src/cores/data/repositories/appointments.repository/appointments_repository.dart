@@ -15,64 +15,88 @@ import 'package:logger/logger.dart';
 class AppointmentsRepository extends GetxController {
   static AppointmentsRepository get instance => Get.find();
 
-  Future<List<AppointmentsModel>> getAppointments() async {
+Future<List<AppointmentsModel>> getAppointments() async {
     try {
       final response = await DioClient().get(Endpoints.appointments);
-   
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        final List<dynamic> appointments = response.data['appointments'] ?? [];
-        return AppointmentsModel.appointmentsFromJson(appointments);
-      }
-    } on FirebaseAuthException catch (e) {
-      throw TFirebaseAuthException(e.code).message;
-    } on FirebaseException catch (e) {
-      throw TFirebaseException(e.code).message;
-    } on TExceptions catch (e) {
-      throw TExceptions(e.message);
-    } on FormatException catch (_) {
-      throw const TFormatException();
-    } on PlatformException catch (e) {
-      throw TPlatformException(e.code).message;
-    } catch (e) {
-      Logger().e(['Error fetching appointments: $e']);
-      // throw 'Something went wrong. Please try again later.';
-    }
-    throw 'Failed to fetch appointments data.';
-  }
 
-  Future<List<AppointmentsModel>> getAppointmentByUser() async {
-    try {
-      final response = await DioClient().get(
-        Endpoints.appointmentWithSpecificUser(
-          AuthenticationRepository.instance.authUser!.uid,
-        ),
-      );
+      // Periksa status code respons
+      // if (response.statusCode == 200) {
+      //   final data = response.data;
+
+      //   // Pastikan respons adalah Map dan memiliki key 'appointments'
+      //   if (data is Map<String, dynamic> && data.containsKey('appointments')) {
+      //     final appointments = data['appointments'];
+
+      //     // Pastikan 'appointments' adalah List
+      //     if (appointments is List) {
+      //       return AppointmentsModel.appointmentsFromJson(appointments);
+      //     } else {
+      //       throw const FormatException(
+      //           'Invalid "appointments" format: not a List.');
+      //     }
+      //   } else {
+      //     throw const FormatException(
+      //         'Key "appointments" not found in response.');
+      //   }
+      // } else {
+      //   throw Exception('Failed to fetch data: ${response.statusCode}');
+      // }
 
       if (response.statusCode == 200) {
-        // Ambil array posts dari data
-        final data = response.data as Map<String, dynamic>?;
-        final appointments = data?['appointments'] as List<dynamic>? ?? [];
+        // Ambil array appointments dari data
+        final data = response.data as Map<String, dynamic>? ?? {};
+        final appointments = data['appointments'] as List<dynamic>? ?? [];
         return appointments
             .map((json) =>
                 AppointmentsModel.fromJson(json as Map<String, dynamic>))
             .toList();
+      } else {
+        throw Exception('Failed to fetch data: ${response.statusCode}');
       }
+    } catch (e) {
+      // Tangani berbagai error
+      Logger().e('Error fetching appointments: $e');
+      rethrow;
+    }
+}
+
+Future<List<AppointmentsModel>> getAppointmentByUser() async {
+    try {
+      final response =
+          await DioClient().get(Endpoints.appointmentWithSpecificUser(
+        AuthenticationRepository.instance.authUser!.uid,
+      ));
+
+      // Pastikan respons memiliki kode status 200 dan data yang valid
+      if (response.statusCode == 200) {
+        // Ambil array appointments dari data
+        final data = response.data as Map<String, dynamic>? ?? {};
+        final appointments = data['appointments'] as List<dynamic>? ?? [];
+        return appointments
+            .map((json) =>
+                AppointmentsModel.fromJson(json as Map<String, dynamic>))
+            .toList();
+      } else {
+        throw Exception('Failed to fetch data: ${response.statusCode}');
+      }
+ 
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
       throw TFirebaseException(e.code).message;
     } on TExceptions catch (e) {
       throw TExceptions(e.message);
-    } on FormatException catch (_) {
+    } on FormatException catch (e) {
+      Logger().e('FormatException: ${e.message}');
       throw const TFormatException();
     } on PlatformException catch (e) {
       throw TPlatformException(e.code).message;
     } catch (e) {
-      Logger().e(['Error fetching post: $e']);
+      Logger().e('Error fetching appointments: $e');
       throw 'Something went wrong. Please try again later.';
     }
-    throw 'Failed to fetch posts data.';
-  }
+}
+
 
   Future<AppointmentsModel> createAppointment(
       AppointmentsModel appointment) async {

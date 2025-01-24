@@ -1,20 +1,20 @@
 import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
-import 'package:denta_koas/src/features/personalization/model/user_model.dart';
-import 'package:logger/logger.dart';
+import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
+import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
 
 class AppointmentsModel {
-  String? id;
-  String? pasienId;
-  String? koasId;
-  String? scheduleId;
-  String? timeslotId;
-  String? date; // Tetap string jika tidak ingin mengubah ke DateTime
-  StatusAppointment? status;
-  UserModel? user;
-  Post? post;
-  Schedule? schedule;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  final String? id;
+  final String? pasienId;
+  final String? koasId;
+  final String? scheduleId;
+  final String? timeslotId;
+  final String? date;
+  final StatusAppointment? status;
+  final PasienProfileModel? pasien;
+  final KoasProfileModel? koas;
+  final Schedule? schedule;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   AppointmentsModel({
     this.id,
@@ -23,15 +23,24 @@ class AppointmentsModel {
     this.scheduleId,
     this.timeslotId,
     this.date,
-    this.status = StatusAppointment.Pending,
-    this.user,
-    this.post,
+    this.status,
+    this.pasien,
+    this.koas,
     this.schedule,
     this.createdAt,
     this.updatedAt,
   });
 
-  factory AppointmentsModel.fromJson(Map<String, dynamic> json) {
+  static StatusAppointment? parseStatusAppointment(String? status) {
+    if (status == null) return null;
+    return StatusAppointment.values.firstWhere(
+      (e) => e.toString().split('.').last.toLowerCase() == status.toLowerCase(),
+      orElse: () => StatusAppointment.Pending, // Default jika tidak cocok
+    );
+  }
+
+
+factory AppointmentsModel.fromJson(Map<String, dynamic> json) {
     return AppointmentsModel(
       id: json['id'] ?? '',
       pasienId: json['pasienId'] ?? '',
@@ -39,27 +48,10 @@ class AppointmentsModel {
       scheduleId: json['scheduleId'] ?? '',
       timeslotId: json['timeslotId'] ?? '',
       date: json['date'] ?? '',
-      status: json['status'] != null
-          ? StatusAppointment.values.firstWhere(
-              (e) => e.toString().split('.').last == json['status'],
-              orElse: () => StatusAppointment.Pending,
-            )
-          : StatusAppointment.Pending,
-      user: json['user'] != null
-          ? UserModel.fromJson(json['user'] as Map<String, dynamic>)
-          : null,
-      post: json['post'] != null
-          ? Post.fromJson(json['post'] as Map<String, dynamic>)
-          : null,
-      schedule: json['schedule'] != null
-          ? Schedule.fromJson(json['schedule'] as Map<String, dynamic>)
-          : null,
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : DateTime.now(),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'])
-          : DateTime.now(),
+      status: parseStatusAppointment(json['status']),
+      pasien: PasienProfileModel.fromJson(json['pasien'] ?? {}),
+      koas: KoasProfileModel.fromJson(json['koas'] ?? {}),
+      schedule: Schedule.fromJson(json['schedule'] ?? {}),
     );
   }
 
@@ -72,7 +64,6 @@ class AppointmentsModel {
       'timeslotId': timeslotId,
       'date': date,
       'status': status?.toString().split('.').last,
- 
     };
   }
 
@@ -90,27 +81,19 @@ class AppointmentsModel {
     );
   }
 
-static List<AppointmentsModel> appointmentsFromJson(dynamic data) {
-    print('Received data: $data');
-    try {
-      
-    if (data is Map<String, dynamic> && data.containsKey("appointments")) {
-        final appointments = data["appointments"];
-        var logger = Logger();
-        logger.i('Appointments list: $appointments');
-        if (appointments is List) {
-      return appointments
-          .map((item) => AppointmentsModel.fromJson(item))
-          .toList();
-        } else {
-          throw Exception('Key "appointments" is not a List');
-        }
-      }
-    } catch (e) {
-      throw Exception(e);
+
+static List<AppointmentsModel> appointmentsFromJson(dynamic json) {
+    if (json is! List) {
+      throw FormatException('Expected a List, but got: ${json.runtimeType}');
     }
-    throw Exception('Invalid data format for appointments' + data.toString());
-  }
+    return List<AppointmentsModel>.from(
+      json.map((data) => AppointmentsModel.fromJson(data)),
+    );
+}
+
+
+
+  
 }
 
 enum StatusAppointment {

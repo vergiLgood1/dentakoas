@@ -1,9 +1,12 @@
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
+
 class PasienProfileModel {
   final String? id;
   final String? age;
   final String? gender;
   final String? bio;
   final String userId;
+  final UserModel? user;
   final DateTime? createdAt;
 
   PasienProfileModel({
@@ -12,6 +15,7 @@ class PasienProfileModel {
     this.gender,
     this.bio,
     this.userId = '',
+    this.user,
     this.createdAt,
   });
 
@@ -38,6 +42,9 @@ class PasienProfileModel {
       age: json['age'] ?? '',
       gender: json['gender'] ?? '',
       bio: json['bio'] ?? '',
+      user: json['user'] != null
+          ? UserModel.fromJson(json['user'])
+          : null,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,

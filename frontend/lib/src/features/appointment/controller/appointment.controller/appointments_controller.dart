@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:denta_koas/navigation_menu.dart';
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/cores/data/repositories/appointments.repository/appointments_repository.dart';
@@ -16,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppointmentsController extends GetxController {
   static AppointmentsController get instance => Get.find();
@@ -530,17 +533,18 @@ class AppointmentsController extends GetxController {
     return DateFormat('EEEE, dd MMMM').format(dateTime);
   }
 
-  String formatAppointmentTimestamp(DateTime? dateTime) {
+  String formatAppointmentTimestamp(DateTime? dateTime,
+      {bool showPeriod = true}) {
     if (dateTime == null) {
       return 'Unknown';
     }
 
-    // Formatting the timestamp (e.g., "10:00 AM")
+    // Formatting the timestamp (e.g., "10:00 AM" or "10:00")
     String hour = dateTime.hour.toString().padLeft(2, '0');
     String minute = dateTime.minute.toString().padLeft(2, '0');
     String period = dateTime.hour >= 12 ? 'PM' : 'AM';
 
-    return '$hour:$minute $period';
+    return showPeriod ? '$hour:$minute $period' : '$hour:$minute';
   }
 
 // Mengambil rentang waktu dari appointment
@@ -550,13 +554,85 @@ class AppointmentsController extends GetxController {
       return 'Unknown';
     }
 
-    final startTime =
-        DateTime.parse(appointment.schedule!.timeslot.first.startTime);
+    final startTime = DateFormat("HH:mm")
+        .parse(appointment.schedule!.timeslot.first.startTime);
     final endTime =
-        DateTime.parse(appointment.schedule!.timeslot.first.endTime);
+        DateFormat("HH:mm").parse(appointment.schedule!.timeslot.first.endTime);
 
-    return '${formatAppointmentTimestamp(startTime)} - ${formatAppointmentTimestamp(endTime)}';
+    return '${formatAppointmentTimestamp(startTime, showPeriod: false)} - ${formatAppointmentTimestamp(endTime)}';
   }
 
+  void openWhatsApp({required String phone, required String message}) async {
+    try {
+      // Start loading
+      TFullScreenLoader.openLoadingDialog(
+          'Processing your action....', TImages.loadingHealth);
+
+      // Check connection
+      final isConected = await NetworkManager.instance.isConnected();
+      if (!isConected) {
+        TFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Check if the phone number is empty
+      if (phone.isEmpty) {
+        TFullScreenLoader.stopLoading();
+        TLoaders.errorSnackBar(
+            title: 'Failed to launch WhatsApp',
+            message: 'The phone number is empty. Please try again later.');
+        return;
+      }
+
+      // Sanitize the phone number
+      phone = phone
+          .replaceAll(' ', '')
+          .replaceAll('-', '')
+          .replaceAll('(', '')
+          .replaceAll(')', '');
+      if (!phone.startsWith('+')) {
+        phone = '+62$phone'; // Adjust country code as needed
+      }
+
+      // Generate WhatsApp URL
+      final whatsappURlAndroid =
+          'whatsapp://send?phone=$phone&text=${Uri.encodeComponent(message)}';
+      final whatsappURLIos =
+          'https://wa.me/$phone?text=${Uri.encodeComponent(message)}';
+
+      // Launch URL
+      if (Platform.isIOS) {
+        // for iOS phone only
+        if (await canLaunchUrl(Uri.parse(whatsappURLIos))) {
+          await launchUrl(Uri.parse(
+            whatsappURLIos,
+          ));
+        } else {
+          TLoaders.errorSnackBar(
+              title: 'Failed to launch WhatsApp',
+              message: 'Whatsapp not installed');
+        }
+      } else {
+        // android , web
+        if (await canLaunchUrl(Uri.parse(whatsappURlAndroid))) {
+          await launchUrl(Uri.parse(whatsappURlAndroid));
+        } else {
+          TLoaders.errorSnackBar(
+              title: 'Failed to launch WhatsApp',
+              message: 'Whatsapp not installed');
+        }
+      }
+
+      // Stop loading
+      TFullScreenLoader.stopLoading();
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      Logger().e('Failed to launch WhatsApp: $e');
+      TLoaders.errorSnackBar(
+          title: 'Failed to launch WhatsApp',
+          message: 'Something went wrong. Please try again later.');
+    }
+  }
+ 
 
 }

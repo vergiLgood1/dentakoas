@@ -58,8 +58,8 @@ class TabUpcomingAppointments extends StatelessWidget {
                           controller.confirmedAppointments[index];
                       return ScheduleCard(
                         imgUrl: TImages.user,
-                        name: appointment.user!.fullName,
-                        category: appointment.post!.treatment.alias,
+                        name: appointment.koas!.user!.fullName,
+                        category: appointment.schedule!.post.treatment.alias,
                         date:
                             controller.formatAppointmentDate(appointment.date),
                         timestamp: controller
@@ -70,13 +70,14 @@ class TabUpcomingAppointments extends StatelessWidget {
                         onPrimaryBtnPressed: () {},
                         onSecondaryBtnPressed: () {
                           controller.cancelAppointmentConfirmation(
-                            appointment.user?.pasienProfile?.id ?? '',
-                            appointment.user?.koasProfile?.id ?? '',
+                            appointment.pasien?.id ?? '',
+                            appointment.koas?.id ?? '',
                             appointment.schedule!.id,
                             appointment.schedule!.timeslot.first.id,
                           );
                         },
-                        onTap: () => Get.to(() => const MyAppointmentScreen()),
+                        onTap: () => Get.to(() => const MyAppointmentScreen(),
+                            arguments: appointment),
                       );
                     },
                   );

@@ -63,8 +63,6 @@ class UserModel {
 
   static List<String> nameParts(fullname) => fullname.split(' ');
   
-  
-
   // Getter to get the active profile dynamically
   dynamic get profile {
     if (role == "Koas") return koasProfile;

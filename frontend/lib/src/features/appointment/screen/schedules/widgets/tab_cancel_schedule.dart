@@ -58,8 +58,8 @@ class TabCancelAppointments extends StatelessWidget {
                           controller.canceledAppointments[index];
                       return ScheduleCard(
                         imgUrl: TImages.user,
-                        name: appointment.user!.fullName,
-                        category: appointment.post!.treatment.alias,
+                        name: appointment.koas!.user!.fullName,
+                        category: appointment.schedule!.post.treatment.alias,
                         date:
                             controller.formatAppointmentDate(appointment.date),
                         timestamp: controller
@@ -67,7 +67,8 @@ class TabCancelAppointments extends StatelessWidget {
                         primaryBtnText: 'Details',
                         onPrimaryBtnPressed: () {},
                         onSecondaryBtnPressed: () {},
-                        onTap: () => Get.to(() => const MyAppointmentScreen()),
+                        onTap: () => Get.to(() => const MyAppointmentScreen(),
+                            arguments: appointment),
                       );
                     },
                   );

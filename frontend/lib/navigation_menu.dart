@@ -140,7 +140,7 @@ class NavigationController extends GetxController {
   final List<String> labels = [
     'Home',
     'Explore',
-    'Appointments',
+    'Schedules',
     'Profile',
     '',
     'Verification',

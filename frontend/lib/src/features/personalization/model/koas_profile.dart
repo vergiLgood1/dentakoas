@@ -1,3 +1,5 @@
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
+
 enum StatusKoas {
   pending,
   approved,
@@ -16,6 +18,7 @@ class KoasProfileModel {
   final String? status;
   final int? totalReviews;
   final double? averageRating;
+  final UserModel? user;
   final DateTime? createdAt;
   final DateTime? updateAt;
 
@@ -32,6 +35,7 @@ class KoasProfileModel {
     this.status,
     this.totalReviews,
     this.averageRating,
+    this.user,
     this.createdAt,
     this.updateAt,
   });
@@ -81,6 +85,9 @@ class KoasProfileModel {
       totalReviews: json['totalReviews'] ?? 0,
       averageRating:
           (json['averageRating'] ?? 0).toDouble(), // Konversi ke double
+      user: json['user'] != null
+          ? UserModel.fromJson(json['user'])
+          : null,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,

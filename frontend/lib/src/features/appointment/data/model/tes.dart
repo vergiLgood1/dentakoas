@@ -119,6 +119,7 @@ class Schedule {
   final String postId;
   final DateTime dateStart;
   final DateTime dateEnd;
+  final Post post;
   final List<Timeslot> timeslot;
   final DateTime createdAt;
   final DateTime updateAt;
@@ -128,6 +129,7 @@ class Schedule {
     required this.postId,
     required this.dateStart,
     required this.dateEnd,
+    required this.post,
     required this.timeslot,
     required this.createdAt,
     required this.updateAt,
@@ -137,12 +139,16 @@ class Schedule {
     return Schedule(
       id: json['id'] ?? '',
       postId: json['postId'] ?? '',
-     dateStart: DateTime.parse(json['dateStart']),
+      dateStart: DateTime.parse(json['dateStart']),
       dateEnd: DateTime.parse(json['dateEnd']),
-      timeslot: (json['timeslot'] as List?)
-              ?.map((item) => Timeslot.fromJson(item))
-              .toList() ??
-          [],
+      post: Post.fromJson(json['post'] ?? {}),
+      timeslot: json['timeslot'] is List
+          ? (json['timeslot'] as List)
+              .map((item) => Timeslot.fromJson(item))
+              .toList()
+          : (json['timeslot'] != null
+              ? [Timeslot.fromJson(json['timeslot'])]
+              : []),
       createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
       updateAt: DateTime.tryParse(json['updateAt'] ?? '') ?? DateTime.now(),
     );

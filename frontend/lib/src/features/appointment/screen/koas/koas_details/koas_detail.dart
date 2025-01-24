@@ -5,6 +5,8 @@ import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/do
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/koas_post/post_with_specific_koas.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/enums.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
@@ -19,6 +21,8 @@ class KoasDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = UserController.instance;
+    final UserModel koas = Get.arguments;
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: DAppBar(

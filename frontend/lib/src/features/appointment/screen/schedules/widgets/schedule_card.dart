@@ -28,7 +28,6 @@ class ScheduleCard extends StatelessWidget {
     this.secondaryBtnText = 'Add Review',
     this.onPrimaryBtnPressed,
     this.onSecondaryBtnPressed,
-    
   });
 
   final String imgUrl;
@@ -63,7 +62,7 @@ class ScheduleCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(padding),
             decoration: BoxDecoration(
-              color: backgroundColor, // Warna latar biru
+              color: backgroundColor,
               borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
             ),
             child: Column(
@@ -72,19 +71,17 @@ class ScheduleCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Avatar Dokter
                     CircleAvatar(
                       radius: 30,
                       backgroundImage: AssetImage(imgUrl),
                     ),
                     const SizedBox(
                       width: TSizes.spaceBtwInputFields,
-                    ), // Jarak antara avatar dan teks
+                    ),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Nama Dokter
                           Text(
                             name,
                             style: TextStyle(
@@ -94,7 +91,6 @@ class ScheduleCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: TSizes.spaceBtwItems / 4),
-                          // Category
                           Text(
                             category,
                             style: TextStyle(
@@ -105,7 +101,6 @@ class ScheduleCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    // Icon panah
                     if (showArrow!)
                       const Icon(
                         FontAwesomeIcons.chevronRight,
@@ -120,7 +115,6 @@ class ScheduleCard extends StatelessWidget {
                   thickness: 0.1,
                 ),
                 const SizedBox(height: TSizes.spaceBtwItems),
-                // Baris Kalender & Waktu
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -165,7 +159,7 @@ class ScheduleCard extends StatelessWidget {
                 if (showPrimaryBtn! || showSecondaryBtn!)
                   Row(
                     children: [
-                      if (showPrimaryBtn!)
+                      if (showSecondaryBtn!)
                         Expanded(
                           child: ElevatedButton(
                             onPressed: onSecondaryBtnPressed,
@@ -189,11 +183,9 @@ class ScheduleCard extends StatelessWidget {
                             ),
                           ),
                         ),
-                        
                       if (showPrimaryBtn! && showSecondaryBtn!)
                         const SizedBox(width: TSizes.spaceBtwItems),
-                      if (showSecondaryBtn!)
-                        
+                      if (showPrimaryBtn!)
                         Expanded(
                           child: ElevatedButton(
                             onPressed: onPrimaryBtnPressed,

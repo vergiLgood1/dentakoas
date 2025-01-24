@@ -3,7 +3,7 @@ import db from "@/lib/db";
 
 export async function GET(req: Request) {
   try {
-    // Mengambil semua appointment dengan data terkait
+    // Mengambil semua appointment untuk user tertentu dengan data terkait
     const appointments = await db.appointment.findMany({
       select: {
         id: true,
@@ -50,6 +50,13 @@ export async function GET(req: Request) {
                 id: true,
                 title: true,
                 requiredParticipant: true,
+                treatment: {
+                  select: {
+                    id: true,
+                    name: true,
+                    alias: true,
+                  },
+                },
               },
             },
             timeslot: {
@@ -115,8 +122,8 @@ export async function GET(req: Request) {
       // Kembalikan data appointment yang telah diperbarui
       return {
         ...appointment,
-        pasien: mergedPasien,
-        koas: mergedKoas,
+        // pasien: mergedPasien,
+        // koas: mergedKoas,
         schedule: {
           ...schedule,
           timeslot: {

@@ -1,6 +1,6 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/features/appointment/controller/verification_koas_controller.dart';
-import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/my_appointment/my_appointment.dart';
+import 'package:denta_koas/src/features/appointment/screen/koas/koas_details/koas_detail.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
@@ -68,7 +68,8 @@ class TabRejectedKoas extends StatelessWidget {
                         primaryBtnText: 'Details',
                         onPrimaryBtnPressed: () {},
                         onSecondaryBtnPressed: () {},
-                        onTap: () => Get.to(() => const MyAppointmentScreen()),
+                        onTap: () => Get.to(() => const KoasDetailScreen(),
+                            arguments: koas),
                       );
                     },
                   );

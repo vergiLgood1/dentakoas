@@ -58,8 +58,8 @@ class TabCompletedAppointments extends StatelessWidget {
                           controller.completedAppointments[index];
                       return ScheduleCard(
                         imgUrl: TImages.user,
-                        name: appointment.user!.fullName,
-                        category: appointment.post!.treatment.alias,
+                        name: appointment.koas!.user!.fullName,
+                        category: appointment.schedule!.post.treatment.alias,
                         date:
                             controller.formatAppointmentDate(appointment.date),
                         timestamp: controller

@@ -1,13 +1,18 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
+import 'package:denta_koas/src/features/appointment/controller/appointment.controller/appointments_controller.dart';
+import 'package:denta_koas/src/features/appointment/data/model/appointments_model.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MyAppointmentScreen extends StatelessWidget {
   const MyAppointmentScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = AppointmentsController.instance;
+    final AppointmentsModel appointment = Get.arguments;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const DAppBar(
@@ -23,39 +28,41 @@ class MyAppointmentScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
               // Doctor Information
-              const Row(
+              Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 40,
                     backgroundImage: AssetImage(TImages.userProfileImage3),
                   ),
-                  SizedBox(width: 15),
+                  const SizedBox(width: 15),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Dr. Jonny Wilson',
-                        style: TextStyle(
+                        appointment.koas!.user!.fullName,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
-                        'Dentist',
-                        style: TextStyle(
+                        appointment.schedule!.post.treatment.alias,
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.grey,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Row(
                         children: [
-                          Icon(Icons.location_on, size: 16, color: Colors.blue),
-                          SizedBox(width: 5),
+                          const Icon(Icons.location_on,
+                              size: 16, color: Colors.blue),
+                          const SizedBox(width: 5),
                           Text(
-                            'New York, United States',
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
+                            appointment.koas!.university!,
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -75,25 +82,50 @@ class MyAppointmentScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              buildDetailRow('Date', 'August 24, 2023'),
-              buildDetailRow('Time', '10:00 - 10:30 (30 minutes)'),
+              buildDetailRow(
+                  'Date', controller.formatAppointmentDate(appointment.date)),
+              buildDetailRow(
+                  'Time', controller.getAppointmentTimestampRange(appointment)),
+              buildDetailRow(
+                  'Status', appointment.status.toString().split('.').last),
 
               const SizedBox(height: 20),
               const Divider(),
               const SizedBox(height: 10),
-              // Patient Info Section
+
               const Text(
-                'Patient Info.',
+                'Koas Information',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 10),
-              buildDetailRow('Full Name', 'Esther Howard'),
-              buildDetailRow('Gender', 'Male'),
-              buildDetailRow('Age', '27'),
-              buildDetailRow('Phone', '+1 123 456 7890'),
+              buildDetailRow('Koas Number',
+                  appointment.koas?.koasNumber.toString() ?? 'N/A'),
+              buildDetailRow('Gender', appointment.koas?.gender ?? 'N/A'),
+              buildDetailRow('Age', appointment.koas?.age.toString() ?? 'N/A'),
+              buildDetailRow(
+                  'Departement', appointment.koas?.departement ?? 'N/A'),
+
+              const SizedBox(height: 20),
+              const Divider(),
+              const SizedBox(height: 10),
+              // Patient Info Section
+              const Text(
+                'Patient Information',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              buildDetailRow(
+                  'Full Name', appointment.pasien?.user?.fullName ?? 'N/A'),
+              buildDetailRow('Gender', appointment.pasien?.gender ?? 'N/A'),
+              buildDetailRow(
+                  'Age', appointment.pasien?.age.toString() ?? 'N/A'),
+              buildDetailRow('Phone', appointment.pasien?.user?.phone ?? 'N/A'),
               const SizedBox(height: 20),
               const Divider(),
               const SizedBox(height: 10),
@@ -101,27 +133,28 @@ class MyAppointmentScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        color: Colors.white,
-        child: ElevatedButton(
-          onPressed: () {
-            // Handle message button click
-            print('Message button clicked');
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 15),
-          ),
-          child: const Text(
-            'Chat On WhatsApp',
-            style: TextStyle(fontSize: 16, color: Colors.white),
-          ),
-        ),
-      ),
+      bottomNavigationBar: appointment.status != StatusAppointment.Pending
+          ? Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              color: Colors.white,
+              child: ElevatedButton(
+                onPressed: () => controller.openWhatsApp(
+                    phone: appointment.koas!.user!.phone!,
+                    message: 'Hello, I have an appointment with you'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: const Text(
+                  'Chat On WhatsApp',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
+              ),
+            )
+          : null,
     );
   }
 

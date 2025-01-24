@@ -24,11 +24,11 @@ Future<void> main() async {
       .then((FirebaseApp value) => Get.put(AuthenticationRepository()));
 
   // Initialize Supabase Storage
-  await Supabase.initialize(
-    url: 'https://qeavskuijpqoroxggpzz.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlYXZza3VpanBxb3JveGdncHp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxMzAyNTIsImV4cCI6MjA1MTcwNjI1Mn0.FuMBVuGNfcfAA77IE0vbJyFuOWVMx6e3JXC3mXDQoV8',
-  );
+  // await Supabase.initialize(
+  //   url: 'https://qeavskuijpqoroxggpzz.supabase.co',
+  //   anonKey:
+  //       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlYXZza3VpanBxb3JveGdncHp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYxMzAyNTIsImV4cCI6MjA1MTcwNjI1Mn0.FuMBVuGNfcfAA77IE0vbJyFuOWVMx6e3JXC3mXDQoV8',
+  // );
 
   runApp(const App());
 }
