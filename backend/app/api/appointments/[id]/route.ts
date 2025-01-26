@@ -163,7 +163,7 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
           status: "Pending",
         },
         data: {
-          status: "Canceled",
+          status: "Rejected",
         },
       });
 

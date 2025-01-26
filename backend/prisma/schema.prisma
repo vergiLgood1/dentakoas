@@ -46,12 +46,12 @@ enum StatusKoas {
 }
 
 enum StatusAppointment {
+  Canceled
+  Rejected
   Pending
   Confirmed
   Ongoing
   Completed
-  Canceled
-
   @@map("status-appointment")
 }
 
