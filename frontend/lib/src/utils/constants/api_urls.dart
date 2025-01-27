@@ -64,11 +64,14 @@ class Endpoints {
 
   // Appointment Endpoints
   static const String appointments = '$baseUrl/appointments';
+  static String appointment(String id) => '$baseUrl/appointments/$id';
   static String appointmentWithSpecificUser(String userId) =>
       '$baseUrl/users/$userId/appointments';
 
   // Notification Endpoints
-  static String notifications(String id) => '$baseUrl/users/$id/notifications';
+  static String notificationsUser(String id) => '$baseUrl/users/$id/notifications';
+  static String notifications = '$baseUrl/notifications';
+  static String notification(String id) => '$baseUrl/notifications/$id';
   // static String createNotification(String id) =>
   //     '$baseUrl/users/$id/notifications';
 

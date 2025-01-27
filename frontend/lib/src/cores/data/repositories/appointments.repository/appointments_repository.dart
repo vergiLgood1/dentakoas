@@ -121,10 +121,12 @@ Future<List<AppointmentsModel>> getAppointmentByUser() async {
   }
 
   Future<AppointmentsModel> updateAppointment(
-      AppointmentsModel appointment) async {
+    String appointmentId,
+    AppointmentsModel appointment,
+  ) async {
     try {
-      final response = await DioClient().put(
-        Endpoints.appointments,
+      final response = await DioClient().patch(
+        Endpoints.appointment(appointmentId),
         data: appointment.toJson(),
       );
 

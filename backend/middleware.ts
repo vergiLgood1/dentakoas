@@ -12,13 +12,24 @@ import {
 } from "@/routes";
 import { NextResponse } from "next/server";
 import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
+import { startCronJobs } from "./lib/cron-scheduler";
 
 const { auth } = NextAuth(authConfig);
+
+let cronJobsStarted = false;
 
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
   const userRole = req.auth?.user.role;
+
+  // Mulai cron jobs hanya sekali saat server pertama kali diinisialisasi
+  // if (!cronJobsStarted) {
+  //   console.log("Initializing cron jobs...");
+
+  //   startCronJobs();
+  //   cronJobsStarted = true; // Tandai cron sudah dijalankan
+  // }
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isApiPublicRoute = apiPublicRoutes.includes(nextUrl.pathname);

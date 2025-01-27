@@ -15,11 +15,11 @@ import 'package:logger/logger.dart';
 class NotificationRepository extends GetxController {
   static NotificationRepository get instance => Get.find();
 
-  Future<List<NotificationsModel>> getNotificationsById() async {
+  Future<List<NotificationsModel>> getNotificationsByUserId() async {
     try {
       // Mendapatkan response dari API
       final response = await DioClient().get(
-        Endpoints.notifications(
+        Endpoints.notificationsUser(
             AuthenticationRepository.instance.authUser!.uid),
       );
 
@@ -49,7 +49,7 @@ class NotificationRepository extends GetxController {
       NotificationsModel notification) async {
     try {
       final response = await DioClient().post(
-        Endpoints.notifications(
+        Endpoints.notificationsUser(
             AuthenticationRepository.instance.authUser!.uid),
         data: notification.toJson(),
       );
@@ -76,7 +76,7 @@ class NotificationRepository extends GetxController {
   Future<void> updateNotification(NotificationsModel notification) async {
     try {
       final response = await DioClient().patch(
-        Endpoints.notifications(
+        Endpoints.notificationsUser(
             AuthenticationRepository.instance.authUser!.uid),
         data: notification.toJson(),
       );
@@ -105,12 +105,28 @@ class NotificationRepository extends GetxController {
     // Get unread notifications from the server
   }
 
-  Future<void> markNotificationAsRead(String id) async {
+  Future<void> markNotificationAsRead(String notificationId) async {
     // Mark notification as read
+    try {
+      final response = await DioClient().patch(
+        Endpoints.notification(notificationId),
+        data: {
+          'status': 'Read',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      }
+    } catch (e) {
+      Logger().e(['Error updating notification status: $e']);
+      throw 'Failed to update notification status.';
+    }
   }
 
   Future<void> markAllNotificationsAsRead() async {
     // Mark all notifications as read
+    final notifications = await getNotificationsByUserId();
   }
 
   Future<void> deleteNotification(String id) async {

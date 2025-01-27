@@ -34,37 +34,42 @@ class KoasDetailScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: const SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Column(
             children: [
               // Koas profile
               KoasProfileSection(
                 imageUrl: TImages.userProfileImage3,
-                name: 'Dr. Bellamy Nicholas',
-                university: 'London Bridge Hospital',
+                name: koas.fullName,
+                university: koas.koasProfile?.university ?? 'N/A',
               ),
-              SizedBox(height: TSizes.spaceBtwSections),
+              const SizedBox(height: TSizes.spaceBtwSections),
 
               // Doctor stats
-              DoctorStatsSection(),
-              SizedBox(height: TSizes.spaceBtwSections),
+              const DoctorStatsSection(),
+              const SizedBox(height: TSizes.spaceBtwSections),
 
               // Doctor description
               DoctorDescriptionSection(
                 bio:
-                    'Dr. Bellamy Nicholas is a highly experienced doctor with over 10 years of experience in the field. He has treated over 1000 patients and has a rating of 4.5. He is available for consultation from Monday to Saturday between 8:30 AM and 9:00 PM.',
+                   koas.koasProfile?.bio ?? 'N/A',
               ),
-              SizedBox(height: TSizes.spaceBtwSections),
+              const SizedBox(height: TSizes.spaceBtwSections),
 
               // Working time
-              PersonalInformationSection(),
-              SizedBox(height: TSizes.spaceBtwSections),
+              PersonalInformationSection(
+                koasNumber: koas.koasProfile?.koasNumber ?? 'N/A',
+                faculty: koas.koasProfile?.departement ?? 'N/A',
+                location: koas.address ?? 'N/A',
+                age: koas.koasProfile?.age.toString() ?? 'N/A',
+              ),
+              const SizedBox(height: TSizes.spaceBtwSections),
 
               // Koas upcoming event
 
-              UserReviewSection(),
+              const UserReviewSection(),
               
-              BookAppointmentButton(),
+              const BookAppointmentButton(),
             ],
           ),
         )
@@ -240,15 +245,26 @@ class DoctorDescriptionSection extends StatelessWidget {
 }
 
 class PersonalInformationSection extends StatelessWidget {
-  const PersonalInformationSection({super.key});
+  const PersonalInformationSection({
+    super.key,
+    required this.koasNumber,
+    required this.faculty,
+    required this.location,
+    required this.age,
+  });
+
+  final String koasNumber;
+  final String faculty;
+  final String location;
+  final String age;
 
   @override
   Widget build(BuildContext context) {
     final personalInfo = [
-      {'label': 'Koas Number', 'value': '12345'},
-      {'label': 'Faculty', 'value': 'Dental Information'},
-      {'label': 'Location', 'value': 'Jember'},
-      {'label': 'Age', 'value': '23'},
+      {'label': 'Koas Number', 'value': koasNumber},
+      {'label': 'Faculty', 'value': faculty},
+      {'label': 'Location', 'value': location},
+      {'label': 'Age', 'value': age},
     ];
 
     return Padding(

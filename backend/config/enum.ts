@@ -25,7 +25,10 @@ export enum StatusKoas {
 }
 
 export enum StatusAppointment {
-  Waiting = "Waiting",
+  Canceled = "Canceled",
+  Rejected = "Rejected",
+  Pending = "Pending",
+  Confirmed = "Confirmed",
   Ongoing = "Ongoing",
   Completed = "Completed",
 }

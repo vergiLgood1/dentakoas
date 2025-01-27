@@ -264,57 +264,6 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PUT(req: Request) {
-  const body = await req.json();
-  const { appointmentId, status } = body;
-
-  console.log("Updating appointment with data:", body);
-
-  if (!appointmentId || !status) {
-    return NextResponse.json(
-      { error: "Missing required fields" },
-      { status: 400 }
-    );
-  }
-
-  try {
-    // Cek apakah appointment valid
-    const appointment = await db.appointment.findUnique({
-      where: { id: appointmentId },
-    });
-
-    if (!appointment) {
-      console.log("Appointment not found");
-      return NextResponse.json(
-        { error: "Appointment not found" },
-        { status: 404 }
-      );
-    }
-
-    // Update status appointment
-    const updatedAppointment = await db.appointment.update({
-      where: { id: appointmentId },
-      data: {
-        status,
-      },
-    });
-
-    console.log("Appointment updated successfully:", updatedAppointment);
-
-    return NextResponse.json(
-      {
-        appointment: updatedAppointment,
-      },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error("Error updating appointment:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
 
 export async function DELETE(req: Request) {
   try {

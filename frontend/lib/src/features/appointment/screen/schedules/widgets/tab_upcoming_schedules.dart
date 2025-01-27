@@ -70,6 +70,7 @@ class TabUpcomingAppointments extends StatelessWidget {
                         onPrimaryBtnPressed: () {},
                         onSecondaryBtnPressed: () {
                           controller.cancelAppointmentConfirmation(
+                            appointment.id!,
                             appointment.pasien?.id ?? '',
                             appointment.koas?.id ?? '',
                             appointment.schedule!.id,

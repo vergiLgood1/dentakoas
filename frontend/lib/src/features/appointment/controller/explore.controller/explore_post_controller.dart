@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/cores/data/repositories/post.repository/post_repository.dart';
+import 'package:denta_koas/src/features/appointment/data/model/post_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/tes.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ class ExplorePostController extends GetxController {
   RxList<Post> lastChangePost = <Post>[].obs;
   RxList<Post> newestPosts = <Post>[].obs;
   RxList<Post> posts = <Post>[].obs;
+  RxList<Post> openPosts = <Post>[].obs;
   RxList<Post> featuredPosts = <Post>[].obs;
 
   @override
@@ -32,11 +34,27 @@ class ExplorePostController extends GetxController {
         fetchedPosts.where((post) => post.status == "Open").toList(),
       );
 
+      openPosts.assignAll(
+        fetchedPosts
+            .where((post) =>
+                post.status == "Open" ||
+                post.status == StatusPost.Open.toString().split('.').last)
+            .toList(),
+      );
+
       newestPosts.assignAll(
         fetchedPosts.toList()
           ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
           ..take(3),
       );
+
+      lastChangePost.assignAll(
+        fetchedPosts.toList()
+          ..sort((a, b) => a.createdAt.compareTo(b.createdAt))
+          ..take(3),
+      );
+
+
 
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());

@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { format } from "date-fns";
 
 export function getDateRange(
   filter: string
@@ -91,3 +92,26 @@ export function genTimeSlots(
 
   return timeslots;
 }
+
+// Fungsi untuk mengambil tanggal sekarang dalam format "dd MMM yyyy"
+export function getToday(): string {
+  const now = new Date();
+  return format(now, "dd MMM yyyy");
+}
+
+// Fungsi untuk mengambil waktu sekarang dalam format "HH:mm"
+export function getCurrentTime(): string {
+  const now = new Date();
+  return format(now, "HH:mm");
+}
+
+// Fungsi untuk format tanggal
+export function formatDate(date: Date, formatStr: string): string {
+  return format(date, formatStr);
+}
+
+// Fungsi untuk format waktu
+export function formatTime(date: Date, formatStr: string): string {
+  return format(date, formatStr);
+}
+

@@ -98,6 +98,7 @@ class TabPendingAppointments extends StatelessWidget {
                         secondaryBtnText: 'Reject',
                         onPrimaryBtnPressed: () {
                           controller.confirmAppointmentConfirmation(
+                            appointment.id!,
                             appointment.pasien?.id ?? '',
                             appointment.koas?.id ?? '',
                             appointment.schedule?.id ?? '',
@@ -106,6 +107,7 @@ class TabPendingAppointments extends StatelessWidget {
                         },
                         onSecondaryBtnPressed: () {
                           controller.rejectAppointmentConfirmation(
+                            appointment.id!,
                             appointment.pasien?.id ?? '',
                             appointment.koas?.id ?? '',
                             appointment.schedule?.id ?? '',

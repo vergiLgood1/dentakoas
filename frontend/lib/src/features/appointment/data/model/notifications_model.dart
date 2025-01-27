@@ -6,7 +6,7 @@ class NotificationsModel {
   final String? id;
   final String title;
   final String message;
-  final Object status;
+  StatusNotification status;
   final String? userId;
   final String? senderId;
   final String? koasId;
@@ -46,7 +46,7 @@ class NotificationsModel {
         id: json['id'] ?? '',
         title: json['title'] ?? '',
         message: json['message'] ?? '',
-        status: json['status'] ?? '',
+        status: parseStatusNotification(json['status']),
         userId: json['userId'],
         senderId: json['senderId'],
         koasId: json['koasId'],
@@ -86,7 +86,7 @@ class NotificationsModel {
     return {
       'title': title,
       'message': message,
-      'status': status,
+      'status': status.toString().split('.').last,
       'userId': userId,
       'senderId': senderId,
       'koasId': koasId,
@@ -115,5 +115,12 @@ class NotificationsModel {
           .toList();
     }
     throw Exception('Invalid data format for notifications');
+  }
+
+  static StatusNotification parseStatusNotification(String status) {
+    return StatusNotification.values.firstWhere(
+      (e) => e.toString().split('.').last.toLowerCase() == status.toLowerCase(),
+      orElse: () => StatusNotification.Unread, // Default jika tidak cocok
+    );
   }
 }

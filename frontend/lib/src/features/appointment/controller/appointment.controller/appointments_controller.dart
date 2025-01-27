@@ -184,6 +184,7 @@ class AppointmentsController extends GetxController {
 
   // Cancel the appointment
   cancelAppointment(
+    String appointmentId,
     String pasienId,
     String koasId,
     scheduleId,
@@ -221,7 +222,7 @@ class AppointmentsController extends GetxController {
           title: 'Appointment Canceled',
           message:
               'Your appointment has been canceled by user. Please check your schedule for more details',
-          status: 'Read',
+          status: StatusNotification.Read,
         );
       } else {
         newNotification = NotificationsModel(
@@ -231,13 +232,13 @@ class AppointmentsController extends GetxController {
           title: 'Appointment Canceled',
           message:
               'Your appointment has been canceled by koas. Please check your schedule for more details',
-          status: 'Read',
+          status: StatusNotification.Read,
         );
       }
 
       // send the request to update the appointment
       await AppointmentsRepository.instance
-          .updateAppointment(updateAppointmentStatus);
+          .updateAppointment(appointmentId, updateAppointmentStatus);
 
       // send the notification
       await NotificationRepository.instance.createNotification(newNotification);
@@ -266,6 +267,7 @@ class AppointmentsController extends GetxController {
 
   // Reject the appointment
   rejectAppointment(
+    String appointmentId,
     String pasienId,
     String koasId,
     scheduleId,
@@ -299,12 +301,12 @@ class AppointmentsController extends GetxController {
         title: 'Appointment Rejected',
         message:
             'Your appointment has been rejected. Please check your schedule for more details',
-        status: 'Read',
+        status: StatusNotification.Read,
       );
 
       // send the request to update the appointment
       await AppointmentsRepository.instance
-          .updateAppointment(updateAppointmentStatus);
+          .updateAppointment(appointmentId, updateAppointmentStatus);
 
       // send the notification
       await NotificationRepository.instance.createNotification(newNotification);
@@ -333,6 +335,7 @@ class AppointmentsController extends GetxController {
 
   // Confirm the appointment
   confirmAppointment(
+    String appointmentId,
     String pasienId,
     String koasId,
     scheduleId,
@@ -366,12 +369,12 @@ class AppointmentsController extends GetxController {
         title: 'Appointment Confirmed',
         message:
             'Your appointment has been confirmed. Please check your schedule for more details',
-        status: 'Read',
+        status: StatusNotification.Read,
       );
 
       // send the request to update the appointment
       await AppointmentsRepository.instance
-          .updateAppointment(updateAppointmentStatus);
+          .updateAppointment(appointmentId, updateAppointmentStatus);
 
       // send the notification
       await NotificationRepository.instance.createNotification(newNotification);
@@ -431,6 +434,7 @@ class AppointmentsController extends GetxController {
 
   // Pop up the dialog to cancel the appointment
   void cancelAppointmentConfirmation(
+    String appointmentId,
     String pasienId,
     String koasId,
     scheduleId,
@@ -443,7 +447,8 @@ class AppointmentsController extends GetxController {
       middleText: 'Are you sure want to cancel this appointment?',
       confirm: ElevatedButton(
         onPressed: () =>
-            cancelAppointment(pasienId, koasId, scheduleId, timeslotId),
+            cancelAppointment(
+            appointmentId, pasienId, koasId, scheduleId, timeslotId),
         style: ElevatedButton.styleFrom(
           backgroundColor: TColors.primary,
           side: const BorderSide(color: TColors.primary),
@@ -462,6 +467,7 @@ class AppointmentsController extends GetxController {
 
   // Pop up the dialog to reject the appointment
   void rejectAppointmentConfirmation(
+    String appointmentId,
     String pasienId,
     String koasId,
     scheduleId,
@@ -474,7 +480,8 @@ class AppointmentsController extends GetxController {
       middleText: 'Are you sure want to reject this appointment?',
       confirm: ElevatedButton(
         onPressed: () =>
-            rejectAppointment(pasienId, koasId, scheduleId, timeslotId),
+            rejectAppointment(
+            appointmentId, pasienId, koasId, scheduleId, timeslotId),
         style: ElevatedButton.styleFrom(
           backgroundColor: TColors.error,
           side: const BorderSide(color: TColors.error),
@@ -493,6 +500,7 @@ class AppointmentsController extends GetxController {
 
   // Pop up the dialog to confirm the appointment
   void confirmAppointmentConfirmation(
+    String appointmentId,
     String pasienId,
     String koasId,
     scheduleId,
@@ -505,7 +513,8 @@ class AppointmentsController extends GetxController {
       middleText: 'Are you sure want to confirm this appointment?',
       confirm: ElevatedButton(
         onPressed: () =>
-            confirmAppointment(pasienId, koasId, scheduleId, timeslotId),
+            confirmAppointment(
+            appointmentId, pasienId, koasId, scheduleId, timeslotId),
         style: ElevatedButton.styleFrom(
           backgroundColor: TColors.primary,
           side: const BorderSide(color: TColors.primary),

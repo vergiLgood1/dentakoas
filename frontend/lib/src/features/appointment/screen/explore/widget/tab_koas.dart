@@ -4,6 +4,7 @@ import 'package:denta_koas/src/commons/widgets/shimmer/card_showcase_shimmer.dar
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/screen/dentist/all_koas.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/doctor_card.dart';
+import 'package:denta_koas/src/features/appointment/screen/koas/koas_details/koas_detail.dart';
 import 'package:denta_koas/src/features/personalization/controller/koas_controller.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -97,6 +98,10 @@ class TabKoas extends StatelessWidget {
                       rating: koas.koasProfile!.averageRating!,
                       totalReviews: koas.koasProfile!.totalReviews!,
                       image: TImages.userProfileImage4,
+                      onTap: () => Get.to(
+                        () => const KoasDetailScreen(),
+                        arguments: koas,
+                      ),
                     );
                   },
                 );

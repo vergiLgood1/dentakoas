@@ -1,8 +1,8 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
-import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/treatment_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/features/appointment/controller/notifications_controller.dart';
+import 'package:denta_koas/src/features/appointment/data/model/notifications_model.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -103,19 +103,47 @@ class NotificationSection extends StatelessWidget {
             ],
           ),
         ),
-        DGridLayout(
-            itemCount: controller.notificationsByUser.length,
-            crossAxisCount: 1,
-            mainAxisExtent: 50,
-            itemBuilder: (_, index) {
-              final notification = controller.notificationsByUser[index];
-              return NotificationCard(
+        // DGridLayout(
+        //     itemCount: controller.notificationsByUser.length,
+        //     crossAxisCount: 1,
+        //     mainAxisExtent: 100,
+        //     itemBuilder: (_, index) {
+        //       final notification = controller.notificationsByUser[index];
+        //       return NotificationCard(
+        //         title: notification.message,
+        //         name: notification.sender!.fullName,
+        //         time: notification.createdAt ?? DateTime.now(),
+        //         isRead: notification.status ==
+        //             StatusNotification.Read, // Tambahkan parameter status
+        //         onTap: () {
+        //           if (notification.status == StatusNotification.Unread) {
+        //             controller.markAsRead(notification.id!);
+        //           }
+        //         },
+
+        //   );
+        // }),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: notifications.length,
+          itemBuilder: (context, index) {
+            final notification = controller.notificationsByUser[index];
+            return NotificationCard(
                 title: notification.message,
                 name: notification.sender!.fullName,
                 time: notification.createdAt ?? DateTime.now(),
+              isRead: notification.status ==
+                  StatusNotification.Read, // Tambahkan parameter status
+              onTap: () {
+                if (notification.status == StatusNotification.Unread) {
+                  controller.markAsRead(notification.id!);
+                }
+              },
                 
           );
-        }),
+          },
+        )
       ],
     );
   }
@@ -126,6 +154,8 @@ class NotificationCard extends StatelessWidget {
   final String name;
   final DateTime time;
   final bool hasActionButton;
+  final bool isRead; // Tambahkan parameter status
+  final VoidCallback onTap; // Tambahkan handler untuk tap
 
   const NotificationCard({
     super.key,
@@ -133,64 +163,72 @@ class NotificationCard extends StatelessWidget {
     required this.name,
     required this.time,
     this.hasActionButton = false,
+    required this.isRead, // Tambahkan required parameter
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(NotificationsController());
     final dark = THelperFunctions.isDarkMode(context);
-    return Padding(
-      padding: const EdgeInsets.all(0),
-      child: Card(
-        color: dark ? TColors.dark : TColors.white,
-        elevation: 0,
-        child: ListTile(
-          leading: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle, // Membuat bentuk lingkaran
-              border: Border.all(
-                color:
-                    dark ? TColors.grey : Colors.grey.shade300, // Warna border
-                width: 1.0, // Ketebalan border
-              ),
-            ),
-            child: CircleAvatar(
-              backgroundColor: dark ? TColors.dark : TColors.white,
-              child: Icon(
-                Iconsax.menu_1,
-                color: dark ? TColors.white : TColors.dark,
-              ),
-            ),
-          ),
-          title: Text(
-            title,
-            style: TextStyle(color: dark ? TColors.white : TColors.dark),
-          ),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: TextStyle(color: dark ? TColors.grey : TColors.darkGrey),
-              ),
-              const SizedBox(width: TSizes.spaceBtwInputFields),
-              Text(
-                controller.formatTime(time.toIso8601String()),
-                style: TextStyle(color: dark ? TColors.grey : TColors.darkGrey),
-              ),
-            ],
-          ),
-          // trailing: hasActionButton
-          //     ? ElevatedButton(
-          //         onPressed: () {},
-          //         style: ElevatedButton.styleFrom(
-          //           backgroundColor: Colors.blue,
-          //         ),
-          //         child: const Text("Follow"),
-          //       )
-          //     : null,
-        ),
+    
+    // Tentukan warna background berdasarkan status
+    final backgroundColor = isRead
+        ? (dark ? TColors.dark : TColors.white)
+        : (dark ? TColors.darkerGrey : TColors.primary.withOpacity(0.1));
 
+    return InkWell(
+      // Wrap dengan InkWell untuk handling tap
+      onTap: isRead ? null : onTap,
+      splashColor: TColors.primary.withOpacity(0.1),
+      child: Padding(
+        padding: const EdgeInsets.all(0),
+        child: Card(
+          color: backgroundColor, // Gunakan warna dinamis
+          elevation: 0,
+          child: ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: dark ? TColors.grey : Colors.grey.shade300,
+                  width: 1.0,
+                ),
+              ),
+              child: CircleAvatar(
+                backgroundColor: dark ? TColors.dark : TColors.white,
+                child: Icon(
+                  Iconsax.menu_1,
+                  color: dark ? TColors.white : TColors.dark,
+                ),
+              ),
+            ),
+            title: Text(
+              title,
+              style: TextStyle(
+                color: dark ? TColors.white : TColors.dark,
+                fontWeight: isRead
+                    ? FontWeight.normal
+                    : FontWeight.bold, // Tambahkan perbedaan weight
+              ),
+            ),
+            subtitle: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  name,
+                  style:
+                      TextStyle(color: dark ? TColors.grey : TColors.darkGrey),
+                ),
+                Text(
+                  controller.formatTime(time.toIso8601String()),
+                  style:
+                      TextStyle(color: dark ? TColors.grey : TColors.darkGrey),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

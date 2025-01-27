@@ -29,7 +29,7 @@ class NotificationsController extends GetxController {
       isLoading.value = true;
 
       final fetchedNotifications =
-          await notificationRepository.getNotificationsById();
+          await notificationRepository.getNotificationsByUserId();
       notifications.assignAll(fetchedNotifications);
 
       notificationsByUser.assignAll(
@@ -109,11 +109,32 @@ class NotificationsController extends GetxController {
       updateNotificationCount();
     }
   }
+  
+  Future<void> markAsRead(String notificationId) async {
+    try {
+      // Panggil API untuk update status
+      await notificationRepository.markNotificationAsRead(notificationId);
+
+      // Update status di local state
+      final index =
+          notificationsByUser.indexWhere((n) => n.id == notificationId);
+      if (index != -1) {
+        notificationsByUser[index].status = StatusNotification.Read;
+        notifications.refresh();
+        groupedNotifications.refresh();
+        updateNotificationCount();
+      }
+    } catch (e) {
+      // Handle error
+      print('Error updating notification status: $e');
+    }
+  }
 
   /// Menghitung jumlah notifikasi belum dibaca
   void updateNotificationCount() {
     int unreadCount = notifications
-        .where((notification) => notification.status == "Unread")
+        .where(
+            (notification) => notification.status == StatusNotification.Unread)
         .length;
     notificationCount.value = unreadCount;
   }

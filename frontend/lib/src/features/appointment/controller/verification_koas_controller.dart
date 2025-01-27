@@ -100,7 +100,7 @@ class VerificationKoasController extends GetxController {
         title: 'Koas Application Rejected',
         message:
             'Your Koas application has been rejected. Please contact the facilitator for more information',
-        status: 'Read',
+        status: StatusNotification.Read,
       );
 
       // Update the status of koas
@@ -158,7 +158,7 @@ class VerificationKoasController extends GetxController {
         title: 'Welcome to Denta Koas',
         message:
             'Your Koas application has been approved. You can now start your Post Event',
-        status: 'Read',
+        status: StatusNotification.Read,
       );
 
       // Update the status of koas
