@@ -37,17 +37,17 @@ class KoasController extends GetxController {
 
       popularKoas.assignAll(
         fetchedKoas
-            .where((koas) => koas.koasProfile!.totalReviews! > 0)
+            .where((koas) => koas.koasProfile!.stats!.totalReviews > 0)
             .toList()
           ..sort(
             (a, b) {
-              int compareRating = b.koasProfile!.averageRating!
-                  .compareTo(a.koasProfile!.averageRating!);
+              int compareRating = b.koasProfile!.stats!.averageRating
+                  .compareTo(a.koasProfile!.stats!.averageRating);
               if (compareRating != 0) {
                 return compareRating;
               } else {
-                return b.koasProfile!.totalReviews!
-                    .compareTo(a.koasProfile!.totalReviews!);
+                return b.koasProfile!.stats!.totalReviews
+                    .compareTo(a.koasProfile!.stats!.totalReviews);
               }
             },
           ),

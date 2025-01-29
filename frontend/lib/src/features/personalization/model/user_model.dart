@@ -25,8 +25,6 @@ class UserModel {
   final KoasProfileModel? koasProfile;
   final PasienProfileModel? pasienProfile;
   final FasilitatorProfileModel? fasilitatorProfile;
-  
-
   final DateTime? createdAt;
   final DateTime? updateAt;
 

@@ -32,46 +32,73 @@ export async function GET(req: Request) {
       },
     });
 
-    const users = user.map((user) => {
-      if (user.role === Role.Koas) {
-        const totalReviews = user.Review.length;
-        const averageRating: number =
-          totalReviews > 0
-            ? user.Review.reduce((sum, review) => sum + review.rating, 0) /
-              totalReviews
-            : 0;
+    const users = await Promise.all(
+      user.map(async (user) => {
+        if (user.role === Role.Koas) {
+          const totalReviews = await db.review.count({
+            where: {
+              userId: user.id,
+            },
+          });
 
-        return {
-          ...user,
-          KoasProfile: {
-            ...user.KoasProfile,
-            totalReviews,
-            averageRating,
-          },
-          PasienProfile: undefined, // sembunyikan pasien profile
-          FasilitatorProfile: undefined, // sembunyikan fasilitator profile
-        };
-      } else if (user.role === Role.Pasien) {
-        return {
-          ...user,
-          KoasProfile: undefined, // sembunyikan koas profile
-          FasilitatorProfile: undefined, // sembunyikan fasilitator profile
-        };
-      } else if (user.role === Role.Fasilitator) {
-        return {
-          ...user,
-          KoasProfile: undefined, // sembunyikan koas profile
-          PasienProfile: undefined, // sembunyikan pasien profile
-        };
-      } else {
-        return {
-          ...user,
-          KoasProfile: undefined, // sembunyikan koas profile
-          PasienProfile: undefined, // sembunyikan pasien profile
-          FasilitatorProfile: undefined, // sembunyikan fasilitator profile
-        };
-      }
-    });
+          const averageRating = await db.review.aggregate({
+            _avg: {
+              rating: true,
+            },
+            where: {
+              userId: user.id,
+            },
+          });
+
+          const patientCount = await db.appointment.count({
+            where: {
+              koasId: user.KoasProfile!.id,
+              status: "Completed",
+            },
+          });
+
+          const { createdAt, updateAt, ...koasProfileWithoutDates } =
+            user.KoasProfile!;
+
+          return {
+            ...user,
+            KoasProfile: {
+              ...koasProfileWithoutDates,
+              stats: {
+                totalReviews,
+                averageRating: parseFloat(
+                  (averageRating._avg.rating || 0.0).toFixed(1)
+                ),
+                patientCount,
+              },
+              createdAt,
+              updateAt,
+            },
+            PasienProfile: undefined, // sembunyikan pasien profile
+            FasilitatorProfile: undefined, // sembunyikan fasilitator profile
+          };
+        } else if (user.role === Role.Pasien) {
+          return {
+            ...user,
+            KoasProfile: undefined, // sembunyikan koas profile
+            FasilitatorProfile: undefined, // sembunyikan fasilitator profile
+          };
+        } else if (user.role === Role.Fasilitator) {
+          return {
+            ...user,
+            KoasProfile: undefined, // sembunyikan koas profile
+            PasienProfile: undefined, // sembunyikan pasien profile
+          };
+        } else {
+          return {
+            ...user,
+            KoasProfile: undefined, // sembunyikan koas profile
+            PasienProfile: undefined, // sembunyikan pasien profile
+            FasilitatorProfile: undefined, // sembunyikan fasilitator profile
+          };
+        }
+      })
+    );
 
     return NextResponse.json(
       {

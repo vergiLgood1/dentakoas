@@ -49,8 +49,8 @@ class HomePopularKoasSection extends StatelessWidget {
                     name: popularKoas.fullName,
                     university: popularKoas.koasProfile!.university!,
                     distance: '1 KM',
-                    rating: popularKoas.koasProfile!.averageRating!,
-                    totalReviews: popularKoas.koasProfile!.totalReviews!,
+                    rating: popularKoas.koasProfile!.stats!.averageRating,
+                    totalReviews: popularKoas.koasProfile!.stats!.totalReviews,
                     image: TImages.userProfileImage3,
                     onTap: () => Get.to(() => const KoasDetailScreen()),
                   );

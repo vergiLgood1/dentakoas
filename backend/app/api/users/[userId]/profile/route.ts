@@ -46,6 +46,51 @@ export async function GET(
       profile = await db.koasProfile.findUnique({
         where: { userId },
       });
+
+      if (!profile) {
+        return NextResponse.json(
+          { error: "Profile not found" },
+          { status: 404 }
+        );
+      }
+
+      const totalReviews = await db.review.count({
+        where: {
+          userId,
+        },
+      });
+
+      const patientCount = await db.appointment.count({
+        where: {
+          koasId: profile.id,
+          status: "Completed",
+        },
+      });
+
+      const averageRating = await db.review.aggregate({
+        _avg: {
+          rating: true,
+        },
+        where: {
+          userId,
+        },
+      });
+
+      // Remove createdAt and updateAt from the profile object
+      const { createdAt, updateAt, ...profileWithoutDates } = profile;
+
+      profile = {
+        ...profileWithoutDates,
+        stats: {
+          totalReviews,
+          averageRating: parseFloat(
+            (averageRating._avg.rating || 0.0).toFixed(1)
+          ),
+          patientCount,
+        },
+        createdAt,
+        updateAt,
+      };
     } else if (existingUser.role == Role.Pasien) {
       profile = await db.pasienProfile.findUnique({
         where: { userId },

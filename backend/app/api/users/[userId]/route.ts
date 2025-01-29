@@ -21,46 +21,88 @@ export async function GET(
       );
     }
 
-    const existingUser = await getUserById(userId, {
-      KoasProfile: true,
-      PasienProfile: true,
-      FasilitatorProfile: true,
+    const user = await db.user.findUnique({
+      where: {
+        id: userId,
+      } as Prisma.UserWhereUniqueInput,
+      include: {
+        KoasProfile: true,
+        PasienProfile: true,
+        FasilitatorProfile: true,
+        Review: true,
+      },
     });
 
-    if (!existingUser) {
+    if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     // Filter profile berdasarkan role
-    const user = (() => {
-      if (existingUser.role === Role.Koas) {
+    const filteredUser = await(async (user) => {
+      if (user.role === Role.Koas) {
+        const totalReviews = await db.review.count({
+          where: {
+            userId: user.id,
+          },
+        });
+
+        const averageRating = await db.review.aggregate({
+          _avg: {
+            rating: true,
+          },
+          where: {
+            userId: user.id,
+          },
+        });
+
+        const patientCount = await db.appointment.count({
+          where: {
+            koasId: user.KoasProfile!.id,
+            status: "Completed",
+          },
+        });
+
+        const { createdAt, updateAt, ...koasProfileWithoutDates } =
+          user.KoasProfile!;
+
         return {
-          ...existingUser,
-          pasienProfile: undefined, // Sembunyikan pasienProfile jika role KOAS
-          fasilitatorProfile: undefined,
+          ...user,
+          KoasProfile: {
+            ...koasProfileWithoutDates,
+            stats: {
+              totalReviews,
+              averageRating: parseFloat(
+                (averageRating._avg.rating || 0.0).toFixed(1)
+              ),
+              patientCount,
+            },
+            createdAt,
+            updateAt,
+          },
+          PasienProfile: undefined, // sembunyikan pasien profile
+          FasilitatorProfile: undefined, // sembunyikan fasilitator profile
         };
-      } else if (existingUser.role === Role.Pasien) {
+      } else if (user.role === Role.Pasien) {
         return {
-          ...existingUser,
-          KoasProfile: undefined, // Sembunyikan KoasProfile jika role PASIEN
-          fasilitatorProfile: undefined,
+          ...user,
+          KoasProfile: undefined, // sembunyikan koas profile
+          FasilitatorProfile: undefined, // sembunyikan fasilitator profile
         };
-      } else if (existingUser.role === Role.Fasilitator) {
+      } else if (user.role === Role.Fasilitator) {
         return {
-          ...existingUser,
-          KoasProfile: undefined,
-          pasienProfile: undefined,
+          ...user,
+          KoasProfile: undefined, // sembunyikan koas profile
+          PasienProfile: undefined, // sembunyikan pasien profile
+        };
+      } else {
+        return {
+          ...user,
+          KoasProfile: undefined, // sembunyikan koas profile
+          PasienProfile: undefined, // sembunyikan pasien profile
+          FasilitatorProfile: undefined, // sembunyikan fasilitator profile
         };
       }
-      return existingUser; // Default jika role tidak dikenali
-    })();
-
-    // Filter properti yang undefined atau null
-    const filteredUser = Object.fromEntries(
-      Object.entries(user).filter(
-        ([_, value]) => value !== undefined && value !== null
-      )
-    );
+    })(user);
 
     return NextResponse.json(
       {

@@ -52,6 +52,7 @@ enum StatusAppointment {
   Confirmed
   Ongoing
   Completed
+
   @@map("status-appointment")
 }
 
@@ -152,6 +153,7 @@ model KoasProfile {
   gender       String?
   departement  String?
   university   String?
+  experience   Int?       @default(0)
   bio          String?
   whatsappLink String?    @map("whatsapp_link")
   status       StatusKoas @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
@@ -313,7 +315,7 @@ model Review {
   id        String   @id @default(cuid())
   postId    String   @map("post_id")
   userId    String   @map("user_id")
-  rating    Int      @default(0) // Skala 1-5
+  rating    Decimal  @default(0) // Skala 1-5
   comment   String?
   createdAt DateTime @default(now()) @map("created_at")
 

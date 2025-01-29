@@ -9,7 +9,7 @@ class Endpoints {
   static const String signinWithCredentials = '$baseAuthSignin/credentials';
   static const String signinWithGoogle = '$baseAuthSignin/google';
   static const String signinWithFacebook = '$baseAuthSignin/facebook';
-  static const String signinWithApple = '$baseAuthSignin/apple';
+  static const String signinWithApple = '$baseAuthSignin/apple'; 
   static const String signinWithGithub = '$baseAuthSignin/github';
 
   static const String signup = '$baseAuthUrl/signup';

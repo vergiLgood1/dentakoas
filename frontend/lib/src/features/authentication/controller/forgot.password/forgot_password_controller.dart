@@ -9,6 +9,7 @@ import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:logger/logger.dart';
 
 class ForgotPasswordController extends GetxController {
   static ForgotPasswordController get instance => Get.find();
@@ -63,6 +64,7 @@ class ForgotPasswordController extends GetxController {
     } catch (e) {
       // Stop loading
       TFullScreenLoader.stopLoading();
+      Logger().e(e);
 
       TLoaders.errorSnackBar(
         title: 'Oh snap',

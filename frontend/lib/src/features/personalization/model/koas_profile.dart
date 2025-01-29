@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/features/personalization/model/stats_model.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 
 enum StatusKoas {
@@ -13,11 +14,11 @@ class KoasProfileModel {
   final String? gender;
   final String? departement;
   final String? university;
+  final int? experience;
   final String? bio;
   final String? whatsappLink;
   final String? status;
-  final int? totalReviews;
-  final double? averageRating;
+  final Stats? stats;
   final UserModel? user;
   final DateTime? createdAt;
   final DateTime? updateAt;
@@ -30,11 +31,11 @@ class KoasProfileModel {
     this.gender,
     this.departement,
     this.university,
+    this.experience,
     this.bio,
     this.whatsappLink,
     this.status,
-    this.totalReviews,
-    this.averageRating,
+    this.stats,
     this.user,
     this.createdAt,
     this.updateAt,
@@ -52,8 +53,6 @@ class KoasProfileModel {
       bio: '',
       whatsappLink: '',
       status: '',
-      totalReviews: 0,
-      averageRating: 0.0,
     );
   }
 
@@ -65,6 +64,7 @@ class KoasProfileModel {
       'gender': gender,
       'departement': departement,
       'university': university,
+      'experience': experience,
       'bio': bio,
       'whatsappLink': whatsappLink,
       'status': status ?? 'Pending',
@@ -79,15 +79,11 @@ class KoasProfileModel {
       gender: json['gender'] ?? '',
       departement: json['departement'] ?? '',
       university: json['university'] ?? '',
+      experience: json['experience'] ?? 0,
       bio: json['bio'] ?? '',
       whatsappLink: json['whatsappLink'] ?? '',
       status: json['status'] ?? 'Pending',
-      totalReviews: json['totalReviews'] ?? 0,
-      averageRating:
-          (json['averageRating'] ?? 0).toDouble(), // Konversi ke double
-      user: json['user'] != null
-          ? UserModel.fromJson(json['user'])
-          : null,
+      stats: json['stats'] != null ? Stats.fromJson(json['stats']) : null,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,

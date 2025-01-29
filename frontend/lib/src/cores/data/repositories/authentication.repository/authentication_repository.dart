@@ -29,7 +29,6 @@ class AuthenticationRepository extends GetxController {
   // Variable
   final storage = GetStorage();
   final _auth = FirebaseAuth.instance;
-  final _userRepository = UserRepository();
 
   // Get Auth user 
   User? get authUser => _auth.currentUser;

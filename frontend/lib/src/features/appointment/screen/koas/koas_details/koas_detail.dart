@@ -46,7 +46,11 @@ class KoasDetailScreen extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Doctor stats
-              const DoctorStatsSection(),
+              DoctorStatsSection(
+                totalPatients: koas.koasProfile?.stats?.patientCount ?? 0,
+                experience: koas.koasProfile?.experience ?? 0,
+                ratings: koas.koasProfile?.stats?.averageRating ?? 0,
+              ),
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Doctor description
@@ -118,26 +122,35 @@ class KoasProfileSection extends StatelessWidget {
 }
 
 class DoctorStatsSection extends StatelessWidget {
-  const DoctorStatsSection({super.key});
+  const DoctorStatsSection({
+    super.key,
+    required this.totalPatients,
+    required this.experience,
+    required this.ratings,
+  });
+
+  final int totalPatients;
+  final int experience;
+  final double ratings;
 
   @override
   Widget build(BuildContext context) {
     final stats = [
       {
         'label': 'Patients',
-        'value': '1000+',
+        'value': totalPatients.toString(),
         'icon': Icons.groups,
         'color': Colors.blue
       },
       {
         'label': 'Experience',
-        'value': '10 Yrs',
+        'value': '${experience.toString()} Years',
         'icon': Icons.workspace_premium,
         'color': Colors.pink
       },
       {
         'label': 'Ratings',
-        'value': '4.5',
+        'value': ratings.toString(),
         'icon': Icons.star_rate,
         'color': Colors.amber
       },
