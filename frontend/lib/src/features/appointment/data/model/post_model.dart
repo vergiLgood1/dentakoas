@@ -1,5 +1,5 @@
 import 'package:denta_koas/src/features/appointment/data/model/likes_model.dart';
-import 'package:denta_koas/src/features/appointment/data/model/review-model.dart';
+import 'package:denta_koas/src/features/appointment/data/model/review_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/schedules_model.dart';
 import 'package:denta_koas/src/features/appointment/data/model/treatment.dart';
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';

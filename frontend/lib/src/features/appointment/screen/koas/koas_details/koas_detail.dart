@@ -1,10 +1,14 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
+import 'package:denta_koas/src/commons/widgets/cards/post_card.dart';
+import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/card_showcase_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/commons/widgets/text/title_with_verified.dart';
-import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/doctor_card.dart';
+import 'package:denta_koas/src/features/appointment/controller/explore.controller/explore_post_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/koas_post/post_with_specific_koas.dart';
+import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
@@ -14,7 +18,9 @@ import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class KoasDetailScreen extends StatelessWidget {
   const KoasDetailScreen({super.key});
@@ -71,8 +77,8 @@ class KoasDetailScreen extends StatelessWidget {
 
               // Koas upcoming event
 
-              const UserReviewSection(),
-              
+              // const KoasUpcomingEvent(),
+
               const BookAppointmentButton(),
             ],
           ),
@@ -366,7 +372,20 @@ class MapSection extends StatelessWidget {
 }
 
 class UserReviewSection extends StatelessWidget {
-  const UserReviewSection({super.key});
+  const UserReviewSection({
+    super.key,
+    required this.image,
+    required this.name,
+    required this.rating,
+    required this.comment,
+    required this.date,
+  });
+
+  final String image;
+  final String name;
+  final double rating;
+  final String comment;
+  final String date;
 
   @override
   Widget build(BuildContext context) {
@@ -378,7 +397,13 @@ class UserReviewSection extends StatelessWidget {
         children: [
           SectionHeading(
             title: 'Rating & Review',
-            onPressed: () => Get.to(() => const KoasReviewsScreen()),
+            onPressed: () => Get.to(() => KoasReviewsScreen(
+              image: image,
+              name: name,
+              rating: rating,
+              comment: comment,
+              date: date,
+            )),
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
           ListView.builder(
@@ -386,7 +411,13 @@ class UserReviewSection extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: 2,
             itemBuilder: (context, index) {
-              return const UserReviewsCard();
+              return   UserReviewsCard(
+                image: image,
+                name: name,
+                rating: rating,
+                date: date,
+                comment: comment,
+              );
             },
           ),
         ],
@@ -400,31 +431,61 @@ class KoasUpcomingEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = ExplorePostController.instance;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SectionHeading(
-            title: 'Upcoming Event',
-            onPressed: () => Get.to(() => const KoasReviewsScreen()),
-          ),
+              title: 'You might interest',
+              onPressed: () => Get.to(() => const PostWithSpecificKoas())),
           const SizedBox(height: TSizes.spaceBtwItems),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 2,
-            itemBuilder: (context, index) {
-              return const KoasCard(
-                name: 'Dr. John Doe',
-                university: 'Dentist',
-                distance: '2 km',
-                rating: 4.5,
-                totalReviews: 120,
-                image: TImages.userProfileImage4,
-              );
-            },
-          ),
+
+          Obx(() {
+            if (controller.isLoading.value) {
+              return const CardShowcaseShimmer();
+            }
+            if (controller.openPosts.isEmpty) {
+              return const Center(child: Text('No data'));
+            }
+            return DGridLayout(
+              itemCount: controller.openPosts.length < 2 ? 1 : 2,
+              crossAxisCount: 1,
+              mainAxisExtent: 400,
+              itemBuilder: (_, index) {
+                final post = controller.openPosts[index];
+                return PostCard(
+                  postId: post.id,
+                  name: post.user.fullName,
+                  university: post.user.koasProfile!.university!,
+                  image: TImages.userProfileImage4,
+                  timePosted: timeago.format(post.updateAt),
+                  title: post.title,
+                  description: post.desc,
+                  category: post.treatment.alias,
+                  participantCount: post.totalCurrentParticipants,
+                  requiredParticipant: post.requiredParticipant,
+                  dateStart: post.schedule.isNotEmpty
+                      ? DateFormat('dd').format(post.schedule[0].dateStart)
+                      : 'N/A',
+                  dateEnd: post.schedule.isNotEmpty
+                      ? DateFormat('dd MMM yyyy')
+                          .format(post.schedule[0].dateEnd)
+                      : 'N/A',
+                  likesCount: post.likeCount ?? 0,
+                  onTap: () => Get.to(
+                    () => const PostDetailScreen(),
+                    arguments: post,
+                  ),
+                  onPressed: () => Get.to(
+                    () => const PostDetailScreen(),
+                    arguments: post,
+                  ),
+                );
+              },
+            );
+          }),
            
         ],
       ),

@@ -24,7 +24,6 @@ class PostCard extends StatelessWidget {
 
   const PostCard({
     super.key,
- 
     required this.postId,
     required this.name,
     required this.image,

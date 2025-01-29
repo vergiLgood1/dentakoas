@@ -7,7 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 
 class KoasReplyCard extends StatelessWidget {
-  const KoasReplyCard({super.key});
+  const KoasReplyCard({
+    super.key,
+    required this.image,
+    required this.name,
+    required this.comment,
+    required this.date,
+  });
+
+  final String image;
+  final String name;
+  final String comment;
+  final String date;
 
   @override
   Widget build(BuildContext context) {
@@ -32,30 +43,30 @@ class KoasReplyCard extends StatelessWidget {
                         ),
                         const SizedBox(width: TSizes.spaceBtwItems),
                         Text(
-                          'Dr. John Doe',
+                          name,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
                     Text(
-                      '12 Nov 2024',
+                      date,
                       style: Theme.of(context).textTheme.bodyMedium,
                     )
                   ],
                 ),
                 const SizedBox(height: TSizes.spaceBtwItems),
-                const ReadMoreText(
-                  'The koas was very professional and attentive throughout the entire appointment. They took the time to explain each step of the procedure and made sure I was comfortable at all times. Their expertise and friendly demeanor made the experience much more pleasant. I would highly recommend them to anyone seeking dental care.',
+                ReadMoreText(
+                  comment,
                   trimLines: 2,
                   trimMode: TrimMode.Line,
                   trimExpandedText: ' Show less ',
                   trimCollapsedText: ' Show more ',
-                  moreStyle: TextStyle(
+                  moreStyle: const TextStyle(
                     fontSize: TSizes.fontSizeSm,
                     color: TColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
-                  lessStyle: TextStyle(
+                  lessStyle: const TextStyle(
                     fontSize: TSizes.fontSizeSm,
                     color: TColors.primary,
                     fontWeight: FontWeight.bold,

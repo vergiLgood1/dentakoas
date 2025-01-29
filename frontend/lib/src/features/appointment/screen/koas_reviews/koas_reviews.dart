@@ -7,7 +7,19 @@ import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 class KoasReviewsScreen extends StatelessWidget {
-  const KoasReviewsScreen({super.key});
+  const KoasReviewsScreen(
+      {super.key,
+      required this.image,
+      required this.name,
+      required this.rating,
+      required this.comment,
+      required this.date});
+
+  final String image;
+  final String name;
+  final double rating;
+  final String comment;
+  final String date;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +38,7 @@ class KoasReviewsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Rating and reviews are verifed and are based on the feedback of the patients who visited the clinic.',
+                'Rating and comments are verifed and are based on the feedback of the patients who visited the clinic.',
               ),
               const SizedBox(height: TSizes.spaceBtwItems),
               // Overall Rating
@@ -50,10 +62,21 @@ class KoasReviewsScreen extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: 3,
                 itemBuilder: (context, index) {
-                  return const Column(
+                  return Column(
                     children: [
-                      UserReviewsCard(),
-                      KoasReplyCard(),
+                      UserReviewsCard(
+                        image: image,
+                        name: name,
+                        rating: rating,
+                        date: date,
+                        comment: comment,
+                      ),
+                      KoasReplyCard(
+                        image: image,
+                        name: name,
+                        date: date,
+                        comment: comment,
+                      ),
                     ],
                   );
                 },

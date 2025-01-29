@@ -6,7 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 
 class UserReviewsCard extends StatelessWidget {
-  const UserReviewsCard({super.key});
+  const UserReviewsCard({
+    super.key,
+    required this.image,
+    required this.name,
+    required this.rating,
+    required this.comment,
+    required this.date,
+  });
+
+  final String image;
+  final String name;
+  final double rating;
+  final String comment;
+  final String date;
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +35,7 @@ class UserReviewsCard extends StatelessWidget {
                   backgroundImage: AssetImage(TImages.userProfileImage3),
                 ),
                 const SizedBox(width: TSizes.spaceBtwItems),
-                Text('John Doe',
+                Text(name,
                     style: Theme.of(context).textTheme.titleMedium),
               ],
             ),
@@ -34,27 +48,27 @@ class UserReviewsCard extends StatelessWidget {
         // Review
         Row(
           children: [
-            const DRatingBarIndicator(rating: 4),
+            DRatingBarIndicator(rating: rating),
             const SizedBox(width: TSizes.spaceBtwItems),
             Text(
-              '01 Nov 2024',
+              date,
               style: Theme.of(context).textTheme.bodyMedium,
             )
           ],
         ),
         const SizedBox(height: TSizes.spaceBtwItems),
-        const ReadMoreText(
-          'The koas was very professional and attentive throughout the entire appointment. They took the time to explain each step of the procedure and made sure I was comfortable at all times. Their expertise and friendly demeanor made the experience much more pleasant. I would highly recommend them to anyone seeking dental care.',
+        ReadMoreText(
+          comment,
           trimLines: 2,
           trimMode: TrimMode.Line,
           trimExpandedText: ' Show less ',
           trimCollapsedText: ' Show more ',
-          moreStyle: TextStyle(
+          moreStyle: const TextStyle(
             fontSize: TSizes.fontSizeSm,
             color: TColors.primary,
             fontWeight: FontWeight.bold,
           ),
-          lessStyle: TextStyle(
+          lessStyle: const TextStyle(
             fontSize: TSizes.fontSizeSm,
             color: TColors.primary,
             fontWeight: FontWeight.bold,

@@ -122,7 +122,9 @@ class PostDetailScreen extends StatelessWidget {
                     title: 'Reviews & Ratings',
                     isSuffixIcon: true,
                     suffixIcon: CupertinoIcons.chevron_right,
-                    onPressed: () => Get.to(() => const KoasReviewsScreen()),
+                    onPressed: () => Get.to(() => const KoasReviewsScreen(
+                     
+                    )),
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
                   Obx(
@@ -144,7 +146,14 @@ class PostDetailScreen extends StatelessWidget {
                         itemCount: post.reviews!.length,
                         itemBuilder: (context, index) {
                           final review = post.reviews?[index];
-                          return const UserReviewsCard();
+                          return const UserReviewsCard(
+                            image: TImages.userProfileImage4,
+                            name: 'Anri',
+                            rating: 4.5,
+                            date: '12 Jan 2021',
+                            comment:
+                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                          );
                         },
                       );
                     },
