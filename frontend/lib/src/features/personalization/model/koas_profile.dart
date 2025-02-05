@@ -84,6 +84,7 @@ class KoasProfileModel {
       whatsappLink: json['whatsappLink'] ?? '',
       status: json['status'] ?? 'Pending',
       stats: json['stats'] != null ? Stats.fromJson(json['stats']) : null,
+      user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,

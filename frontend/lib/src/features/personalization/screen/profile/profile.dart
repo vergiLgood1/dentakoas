@@ -106,26 +106,35 @@ class ProfileScreen extends StatelessWidget {
                 height: TSizes.spaceBtwItems,
               ),
 
-              ProfileMenu(
-                title: 'Name',
-                value: controller.user.value.fullName,
-                onTap: () => Get.to(() => const ChangeProfileInformation()),
-              ),
-              ProfileMenu(
-                title: 'Username',
-                value: controller.user.value.name!,
-                onTap: () => Get.to(() => const ChangePersonalInformation()),
-              ),
-              ProfileMenu(
-                title: 'Phone',
-                value: controller.user.value.phone!,
-                onTap: () => Get.to(() => const ChangePersonalInformation()),
-              ),
-              ProfileMenu(
-                title: 'Email',
-                value: controller.user.value.email!,
-                onTap: () {},
-              ),
+              Obx(() {
+                return Column(
+                  children: [
+                    ProfileMenu(
+                      title: 'Name',
+                      value: controller.user.value.fullName,
+                      onTap: () =>
+                          Get.to(() => const ChangeProfileInformation()),
+                    ),
+                    ProfileMenu(
+                      title: 'Username',
+                      value: controller.user.value.name!,
+                      onTap: () =>
+                          Get.to(() => const ChangePersonalInformation()),
+                    ),
+                    ProfileMenu(
+                      title: 'Phone',
+                      value: controller.user.value.phone!,
+                      onTap: () =>
+                          Get.to(() => const ChangePersonalInformation()),
+                    ),
+                    ProfileMenu(
+                      title: 'Email',
+                      value: controller.user.value.email!,
+                      onTap: () {},
+                    ),
+                  ],
+                );
+              }),
               const SizedBox( 
                 height: TSizes.spaceBtwItems,
               ),
@@ -148,89 +157,115 @@ class ProfileScreen extends StatelessWidget {
               ),
 
               if (controller.user.value.role == 'Koas') ...[
-                ProfileMenu(
-                  title: 'Status Koas',
-                  value: controller.user.value.koasProfile!.status.toString(),
-                  icon: Iconsax.info_circle,
-                  color: controller.setStatusColor(),
-                  showIcon: true,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'User ID',
-                  value: controller.user.value.id!,
-                  icon: Iconsax.copy,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'Koas Number',
-                  value: controller.user.value.profile!.koasNumber!,
-                  icon: Iconsax.copy,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'University',
-                  value: controller.user.value.profile!.university!,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'Department',
-                  value: controller.user.value.profile!.departement!,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'Age',
-                  value: controller.user.value.profile!.age!,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'Gender',
-                  value: controller.user.value.profile!.gender!,
-                  onTap: () {},
-                ),
-],
-
-              if (controller.user.value.role == 'Pasien') ...[
-                ProfileMenu(
-                  title: 'User ID',
-                  value: controller.user.value.id!,
-                  icon: Iconsax.copy,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'Age',
-                  value: controller.user.value.profile!.age!,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'Gender',
-                  value: controller.user.value.profile!.gender!,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'Bio',
-                  value: controller.user.value.profile!.bio!,
-                  onTap: () {},
+                Obx(
+                  () {
+                    return Column(
+                      children: [
+                        ProfileMenu(
+                          title: 'Status Koas',
+                          value: controller.user.value.koasProfile!.status
+                              .toString(),
+                          icon: Iconsax.info_circle,
+                          color: controller.setStatusColor(),
+                          showIcon: true,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'User ID',
+                          value: controller.user.value.id!,
+                          icon: Iconsax.copy,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'Koas Number',
+                          value: controller.user.value.profile!.koasNumber!,
+                          icon: Iconsax.copy,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'University',
+                          value: controller.user.value.profile!.university!,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'Department',
+                          value: controller.user.value.profile!.departement!,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'Age',
+                          value: controller.user.value.profile!.age!,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'Gender',
+                          value: controller.user.value.profile!.gender!,
+                          onTap: () {},
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
 
+              if (controller.user.value.role == 'Pasien') ...[
+                Obx(
+                  () {
+                    return Column(
+                      children: [
+                        ProfileMenu(
+                          title: 'User ID',
+                          value: controller.user.value.id!,
+                          icon: Iconsax.copy,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'Age',
+                          value: controller.user.value.profile!.age!,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'Gender',
+                          value: controller.user.value.profile!.gender!,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'Bio',
+                          value: controller.user.value.profile!.bio!,
+                          onTap: () {},
+                        ),
+                      ],
+                    );
+                  },
+                )
+              ],
+
               if (controller.user.value.role == 'Fasilitator') ...[
-                ProfileMenu(
-                  title: 'User ID',
-                  value: controller.user.value.id!,
-                  icon: Iconsax.copy,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'University',
-                  value: controller.user.value.profile!.university!,
-                  onTap: () {},
-                ),
-                ProfileMenu(
-                  title: 'Join Date',
-                  value: controller.user.value.profile!.createdAt.toString(),
-                  onTap: () {},
-                ),
+                Obx(
+                  () {
+                    return Column(
+                      children: [
+                        ProfileMenu(
+                          title: 'User ID',
+                          value: controller.user.value.id!,
+                          icon: Iconsax.copy,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'University',
+                          value: controller.user.value.profile!.university!,
+                          onTap: () {},
+                        ),
+                        ProfileMenu(
+                          title: 'Join Date',
+                          value: controller.user.value.profile!.createdAt
+                              .toString(),
+                          onTap: () {},
+                        ),
+                      ],
+                    );
+                  },
+                )
               ],
 
               const Divider(),

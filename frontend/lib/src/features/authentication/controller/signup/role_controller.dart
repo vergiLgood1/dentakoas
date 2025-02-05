@@ -59,13 +59,15 @@ class RoleController extends GetxController {
           role: newRole,
         );
 
+        Logger().e(['Update Role: $newRole']);
+
         // Update the user role
         await userRepository.updateUserRecord(userCredential.uid, updateRole);
 
         // Navigasi ke halaman berikutnya
-        Get.to(const ProfileSetupScreen());
+        Get.to(() => const ProfileSetupScreen());
       } else {
-        Get.to(const SignupScreen());
+        Get.to(() => const SignupScreen());
       }
     } catch (e) {
       // Stop Loading

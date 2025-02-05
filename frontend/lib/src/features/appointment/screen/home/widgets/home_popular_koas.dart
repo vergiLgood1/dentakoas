@@ -37,7 +37,15 @@ class HomePopularKoasSection extends StatelessWidget {
                 return const KoasCardShimmer();
               }
               if (controller.popularKoas.isEmpty) {
-                return const Center(child: Text('No data'));
+                return KoasCard(
+                  name: 'Dr. John Doe',
+                  university: 'University of Lagos',
+                  distance: '1 KM',
+                  rating: 4.5,
+                  totalReviews: 100,
+                  image: TImages.userProfileImage3,
+                  onTap: () => Get.to(() => const KoasDetailScreen()),
+                );
                 // return const KoasCardShimmer();
               }
               return DGridLayout(

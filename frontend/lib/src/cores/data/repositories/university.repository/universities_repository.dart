@@ -56,12 +56,12 @@ class UniversitiesRepository extends GetxController {
     if (response.statusCode == 200) {
       final data = response.data;
 
-      if (data['data'] == null || data['data']['university'] == null) {
+      if (data['universities'] == null) {
         throw Exception('University data not found');
       }
 
       // Ambil hanya key 'name' dari setiap objek
-      return (data['data']['university'] as List)
+      return (data['universities'] as List)
           .map((universityJson) =>
               (universityJson as Map<String, dynamic>)['name'] as String)
           .toList();

@@ -6,6 +6,7 @@ import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/features/personalization/screen/profile/profile.dart';
+import 'package:denta_koas/src/features/personalization/screen/setting/address/my_address.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -62,10 +63,11 @@ class SettingsScreen extends StatelessWidget {
                     height: TSizes.spaceBtwItems,
                   ),
 
-                  const SettingMenuTile(
+                  SettingMenuTile(
                     icon: Iconsax.safe_home,
                     title: 'My Address',
                     subtitle: 'Set your default address',
+                    onTap: () => Get.to(() => const MyAddressScreen()),
                   ),
                   const SettingMenuTile(
                     icon: Iconsax.calendar_1,

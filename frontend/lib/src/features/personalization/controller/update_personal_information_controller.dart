@@ -6,7 +6,6 @@ import 'package:denta_koas/src/features/personalization/model/fasilitator_profil
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
-import 'package:denta_koas/src/features/personalization/screen/profile/profile.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
 import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
@@ -133,8 +132,11 @@ class UpdatePersonalInformationController extends GetxController {
         message: 'Your profile has been successfully updated',
       );
 
-      // Get.off(() => Get.to(() => ProfileScreen()));
-      Get.off(() => const ProfileScreen());
+      // Redirect to profile screen
+      await Future.delayed(const Duration(seconds: 1));
+      Get.back(
+        closeOverlays: true,
+      );
     } catch (e) {
       // Stop Loading
       TFullScreenLoader.stopLoading();
@@ -162,6 +164,10 @@ class UpdatePersonalInformationController extends GetxController {
 
     // Update the user profile
     await UserRepository.instance.updateKoasProfile(userId, updateUser);
+
+    // Refresh the user profile
+    final updatedUser = await UserRepository.instance.getUserDetailById();
+    UserController.instance.user.value = updatedUser;
   }
 
   void updateNewPasienProfile(String userId) async {
@@ -174,6 +180,10 @@ class UpdatePersonalInformationController extends GetxController {
 
     // Update the user profile
     await UserRepository.instance.updatePasienProfile(userId, updateUser);
+
+    // Refresh the user profile
+    final updatedUser = await UserRepository.instance.getUserDetailById();
+    UserController.instance.user.value = updatedUser;
   }
 
   void updateNewFasilitatorProfile(String userId) async {
@@ -187,6 +197,10 @@ class UpdatePersonalInformationController extends GetxController {
     // Save the user profile
     await UserRepository.instance
         .updateFasilitatorProfile(userId, newFasilitatorProfile);
+
+    // Refresh the user profile
+    final updatedUser = await UserRepository.instance.getUserDetailById();
+    UserController.instance.user.value = updatedUser;
   }
 
   void getUniversities() async {

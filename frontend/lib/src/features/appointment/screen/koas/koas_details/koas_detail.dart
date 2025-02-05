@@ -397,13 +397,7 @@ class UserReviewSection extends StatelessWidget {
         children: [
           SectionHeading(
             title: 'Rating & Review',
-            onPressed: () => Get.to(() => KoasReviewsScreen(
-              image: image,
-              name: name,
-              rating: rating,
-              comment: comment,
-              date: date,
-            )),
+            onPressed: () => Get.to(() => const KoasReviewsScreen()),
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
           ListView.builder(

@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
+import 'package:denta_koas/src/features/appointment/controller/university.controller/university_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/dropdown.dart';
 import 'package:denta_koas/src/features/authentication/controller/signup/profile_setup_controller.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -16,6 +17,7 @@ class ProfileSetupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileSetupController());
+    final universityController = Get.put(UniversityController());
   
     final localStorage = GetStorage();
     final role = localStorage.read('TEMP_ROLE');

@@ -9,33 +9,32 @@ import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class UpdateProfileInformationController extends GetxController {
-  static UpdateProfileInformationController get instance => Get.find();
+class UpdateAddressController extends GetxController {
+  static UpdateAddressController get instance => Get.find();
 
-  final givenName = TextEditingController();
-  final familyName = TextEditingController();
-  final username = TextEditingController();
-  final phone = TextEditingController();
-
-  final userController = UserController.instance;
   final userRepository = Get.put(UserRepository());
 
-  GlobalKey<FormState> updateProfileInformationFormKey = GlobalKey<FormState>();
+  TextEditingController address = TextEditingController();
+
+  final GlobalKey<FormState> updateAddressFormKey = GlobalKey<FormState>();
+
+  final isLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    initializedProfileInformation();
+    initializedAddress();
   }
 
-  Future<void> initializedProfileInformation() async {
-    givenName.text = userController.user.value.givenName!;
-    familyName.text = userController.user.value.familyName!;
-    username.text = userController.user.value.name!;
-    phone.text = userController.user.value.phone!;
+  Future<void> initializedAddress() async {
+    if (UserController.instance.user.value.address != null) {
+      address.text = UserController.instance.user.value.address!;
+    } else {
+      address.text = '';
+    }
   }
 
-  Future<void> updateProfileInformation() async {
+  void updateUserAddress() async {
     try {
       // Start loading
       TFullScreenLoader.openLoadingDialog(
@@ -43,49 +42,34 @@ class UpdateProfileInformationController extends GetxController {
 
       // Check connection
       final isConected = await NetworkManager.instance.isConnected();
-
       if (!isConected) {
         TFullScreenLoader.stopLoading();
         return;
       }
 
       // Form validation
-      if (!updateProfileInformationFormKey.currentState!.validate()) {
+      if (!updateAddressFormKey.currentState!.validate()) {
         TFullScreenLoader.stopLoading();
         return;
       }
 
-      final updateProfileInformation = UserModel(
-        givenName: givenName.text.trim(),
-        familyName: familyName.text.trim(),
-        name: username.text.trim(),
-        phone: phone.text.trim(),
+      // Get user id from firebase and inisialize the model
+      final userId = AuthenticationRepository.instance.authUser!.uid;
+
+      final updateUserAddress = UserModel(
+        address: address.value.text.trim(),
       );
 
-      // Update user record in the database
-      await userRepository.updateUserRecord(
-        AuthenticationRepository.instance.authUser!.uid,
-        updateProfileInformation,
-      );
-
-      // Update gender in firestore
-      // Map<String, dynamic> updateProfileInformationFirestore = {
-      //   'givenName': givenName.text.trim(),
-      //   'familyName': familyName.text.trim(),
-      //   'name': username.text.trim(),
-      //   'phone': phone.text.trim(),
-      // };
-
-      // await userRepository
-      //     .updateSinglefieldAuthUser(updateProfileInformationFirestore);
+      // Save user data
+      await userRepository.updateUserRecord(userId, updateUserAddress);
 
       // Stop loading
       TFullScreenLoader.stopLoading();
 
       // Show success message
       TLoaders.successSnackBar(
-        title: 'Profile Information Updated',
-        message: 'Your profile information have been updated successfully',
+        title: 'Success',
+        message: 'Your profile has been successfully updated',
       );
 
       // Refresh the user profile
@@ -98,9 +82,12 @@ class UpdateProfileInformationController extends GetxController {
         closeOverlays: true,
       );
     } catch (e) {
+      // Stop Loading
       TFullScreenLoader.stopLoading();
+
+      // Show error message
       TLoaders.errorSnackBar(
-        title: 'Error Updating Names',
+        title: 'Error',
         message: e.toString(),
       );
     }

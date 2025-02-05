@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:denta_koas/src/features/appointment/data/model/review_model.dart';
 import 'package:denta_koas/src/features/personalization/model/fasilitator_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
@@ -25,6 +26,7 @@ class UserModel {
   final KoasProfileModel? koasProfile;
   final PasienProfileModel? pasienProfile;
   final FasilitatorProfileModel? fasilitatorProfile;
+  final Review? review;
   final DateTime? createdAt;
   final DateTime? updateAt;
 
@@ -45,6 +47,7 @@ class UserModel {
     this.koasProfile,
     this.pasienProfile,
     this.fasilitatorProfile,
+    this.review,
     this.createdAt,
     this.updateAt,
   });
@@ -84,6 +87,8 @@ class UserModel {
       role: '',
       koasProfile: KoasProfileModel.empty(),
       pasienProfile: PasienProfileModel.empty(),
+      fasilitatorProfile: FasilitatorProfileModel.empty(),
+      review: Review.empty(),
     );
   }
 
@@ -197,6 +202,9 @@ class UserModel {
       fasilitatorProfile: json['FasilitatorProfile'] != null
           ? FasilitatorProfileModel.fromJson(json['FasilitatorProfile'])
           : FasilitatorProfileModel.empty(),
+      // review: json['Review'] != null
+      //     ? Review.fromJson(json['Review'])
+      //     : Review.empty(),
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,

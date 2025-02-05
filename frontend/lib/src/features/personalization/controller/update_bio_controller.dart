@@ -4,7 +4,6 @@ import 'package:denta_koas/src/features/personalization/controller/user_controll
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
-import 'package:denta_koas/src/features/personalization/screen/profile/profile.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
 import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
@@ -94,8 +93,15 @@ class UpdateBioController extends GetxController {
         message: 'Your profile has been successfully updated',
       );
 
-      // Get.off(() => Get.to(() => ProfileScreen()));
-      Get.off(() => const ProfileScreen());
+      // Refresh the user profile
+      final updatedUser = await UserRepository.instance.getUserDetailById();
+      UserController.instance.user.value = updatedUser;
+
+      // Redirect to profile screen
+      await Future.delayed(const Duration(milliseconds: 500));
+      Get.back(
+        closeOverlays: true,
+      );
     } catch (e) {
       // Stop Loading
       TFullScreenLoader.stopLoading();

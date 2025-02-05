@@ -4,6 +4,7 @@ import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/university.repository/universities_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
+import 'package:denta_koas/src/features/appointment/controller/university.controller/university_controller.dart';
 import 'package:denta_koas/src/features/personalization/model/fasilitator_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
@@ -17,6 +18,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:logger/logger.dart';
 
 class ProfileSetupController extends GetxController {
   static ProfileSetupController get instance => Get.find();
@@ -34,6 +36,7 @@ class ProfileSetupController extends GetxController {
   final userRepository = Get.put(UserRepository());
 
   final universitiesData = <String>[].obs;
+  final universityController = Get.put(UniversityController());
 
   final List<String> genders = [
     'Male',
@@ -50,6 +53,7 @@ class ProfileSetupController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    // universityController.fetchUniversities();
     getUniversities();
   }
 
@@ -233,6 +237,7 @@ class ProfileSetupController extends GetxController {
       universitiesData.value = universities;
     } catch (e) {
       // Tangani error
+      Logger().e('Error while fetching universities: $e');
       TLoaders.errorSnackBar(
         title: 'Error',
         message: 'An error occurred while fetching universities',

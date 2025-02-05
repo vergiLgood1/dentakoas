@@ -3,26 +3,17 @@ import 'package:denta_koas/src/commons/widgets/koas/rating/rating_bar_indicator.
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/koas_reply.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/overal_koas_rating.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class KoasReviewsScreen extends StatelessWidget {
-  const KoasReviewsScreen(
-      {super.key,
-      required this.image,
-      required this.name,
-      required this.rating,
-      required this.comment,
-      required this.date});
-
-  final String image;
-  final String name;
-  final double rating;
-  final String comment;
-  final String date;
+  const KoasReviewsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    UserModel koasReviews = Get.arguments;
     return Scaffold(
       appBar: const DAppBar(
         title: Text(
@@ -64,19 +55,19 @@ class KoasReviewsScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
-                      UserReviewsCard(
-                        image: image,
-                        name: name,
-                        rating: rating,
-                        date: date,
-                        comment: comment,
-                      ),
-                      KoasReplyCard(
-                        image: image,
-                        name: name,
-                        date: date,
-                        comment: comment,
-                      ),
+                      // UserReviewsCard(
+                      //   image: image,
+                      //   name: name,
+                      //   rating: rating,
+                      //   date: date,
+                      //   comment: comment,
+                      // ),
+                      // KoasReplyCard(
+                      //   image: image,
+                      //   name: name,
+                      //   date: date,
+                      //   comment: comment,
+                      // ),
                     ],
                   );
                 },
@@ -88,4 +79,3 @@ class KoasReviewsScreen extends StatelessWidget {
     );
   }
 }
-

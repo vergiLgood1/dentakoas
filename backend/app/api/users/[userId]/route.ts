@@ -186,7 +186,8 @@ export async function PATCH(
   const userId = searchParams.get("userId") || params.userId;
 
   const body = await req.json();
-  const { givenName, familyName, name, email, password, phone, role } = body;
+  const { givenName, familyName, name, email, password, phone, address, role } =
+    body;
 
   console.log("receive body : ", body);
 
@@ -227,6 +228,7 @@ export async function PATCH(
         email: email || existingUser.email,
         password: hash || existingUser.password,
         phone: phone || existingUser.phone,
+        address: address || existingUser.address,
         role: role || existingUser.role,
       } as Prisma.UserUpdateInput,
     });

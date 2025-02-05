@@ -58,7 +58,7 @@ class TabRejectedAppointments extends StatelessWidget {
                           controller.rejectedAppointments[index];
                       return ScheduleCard(
                         imgUrl: TImages.user,
-                        name: appointment.koas!.user!.fullName,
+                        name: appointment.koas?.user?.fullName ?? '',
                         category: appointment.schedule!.post.treatment.alias,
                         date:
                             controller.formatAppointmentDate(appointment.date),

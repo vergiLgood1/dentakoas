@@ -252,7 +252,7 @@ class UserRepository extends GetxController {
   
   Future<void> saveUserRecord(UserModel user) async {
     try {
-      // await THttpHelper.post(Endpoints.users, user.toJson());
+     
       final response =
           await DioClient().post(Endpoints.users, data: user.toJson());
 

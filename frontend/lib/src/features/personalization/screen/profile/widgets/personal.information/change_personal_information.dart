@@ -1,6 +1,6 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/create_post/widget/dropdown.dart';
-import 'package:denta_koas/src/features/personalization/controller/update_profile_controller.dart';
+import 'package:denta_koas/src/features/personalization/controller/update_personal_information_controller.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
 import 'package:denta_koas/src/utils/validators/validation.dart';

@@ -212,5 +212,9 @@ class TImages {
   // Animations
   static const String emptyFile =
       "assets/images/animations/53207-empty-file.json";
+
+  static const String emptyAddress =
+      "assets/images/animations/empty_address.json";
 }
+
 
