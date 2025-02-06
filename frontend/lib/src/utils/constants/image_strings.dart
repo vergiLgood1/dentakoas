@@ -212,9 +212,13 @@ class TImages {
   // Animations
   static const String emptyFile =
       "assets/images/animations/53207-empty-file.json";
-
   static const String emptyAddress =
       "assets/images/animations/empty_address.json";
+  static const String emptyMyOngoingAppointments =
+      "assets/images/animations/empty-my-ongoing-appointments.json";
+  static const String comingSoon = "assets/images/animations/coming-soon1.json";
+  static const String comingSoon2 =
+      "assets/images/animations/coming-soon2.json";
 }
 
 

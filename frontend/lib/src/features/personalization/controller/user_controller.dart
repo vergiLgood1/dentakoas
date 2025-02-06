@@ -25,6 +25,7 @@ class UserController extends GetxController {
   final userRepository = Get.put(UserRepository());
 
   final greetingMsg = ''.obs;
+  RxBool trailingLocation = false.obs;
 
   final storage = GetStorage();
 

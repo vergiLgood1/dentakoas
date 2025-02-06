@@ -1,6 +1,7 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
+import 'package:denta_koas/src/features/personalization/controller/update_address_controller.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/features/personalization/screen/setting/address/update_my_address.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
@@ -25,7 +26,8 @@ class MyAddressScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Obx(
           () {
-            if (controller.user.value.address == null) {
+            if (controller.user.value.address == null ||
+                controller.user.value.address == '') {
               return const StateScreen(
                 image: TImages.emptyAddress,
                 title: 'No Address Found',
@@ -79,30 +81,70 @@ class AddressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-        side: const BorderSide(color: TColors.grey, width: 2),
-      ),
-      elevation: 0, // Remove shadow by setting elevation to 0
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              name,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              address,
-              style: Theme.of(context).textTheme.bodySmall,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+    final controller = Get.put(UpdateAddressController());
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+          ),
+          builder: (BuildContext context) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    leading: const Icon(Iconsax.edit),
+                    title: const Text('Update Address'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Get.to(() => const UpdateMyAddressScreen());
+                    },
+                  ),
+                  // ListTile(
+                  //   textColor: TColors.error,
+                  //   iconColor: TColors.error,
+                  //   leading: const Icon(Iconsax.trash),
+                  //   title: const Text('Delete Address'),
+                  //   onTap: () {
+                  //     // Add your delete address logic here
+                  //     Navigator.pop(context);
+                  //     controller.deleteUserAddress();
+                  //   },
+                  // ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+      child: Card(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+          side: const BorderSide(color: TColors.grey, width: 2),
+        ),
+        elevation: 0, // Remove shadow by setting elevation to 0
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                address,
+                style: Theme.of(context).textTheme.bodySmall,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ),
     );

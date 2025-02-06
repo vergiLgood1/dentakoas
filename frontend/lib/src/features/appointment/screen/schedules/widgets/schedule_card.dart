@@ -12,6 +12,7 @@ class ScheduleCard extends StatelessWidget {
     required this.category,
     required this.date,
     required this.timestamp,
+    this.isNetworkImage = false,
     this.onTap,
     this.showArrow = false,
     this.showSecondaryBtn = false,
@@ -31,6 +32,7 @@ class ScheduleCard extends StatelessWidget {
   });
 
   final String imgUrl;
+  final bool isNetworkImage;
   final String name;
   final String category;
   final String date;
@@ -73,7 +75,9 @@ class ScheduleCard extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: AssetImage(imgUrl),
+                      backgroundImage: isNetworkImage
+                          ? NetworkImage(imgUrl)
+                          : AssetImage(imgUrl),
                     ),
                     const SizedBox(
                       width: TSizes.spaceBtwInputFields,

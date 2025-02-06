@@ -171,14 +171,6 @@ class UserModel {
   }
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    // Navigate directly to the 'user' object in the 'data' field
-    // final jsonFinal = json['data']?['user'] ;
-
-    // if (jsonFinal == null) {
-    //   throw ArgumentError(
-    //       'User data is missing'); // Handle cases where 'user' is not found
-    // }
-
     return UserModel(
       id: json['id'],
       givenName: json['givenName'] ?? '', // Default to empty string if null
@@ -191,6 +183,7 @@ class UserModel {
       password: json['password'] ?? '',
       confirmPassword: json['confirmPassword'] ?? '',
       phone: json['phone'] ?? '',
+      address: json['address'] ?? '',
       image: json['image'] ?? TImages.userProfileImage1,
       role: json['role'] ?? '',
       koasProfile: json['KoasProfile'] != null
