@@ -11,15 +11,17 @@ import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/
 import 'package:denta_koas/src/features/appointment/screen/posts/koas_post/post_with_specific_koas.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/enums.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:readmore/readmore.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -61,24 +63,36 @@ class KoasDetailScreen extends StatelessWidget {
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Doctor description
-              DoctorDescriptionSection(
+              BioSection(
                 bio:
                    koas.koasProfile?.bio ?? 'N/A',
+              ),
+              const SizedBox(height: TSizes.spaceBtwSections),
+
+              // Address user 
+              AddressSection(
+                address: koas.address ?? 'N/A',
               ),
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Working time
               PersonalInformationSection(
                 koasNumber: koas.koasProfile?.koasNumber ?? 'N/A',
-                faculty: koas.koasProfile?.departement ?? 'N/A',
-                location: koas.address ?? 'N/A',
+                status: koas.koasProfile?.status ?? 'N/A',
+                departement: koas.koasProfile?.departement ?? 'N/A',
                 age: koas.koasProfile?.age.toString() ?? 'N/A',
+                gender: koas.koasProfile?.gender ?? 'N/A',
+                phone: koas.phone ?? 'N/A',
               ),
               const SizedBox(height: TSizes.spaceBtwSections),
 
               // Koas upcoming event
-
               // const KoasUpcomingEvent(),
+
+              // Map section
+              const MapSection(),
+
+              const SizedBox(height: TSizes.spaceBtwSections),
               FooterButton(
                 userKoasId: koas.koasProfile?.id,
                 koasId: koas.id,
@@ -221,8 +235,8 @@ class DoctorStatsSection extends StatelessWidget {
   }
 }
 
-class DoctorDescriptionSection extends StatelessWidget {
-  const DoctorDescriptionSection({super.key, required this.bio});
+class BioSection extends StatelessWidget {
+  const BioSection({super.key, required this.bio});
 
   final String bio;
 
@@ -234,7 +248,7 @@ class DoctorDescriptionSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SectionHeading(
-            title: 'About Doctor',
+            title: 'About',
             showActionButton: false,
           ),
           const SizedBox(height: TSizes.spaceBtwItems / 2),
@@ -266,26 +280,77 @@ class DoctorDescriptionSection extends StatelessWidget {
   }
 }
 
+class AddressSection extends StatelessWidget {
+  const AddressSection({super.key, required this.address});
+
+  final String address;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeading(
+            title: 'Address',
+            showActionButton: false,
+          ),
+          const SizedBox(height: TSizes.spaceBtwItems / 2),
+          ReadMoreText(
+            address,
+            style: const TextStyle(
+              fontSize: 14,
+              color: TColors.textSecondary,
+            ),
+            textAlign: TextAlign.justify,
+            trimLines: 5,
+            trimMode: TrimMode.Line,
+            trimExpandedText: ' Show less ',
+            trimCollapsedText: ' Show more ',
+            moreStyle: const TextStyle(
+              fontSize: TSizes.fontSizeSm,
+              color: TColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+            lessStyle: const TextStyle(
+              fontSize: TSizes.fontSizeSm,
+              color: TColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class PersonalInformationSection extends StatelessWidget {
   const PersonalInformationSection({
     super.key,
     required this.koasNumber,
-    required this.faculty,
-    required this.location,
+    required this.status,
+    required this.departement,
+    required this.gender,
     required this.age,
+    required this.phone,
   });
 
   final String koasNumber;
-  final String faculty;
-  final String location;
+  final String status;
+  final String departement;
+  final String gender;
   final String age;
+  final String phone;
 
   @override
   Widget build(BuildContext context) {
     final personalInfo = [
       {'label': 'Koas Number', 'value': koasNumber},
-      {'label': 'Faculty', 'value': faculty},
-      {'label': 'Location', 'value': location},
+      {'label': 'Status', 'value': status},
+      {'label': 'Departement', 'value': departement},
+      {'label': 'Phone', 'value': phone},
+      {'label': 'Gender', 'value': gender},
       {'label': 'Age', 'value': age},
     ];
 
@@ -347,10 +412,10 @@ class MapSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SectionHeading(
-            title: 'Location',
+            title: 'University Location',
             showActionButton: false,
           ),
-          const SizedBox(height: TSizes.spaceBtwItems / 2),
+          const SizedBox(height: TSizes.spaceBtwItems),
           Container(
             height: 200,
             decoration: BoxDecoration(
@@ -366,19 +431,174 @@ class MapSection extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: GoogleMap(
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(-6.200000, 106.816666),
-                  zoom: 14,
-                ),
-                markers: {
-                  const Marker(
-                    markerId: MarkerId('doctorLocation'),
-                    position: LatLng(-6.200000, 106.816666),
+              child: Stack(
+                children: [
+                  FlutterMap(
+                    options: const MapOptions(
+                      initialCenter: LatLng(-6.200000, 106.816666),
+                      initialZoom: 14,
+                      interactionOptions: InteractionOptions(
+                        enableMultiFingerGestureRace: false,
+                      ),
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.example.app',
+                      ),
+                      const MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: LatLng(-6.200000, 106.816666),
+                            width: 80,
+                            height: 80,
+                            child: Icon(Icons.location_pin, color: Colors.red),
+                          ),
+                        ],
+                      ),
+                      // Custom Zoom Controls
+                      RichAttributionWidget(
+                        attributions: [
+                          TextSourceAttribution(
+                            'OpenStreetMap contributors',
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                },
+                  // Custom Controls Overlay
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Column(
+                      children: [
+                        // Fullscreen Button
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.fullscreen),
+                            onPressed: () {
+                              // Navigate to fullscreen map
+                              Get.to(() => const FullscreenMap());
+                            },
+                            constraints: const BoxConstraints(
+                              minHeight: 40,
+                              minWidth: 40,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: TSizes.spaceBtwSections),
+                        // Zoom Controls
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     color: Colors.white,
+                        //     borderRadius: BorderRadius.circular(8),
+                        //     boxShadow: [
+                        //       BoxShadow(
+                        //         color: Colors.black.withOpacity(0.1),
+                        //         spreadRadius: 1,
+                        //         blurRadius: 3,
+                        //         offset: const Offset(0, 1),
+                        //       ),
+                        //     ],
+                        //   ),
+                        //   child: Column(
+                        //     children: [
+                        //       // Zoom In Button
+                        //       IconButton(
+                        //         icon: const Icon(Icons.add),
+                        //         onPressed: () {
+                        //           // Add zoom in functionality
+                        //         },
+                        //         constraints: const BoxConstraints(
+                        //           minHeight: 40,
+                        //           minWidth: 40,
+                        //         ),
+                        //       ),
+                        //       const Divider(height: 1),
+                        //       // Zoom Out Button
+                        //       IconButton(
+                        //         icon: const Icon(Icons.remove),
+                        //         onPressed: () {
+                        //           // Add zoom out functionality
+                        //         },
+                        //         constraints: const BoxConstraints(
+                        //           minHeight: 40,
+                        //           minWidth: 40,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Fullscreen Map Widget
+class FullscreenMap extends StatelessWidget {
+  const FullscreenMap({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const DAppBar(
+        title: Text('Location'),
+        centerTitle: true,
+        showBackArrow: true,
+      ),
+      body: FlutterMap(
+        options: const MapOptions(
+          initialCenter: LatLng(-6.200000, 106.816666),
+          initialZoom: 14,
+          interactionOptions: InteractionOptions(
+            enableMultiFingerGestureRace: true,
+          ),
+        ),
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'com.example.app',
+          ),
+          const MarkerLayer(
+            markers: [
+              Marker(
+                point: LatLng(-6.200000, 106.816666),
+                width: 80,
+                height: 80,
+                child: Icon(Icons.location_pin, color: Colors.red),
+              ),
+            ],
+          ),
+          RichAttributionWidget(
+            attributions: [
+              TextSourceAttribution(
+                'OpenStreetMap contributors',
+                onTap: () {},
+              ),
+            ],
           ),
         ],
       ),
@@ -515,7 +735,9 @@ class FooterButton extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Obx(
         () {
-          if (UserController.instance.user.value.role == 'Fasilitator') {
+          if (UserController.instance.user.value.role == 'Fasilitator' &&
+              UserController.instance.user.value.koasProfile?.status ==
+                  StatusKoas.Pending.name) {
             return Row(
               children: [
                 Expanded(
@@ -569,7 +791,7 @@ class FooterButton extends StatelessWidget {
               ],
             );
           }
-          return SizedBox(
+          return SizedBox( 
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
