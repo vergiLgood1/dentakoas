@@ -201,18 +201,24 @@ class VerificationKoasController extends GetxController {
     return DateFormat('EEEE, d MMMM').format(dateTime);
   }
 
-  String formatKoasTimestamp(DateTime? dateTime) {
+String formatKoasTimestamp(DateTime? dateTime) {
     if (dateTime == null) {
       return 'Unknown';
     }
 
+    // Konversi ke waktu lokal (WIB = UTC+7)
+    DateTime localTime = dateTime.toUtc().add(const Duration(hours: 7));
+
     // Formatting the timestamp (e.g., "10:00 AM")
-    String hour = dateTime.hour.toString().padLeft(2, '0');
-    String minute = dateTime.minute.toString().padLeft(2, '0');
-    String period = dateTime.hour >= 12 ? 'PM' : 'AM';
+    String hour = (localTime.hour % 12 == 0 ? 12 : localTime.hour % 12)
+        .toString()
+        .padLeft(2, '0');
+    String minute = localTime.minute.toString().padLeft(2, '0');
+    String period = localTime.hour >= 12 ? 'PM' : 'AM';
 
     return '$hour:$minute $period';
   }
+
 
   // Pop up confirmation
   void approveConfirmation(String userKoasId, String koasId) {

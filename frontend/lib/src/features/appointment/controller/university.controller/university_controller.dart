@@ -24,29 +24,39 @@ class UniversityController extends GetxController {
   Future<void> fetchUniversities() async {
     try {
       isLoading.value = true;
+
       final fetchedUniversities =
           await universitiesRepository.getUniversities();
+
+      if (fetchedUniversities.isEmpty) {
+        print("No universities found.");
+      }
+
       universities.assignAll(fetchedUniversities);
 
-      featuredUniversities.assignAll(
-        fetchedUniversities.where((university) => true).toList(),
-      );
-
+      // Universitas terbaru berdasarkan `createdAt`
       newestUniversities.assignAll(fetchedUniversities
           .where((university) => university.createdAt != null)
           .toList()
         ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!))
-        ..take(3));
+    );
 
-      popularUniversities.assignAll(fetchedUniversities
-          .where((university) => university.koasCount != 0)
+      // Universitas populer berdasarkan jumlah `koasCount`
+      popularUniversities.assignAll(
+        fetchedUniversities
+            .where((university) => (university.koasCount) > 0)
           .toList()
         ..sort((a, b) => b.koasCount.compareTo(a.koasCount))
-        ..take(3));
+          ..take(3).toList(),
+      );
+
+      // Featured universities (bisa diubah ke kriteria tertentu jika diperlukan)
+      featuredUniversities.assignAll(fetchedUniversities.take(2).toList());
     } catch (e) {
-      print(e.toString());
+      print("Error fetching universities: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
   }
+
 }

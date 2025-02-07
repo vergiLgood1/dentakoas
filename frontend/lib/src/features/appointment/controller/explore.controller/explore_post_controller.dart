@@ -9,6 +9,7 @@ class ExplorePostController extends GetxController {
 
   final postRepository = Get.put(PostRepository());
   final isLoading = false.obs;
+  final today = DateTime.now();
 
   RxList<Post> lastChangePost = <Post>[].obs;
   RxList<Post> newestPosts = <Post>[].obs;
@@ -27,34 +28,41 @@ class ExplorePostController extends GetxController {
       isLoading.value = true;
       final fetchedPosts = await postRepository.getPosts();
 
-      posts.assignAll(fetchedPosts);
+      // Filter status post "Open" dan hanya yang memiliki schedule yang masih berlaku
+      final postWithStatusOpen = fetchedPosts
+          .where((post) =>
+              post.status == StatusPost.Open.name &&
+              post.schedule.any((schedule) => schedule.dateEnd.isAfter(today)))
+          .toList();
+  
+      // Assign ke berbagai list
+      posts.assignAll(postWithStatusOpen);
+      openPosts.assignAll(postWithStatusOpen);
 
-      // filter
+      // Featured posts berdasarkan jumlah like terbanyak
       featuredPosts.assignAll(
-        fetchedPosts.where((post) => post.status == "Open").toList(),
+        (List.of(postWithStatusOpen)
+              ..sort((a, b) => b.likes.length.compareTo(a.likes.length)))
+            .sublist(0,
+                postWithStatusOpen.length < 3 ? postWithStatusOpen.length : 3),
       );
 
-      openPosts.assignAll(
-        fetchedPosts
-            .where((post) =>
-                post.status == "Open" ||
-                post.status == StatusPost.Open.toString().split('.').last)
-            .toList(),
-      );
 
+      // Newest posts (3 post terbaru berdasarkan createdAt)
       newestPosts.assignAll(
-        fetchedPosts.toList()
-          ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
-          ..take(3),
+        (List.of(postWithStatusOpen)
+              ..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
+            .sublist(0,
+                postWithStatusOpen.length < 3 ? postWithStatusOpen.length : 3),
       );
 
+      // Last changed posts (3 post terlama berdasarkan createdAt)
       lastChangePost.assignAll(
-        fetchedPosts.toList()
-          ..sort((a, b) => a.createdAt.compareTo(b.createdAt))
-          ..take(3),
+        (List.of(postWithStatusOpen)
+              ..sort((a, b) => a.createdAt.compareTo(b.createdAt)))
+            .sublist(0,
+                postWithStatusOpen.length < 3 ? postWithStatusOpen.length : 3),
       );
-
-
 
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
