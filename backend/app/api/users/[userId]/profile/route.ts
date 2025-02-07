@@ -219,24 +219,24 @@ export async function PATCH(
       });
 
       // Send notification to Fasilitators with the same university
-      // const fasilitators = await db.fasilitatorProfile.findMany({
-      //   where: { university: profile.university },
-      //   include: { user: true },
-      // });
+      const fasilitators = await db.fasilitatorProfile.findMany({
+        where: { university: profile.university },
+        include: { user: true },
+      });
 
-      // for (const fasilitator of fasilitators) {
-      //   const newNotif = await db.notification.createMany({
-      //     data: {
-      //       senderId: existingUser!.id,
-      //       userId: fasilitator.user.id,
-      //       koasId: profile.id,
-      //       title: "Koas Registration Pending Approval",
-      //       message: `${existingUser.givenName} ${existingUser.familyName} has registered as Koas and is pending approval. Please review their profile.`,
-      //       createdAt: new Date(),
-      //     },
-      //   });
-      //   console.log("New notif for fasilitator:", newNotif);
-      // }
+      for (const fasilitator of fasilitators) {
+        const newNotif = await db.notification.createMany({
+          data: {
+            senderId: existingUser!.id,
+            userId: fasilitator.user.id,
+            koasId: profile.id,
+            title: "Koas Registration Pending Approval",
+            message: `${existingUser.givenName} ${existingUser.familyName} has registered as Koas and is pending approval. Please review their profile.`,
+            createdAt: new Date(),
+          },
+        });
+        console.log("New notif for fasilitator:", newNotif);
+      }
     } else if (existingUser.role === Role.Pasien) {
       const existingPasien = await db.pasienProfile.findUnique({
         where: { userId },
