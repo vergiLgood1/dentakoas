@@ -46,7 +46,7 @@ class VerificationKoasController extends GetxController {
       pendingKoas.assignAll(
         allKoas
             .where((koas) =>
-                koas.koasProfile?.status == 'Pending' &&
+                koas.koasProfile?.status == StatusKoas.Pending.name &&
                 koas.koasProfile?.university == facilitatorUniversity)
             .toList(),
       );
@@ -54,7 +54,7 @@ class VerificationKoasController extends GetxController {
       rejectedKoas.assignAll(
         allKoas
             .where((koas) =>
-                koas.koasProfile?.status == 'Rejected' &&
+                koas.koasProfile?.status == StatusKoas.Rejected.name &&
                 koas.koasProfile?.university == facilitatorUniversity)
             .toList(),
       );
@@ -62,7 +62,7 @@ class VerificationKoasController extends GetxController {
       approvedKoas.assignAll(
         allKoas
             .where((koas) =>
-                koas.koasProfile?.status == 'Approved' &&
+                koas.koasProfile?.status == StatusKoas.Approved.name &&
                 koas.koasProfile?.university == facilitatorUniversity)
             .toList(),
       );
@@ -120,6 +120,9 @@ class VerificationKoasController extends GetxController {
         title: 'Success',
         message: 'Koas has been rejected',
       );
+
+      // Refresh the data
+      initializeVerificationKoas();
 
       Navigator.of(Get.overlayContext!).pop();
     } catch (e) {
@@ -181,6 +184,7 @@ class VerificationKoasController extends GetxController {
       );
 
       // Refresh the data
+      initializeVerificationKoas();
 
       //
       Navigator.of(Get.overlayContext!).pop();
