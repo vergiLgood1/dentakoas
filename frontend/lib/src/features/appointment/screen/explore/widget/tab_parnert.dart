@@ -1,6 +1,8 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/partnert/partner_showcase.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/card_showcase_shimmer.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/university_card_shimmer.dart';
+import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/university.controller/university_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas/all_koas.dart';
@@ -63,7 +65,7 @@ class TabParnert extends StatelessWidget {
               // 🔥 Newest Universities Showcase
               Obx(() {
                 if (controller.isLoading.isTrue) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const CardShowcaseShimmer();
                 }
                 if (controller.newestUniversities.isEmpty) {
                   return const CardShowcase(
@@ -97,11 +99,25 @@ class TabParnert extends StatelessWidget {
 
               // 🔥 Featured Universities List
               Obx(() {
-                if (controller.isLoading.isTrue) {
-                  return const Center(child: CircularProgressIndicator());
+                if (controller.isLoading.value) {
+                  return DGridLayout(
+                    itemCount: controller.featuredUniversities.length,
+                    mainAxisExtent: 330,
+                    crossAxisCount: 1,
+                    itemBuilder: (_, index) {
+                      return const UniversityCardShimmer();
+                    },
+                  );
                 }
-                if (controller.featuredUniversities.isEmpty) {
-                  return const Center(child: Text('No data'));
+                if (controller.featuredUniversities.isNotEmpty) {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: const StateScreen(
+                      image: TImages.emptySearch2,
+                      title: "Parnert not found",
+                      subtitle: "Oppss. There is no post with this category",
+                    ),
+                  );
                 }
 
                 return DGridLayout(
@@ -110,7 +126,6 @@ class TabParnert extends StatelessWidget {
                   mainAxisExtent: 330,
                   itemBuilder: (_, index) {
                     final university = controller.featuredUniversities[index];
-
                     return UniversityCard(
                       image: university.image ?? TImages.banner1,
                       title: university.name,

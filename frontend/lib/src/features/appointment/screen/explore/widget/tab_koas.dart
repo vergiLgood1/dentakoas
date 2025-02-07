@@ -1,6 +1,8 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/partnert/partner_showcase.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/card_showcase_shimmer.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/koas_card_shimmer.dart';
+import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/screen/dentist/all_koas.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/doctor_card.dart';
@@ -80,10 +82,24 @@ class TabKoas extends StatelessWidget {
 
               Obx(() {
                 if (controller.isLoading.value) {
-                  return const CardShowcaseShimmer();
+                  return DGridLayout(
+                    itemCount: 2,
+                    mainAxisExtent: 205,
+                    crossAxisCount: 1,
+                    itemBuilder: (_, index) {
+                      return const KoasCardShimmer();
+                    },
+                  );
                 }
                 if (controller.koas.isEmpty) {
-                  return const Center(child: Text('No data'));
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: const StateScreen(
+                      image: TImages.emptySearch2,
+                      title: "Koas not found",
+                      subtitle: "Oppss. There is no post with this category",
+                    ),
+                  );
                 }
                 return DGridLayout(
                   itemCount: 2,

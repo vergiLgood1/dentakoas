@@ -34,7 +34,14 @@ class HomePopularKoasSection extends StatelessWidget {
           Obx(
             () {
               if (controller.isLoading.value) {
-                return const KoasCardShimmer();
+                return DGridLayout(
+                  itemCount: 2,
+                  mainAxisExtent: 205,
+                  crossAxisCount: 1,
+                  itemBuilder: (_, index) {
+                    return const KoasCardShimmer();
+                  },
+                );
               }
               if (controller.popularKoas.isEmpty) {
                 return KoasCard(

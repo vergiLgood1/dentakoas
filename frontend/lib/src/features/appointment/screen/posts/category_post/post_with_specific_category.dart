@@ -2,6 +2,7 @@ import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/cards/post_card.dart';
 import 'package:denta_koas/src/commons/widgets/cards/treatment_card.dart';
 import 'package:denta_koas/src/commons/widgets/koas/sortable/sortable_koas.dart';
+import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/post_library_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/features/appointment/controller/post.controller/posts_controller.dart';
@@ -47,9 +48,14 @@ class PostWithSpecificCategory extends StatelessWidget {
                     .toList();
 
                 if (controller.isLoading.value) {
-                  return ShimmerCardPostUser(
+                  return DGridLayout(
                     itemCount:
                         filteredPosts.isNotEmpty ? filteredPosts.length : 3,
+                    mainAxisExtent: 400,
+                    crossAxisCount: 1,
+                    itemBuilder: (_, index) {
+                      return const ShimmerPostCard();
+                    },
                   );
                 }
 

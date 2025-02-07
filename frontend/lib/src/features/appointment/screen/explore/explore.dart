@@ -10,6 +10,7 @@ import 'package:denta_koas/src/features/appointment/screen/categories/all_catego
 import 'package:denta_koas/src/features/appointment/screen/explore/widget/tab_koas.dart';
 import 'package:denta_koas/src/features/appointment/screen/explore/widget/tab_parnert.dart';
 import 'package:denta_koas/src/features/appointment/screen/explore/widget/tab_post.dart';
+import 'package:denta_koas/src/features/appointment/screen/notifications/notification.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/category_post/post_with_specific_category.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -32,7 +33,9 @@ class ExploreScreen extends StatelessWidget {
           title: Text('Explore',
               style: Theme.of(context).textTheme.headlineMedium),
           actions: [
-            NotificationCounterIcon(onPressed: () {}),
+            NotificationCounterIcon(
+              onPressed: () => Get.to(() => const NotificationScreen()),
+            ),
           ],
         ),
         body: NestedScrollView(

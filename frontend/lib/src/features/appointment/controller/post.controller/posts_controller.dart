@@ -24,7 +24,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
 class PostController extends GetxController {
-  static PostController get instance => Get.find<PostController>();
+  static PostController get instance => Get.find();
 
   final calendarController = CalendarController();
   final timeController = TimeController();
@@ -71,7 +71,7 @@ class PostController extends GetxController {
 
       // filter
       featurePost.assignAll(
-        posts.where((post) => post.status == "Ope...n").toList(),
+        posts.where((post) => post.status == StatusPost.Open.name).toList(),
       );
 
       // postWithSpecificTreatment.assignAll(

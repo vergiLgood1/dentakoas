@@ -50,8 +50,14 @@ class CreatePostScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return ShimmerCardPostUser(
-            itemCount: controller.postUser.length,
+          return DGridLayout(
+            itemCount:
+                controller.postUser.isNotEmpty ? controller.postUser.length : 3,
+            mainAxisExtent: 400,
+            crossAxisCount: 1,
+            itemBuilder: (_, index) {
+              return const ShimmerPostCard();
+            },
           );
         }
         if (controller.postUser.isEmpty) {

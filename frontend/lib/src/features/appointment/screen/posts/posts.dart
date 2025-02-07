@@ -1,6 +1,9 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/cards/post_card.dart';
 import 'package:denta_koas/src/commons/widgets/koas/sortable/sortable_koas.dart';
+import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/post_library_shimmer.dart';
+import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/features/appointment/controller/explore.controller/explore_post_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
@@ -27,10 +30,25 @@ class AllPostScreen extends StatelessWidget {
           child: Obx(
             () {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return DGridLayout(
+                  itemCount:
+                      controller.posts.isNotEmpty ? controller.posts.length : 3,
+                  mainAxisExtent: 240,
+                  crossAxisCount: 1,
+                  itemBuilder: (_, index) {
+                    return const ShimmerPostCard();
+                  },
+                );
               }
               if (controller.posts.isEmpty) {
-                return const Center(child: Text('No data'));
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: const StateScreen(
+                    image: TImages.emptySearch2,
+                    title: "Post not found",
+                    subtitle: "Oppss. There is no post found.",
+                  ),
+                );
               }
               return SortableField(
                 itemCount: controller.posts.length,
