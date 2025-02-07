@@ -1,4 +1,6 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/schedule_card_shimmer.dart';
+import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/features/appointment/controller/verification_koas_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas/koas_details/koas_detail.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
@@ -6,7 +8,6 @@ import 'package:denta_koas/src/features/personalization/controller/user_controll
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/formatters/formatter.dart';
-import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,28 +30,24 @@ class TabApprovedKoas extends StatelessWidget {
             children: [
               Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return DGridLayout(
+                    itemCount: controller.approvedKoas.length,
+                    mainAxisExtent: 230,
+                    crossAxisCount: 1,
+                    itemBuilder: (_, index) {
+                      return const ScheduleCardShimmer();
+                    },
+                  );
                 }
                 if (controller.approvedKoas.isEmpty) {
-                  return Center(
-                      child: Column(
-                    children: [
-                      Image(
-                        image: const AssetImage(TImages.emptyCalendar),
-                        width: THelperFunctions.screenWidth(),
-                      ),
-                      const SizedBox(height: TSizes.spaceBtwSections),
-                      Text(
-                        'Empty Approved koas',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: TSizes.spaceBtwSections),
-                      Text(
-                        'You don\'t have any Approved koas yet.',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ));
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: const StateScreen(
+                      image: TImages.emptyPost,
+                      title: "Empty Approved Koas",
+                      subtitle: "Oppss. You don't have any approved koas yet.",
+                    ),
+                  );
                 }
                 return DGridLayout(
                     itemCount: controller.approvedKoas.length,
@@ -67,9 +64,10 @@ class TabApprovedKoas extends StatelessWidget {
                             koas.koasProfile?.updateAt),
                         timestamp: TFormatter.formatTimeToLocal(
                             koas.koasProfile?.updateAt),
-                        secondaryBtnText: 'Details',
-                        onPrimaryBtnPressed: () {},
-                        onSecondaryBtnPressed: () {},
+                        primaryBtnText: 'Details',
+                        onPrimaryBtnPressed: () => Get.to(
+                            () => const KoasDetailScreen(),
+                            arguments: koas),
                         onTap: () => Get.to(() => const KoasDetailScreen(),
                             arguments: koas),
                       );

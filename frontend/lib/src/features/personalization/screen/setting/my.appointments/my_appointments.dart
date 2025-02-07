@@ -25,8 +25,16 @@ class MyOngoingAppointmentsScreen extends StatelessWidget {
         child: Obx(
           () {
             if (controller.isLoading.value) {
-              return ScheduleCardShimmer(
-                  itemCount: controller.ongoingAppointments.length);
+              return DGridLayout(
+                itemCount: controller.ongoingAppointments.isNotEmpty
+                    ? controller.ongoingAppointments.length
+                    : 3,
+                crossAxisCount: 1,
+                mainAxisExtent: 200,
+                itemBuilder: (_, index) {
+                  return const ScheduleCardShimmer();
+                },
+              );
             }
             if (controller.ongoingAppointments.isEmpty) {
               return const StateScreen(
