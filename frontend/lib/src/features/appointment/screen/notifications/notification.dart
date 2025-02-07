@@ -6,6 +6,7 @@ import 'package:denta_koas/src/features/appointment/data/model/notifications_mod
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
+import 'package:denta_koas/src/utils/formatters/formatter.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -221,7 +222,7 @@ class NotificationCard extends StatelessWidget {
                       TextStyle(color: dark ? TColors.grey : TColors.darkGrey),
                 ),
                 Text(
-                  controller.formatTime(time.toIso8601String()),
+                  TFormatter.formatTimeToLocal(time),
                   style:
                       TextStyle(color: dark ? TColors.grey : TColors.darkGrey),
                 ),

@@ -98,6 +98,9 @@ class TImages {
 
   static const String emptyCalendar =
       "assets/images/states/empty/calendar_empty.png";
+
+  static const String emptySearch2 =
+      "assets/images/states/empty/Search_empty.png";
  
 
   // -- Products

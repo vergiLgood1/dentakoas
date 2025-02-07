@@ -5,6 +5,7 @@ import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/sch
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
+import 'package:denta_koas/src/utils/formatters/formatter.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,10 +63,10 @@ class TabApprovedKoas extends StatelessWidget {
                         imgUrl: TImages.user,
                         name: koas.name!,
                         category: koas.koasProfile!.university!,
-                        date: controller
-                            .formatKoasDate(koas.koasProfile?.updateAt),
-                        timestamp: controller
-                            .formatKoasTimestamp(koas.koasProfile?.updateAt),
+                        date: TFormatter.formatDateToFullDayName(
+                            koas.koasProfile?.updateAt),
+                        timestamp: TFormatter.formatTimeToLocal(
+                            koas.koasProfile?.updateAt),
                         secondaryBtnText: 'Details',
                         onPrimaryBtnPressed: () {},
                         onSecondaryBtnPressed: () {},

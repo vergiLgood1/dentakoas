@@ -86,15 +86,15 @@ class TabPost extends StatelessWidget {
                 if (controller.isLoading.value) {
                   return const CardShowcaseShimmer();
                 }
-                if (controller.openPosts.isEmpty) {
+                if (controller.featuredPosts.isEmpty) {
                   return const Center(child: Text('No data'));
                 }
                 return DGridLayout(
-                  itemCount: controller.openPosts.length < 2 ? 1 : 2,
+                  itemCount: controller.featuredPosts.length < 2 ? 1 : 2,
                   crossAxisCount: 1,
                   mainAxisExtent: 400,
                   itemBuilder: (_, index) {
-                    final post = controller.openPosts[index];
+                    final post = controller.featuredPosts[index];
                     return PostCard(
                       postId: post.id,
                       name: post.user.fullName,

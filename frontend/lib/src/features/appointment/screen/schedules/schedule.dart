@@ -25,7 +25,7 @@ class AppointmentsScreen extends StatelessWidget {
 
     return DefaultTabController(
       length: isFasilitator ? 3 : 6,
-      initialIndex: 2,
+      initialIndex: isFasilitator ? 1 : 2,
       child: Scaffold(
         body: Column(
           children: [

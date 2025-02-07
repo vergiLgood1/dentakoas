@@ -31,7 +31,7 @@ class AllUniversitiesScreen extends StatelessWidget {
                 crossAxisCount: 1,
                 mainAxisExtent: 330,
                 itemBuilder: (_, index) {
-                  final university = controller.featuredUniversities[index];
+                  final university = controller.universities[index];
                   return UniversityCard(
                     title: university.name,
                     subtitle: university.alias,

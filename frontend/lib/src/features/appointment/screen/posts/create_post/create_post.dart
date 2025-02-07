@@ -50,7 +50,7 @@ class CreatePostScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return ShimmerPostLibrary(
+          return ShimmerCardPostUser(
             itemCount: controller.postUser.length,
           );
         }

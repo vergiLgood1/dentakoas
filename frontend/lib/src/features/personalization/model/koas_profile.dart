@@ -2,9 +2,9 @@ import 'package:denta_koas/src/features/personalization/model/stats_model.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 
 enum StatusKoas {
-  pending,
-  approved,
-  rejected,
+  Pending,
+  Approved,
+  Rejected,
 }
 
 class KoasProfileModel {

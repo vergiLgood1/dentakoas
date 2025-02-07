@@ -52,7 +52,8 @@ class MyAddressScreen extends StatelessWidget {
       ),
       floatingActionButton: Obx(
         () {
-          if (controller.user.value.address == null) {
+          if (controller.user.value.address == null ||
+              controller.user.value.address == '') {
             return FloatingActionButton(
               backgroundColor: TColors.primary,
               onPressed: () => Get.to(() => const UpdateMyAddressScreen()),

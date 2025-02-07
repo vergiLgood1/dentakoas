@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
+import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:get/get.dart';
@@ -8,11 +9,9 @@ class KoasController extends GetxController {
 
   RxList<UserModel> allKoas = <UserModel>[].obs;
   RxList<UserModel> koas = <UserModel>[].obs;
-  RxList<UserModel> featuredKoas = <UserModel>[].obs;
+  // RxList<UserModel> featuredKoas = <UserModel>[].obs;
   RxList<UserModel> popularKoas = <UserModel>[].obs;
   RxList<UserModel> newestKoas = <UserModel>[].obs;
-
-
 
   final isLoading = false.obs;
 
@@ -27,39 +26,57 @@ class KoasController extends GetxController {
       isLoading.value = true;
       final fetchedKoas =
           await UserRepository.instance.fetchUsersByRole('Koas');
-      allKoas.assignAll(fetchedKoas);
-      koas.assignAll(fetchedKoas);
 
-      // filter
-      featuredKoas.assignAll(
-        fetchedKoas.where((koas) => koas.id != null).toList(),
-      );
+      // Filter koas dengan status "Approved"
+      final approvedKoas = fetchedKoas
+          .where((koas) => koas.koasProfile?.status == StatusKoas.Approved.name)
+          .toList();
 
+      // Assign ke berbagai list
+      allKoas.assignAll(approvedKoas);
+      koas.assignAll(approvedKoas);
+
+      // Popular koas berdasarkan rating dan jumlah review
       popularKoas.assignAll(
-        fetchedKoas
-            .where((koas) => koas.koasProfile!.stats!.totalReviews > 0)
-            .toList()
-          ..sort(
-            (a, b) {
-              int compareRating = b.koasProfile!.stats!.averageRating
-                  .compareTo(a.koasProfile!.stats!.averageRating);
-              if (compareRating != 0) {
-                return compareRating;
-              } else {
-                return b.koasProfile!.stats!.totalReviews
-                    .compareTo(a.koasProfile!.stats!.totalReviews);
-              }
-            },
-          ),
+        (List.of(approvedKoas)
+              ..sort((a, b) {
+                final aStats = a.koasProfile?.stats;
+                final bStats = b.koasProfile?.stats;
+
+                if (aStats == null || bStats == null) return 0;
+
+                int compareRating =
+                    bStats.averageRating.compareTo(aStats.averageRating);
+                if (compareRating != 0) {
+                  return compareRating;
+                } else {
+                  return bStats.totalReviews.compareTo(aStats.totalReviews);
+                }
+              }))
+            .where((koas) => koas.koasProfile?.stats?.totalReviews != null)
+            .take(5)
+            .toList(),
       );
 
+      // Newest koas berdasarkan update terbaru
       newestKoas.assignAll(
-          fetchedKoas.where((koas) => koas.updateAt != null).toList()
-            ..sort((a, b) => b.updateAt!.compareTo(a.updateAt!)));
+        (List.of(approvedKoas)
+              ..sort((a, b) {
+                final aUpdate = a.updateAt;
+                final bUpdate = b.updateAt;
+
+                if (aUpdate == null || bUpdate == null) return 0;
+                return bUpdate.compareTo(aUpdate);
+              }))
+            .where((koas) => koas.updateAt != null)
+            .take(5)
+            .toList(),
+      );
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
     } finally {
       isLoading.value = false;
     }
   }
+
 }

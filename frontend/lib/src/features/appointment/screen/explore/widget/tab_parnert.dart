@@ -15,7 +15,6 @@ import 'package:iconsax/iconsax.dart';
 
 class TabParnert extends StatelessWidget {
  
-
   const TabParnert({
     super.key,
   });
@@ -24,6 +23,7 @@ class TabParnert extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UniversityController());
+
     return ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -32,9 +32,9 @@ class TabParnert extends StatelessWidget {
           padding: const EdgeInsets.all(TSizes.defaultSpace),
           child: Column(
             children: [
-              // Partners showcase
+              // 🔥 Popular Universities Showcase
               Obx(() {
-                if (controller.isLoading.value) {
+                if (controller.isLoading.isTrue) {
                   return const CardShowcaseShimmer();
                 }
                 if (controller.popularUniversities.isEmpty) {
@@ -44,11 +44,11 @@ class TabParnert extends StatelessWidget {
                         'Unfortunately, there are no popular universities',
                   );
                 }
+
                 final popularImages = controller.popularUniversities
                     .take(3)
                     .map((university) => university.image)
-                    .where((image) => image != null)
-                    .cast<String>()
+                    .whereType<String>()
                     .toList();
 
                 return CardShowcase(
@@ -58,21 +58,24 @@ class TabParnert extends StatelessWidget {
                 );
               }),
 
+              const SizedBox(height: TSizes.spaceBtwItems),
+
+              // 🔥 Newest Universities Showcase
               Obx(() {
-                if (controller.isLoading.value) {
+                if (controller.isLoading.isTrue) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (controller.featuredUniversities.isEmpty) {
+                if (controller.newestUniversities.isEmpty) {
                   return const CardShowcase(
                     title: 'Newest Universities is empty',
                     subtitle: 'Unfortunately, there are no newest universities',
                   );
                 }
+
                 final newestImages = controller.newestUniversities
                     .take(3)
                     .map((university) => university.image)
-                    .where((image) => image != null)
-                    .cast<String>()
+                    .whereType<String>()
                     .toList();
 
                 return CardShowcase(
@@ -81,51 +84,56 @@ class TabParnert extends StatelessWidget {
                   images: newestImages,
                 );
               }),
+
               const SizedBox(height: TSizes.spaceBtwItems),
 
-              // Posts
+              // 🔥 Section Heading
               SectionHeading(
-                  title: 'You might interest',
-                  onPressed: () => Get.to(() => const AllUniversitiesScreen())),
+                title: 'You might interest',
+                onPressed: () => Get.to(() => const AllUniversitiesScreen()),
+              ),
+
               const SizedBox(height: TSizes.spaceBtwItems),
 
-              Obx(
-                () {
-                  if (controller.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (controller.featuredUniversities.isEmpty) {
-                    return const Center(child: Text('No data'));
-                  }
-                  return DGridLayout(
-                    itemCount: 2,
-                    crossAxisCount: 1,
-                    mainAxisExtent: 330,
-                    itemBuilder: (_, index) {
-                      final university = controller.featuredUniversities[index];
-                      return UniversityCard(
-                        image: TImages.banner1,
-                        title: university.name,
-                        subtitle: university.alias,
-                        address: university.location,
-                        distance: '1.5km',
-                        time: '15 min',
-                        koasCount: university.koasCount,
-                        onTap: () => Get.to(
-                          () => const PostWithSpecificUniversity(),
-                          arguments: university,
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+              // 🔥 Featured Universities List
+              Obx(() {
+                if (controller.isLoading.isTrue) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.featuredUniversities.isEmpty) {
+                  return const Center(child: Text('No data'));
+                }
+
+                return DGridLayout(
+                  itemCount: controller.featuredUniversities.length,
+                  crossAxisCount: 1,
+                  mainAxisExtent: 330,
+                  itemBuilder: (_, index) {
+                    final university = controller.featuredUniversities[index];
+
+                    return UniversityCard(
+                      image: university.image ?? TImages.banner1,
+                      title: university.name,
+                      subtitle: university.alias,
+                      address: university.location,
+                      distance: '1.5km',
+                      time: '15 min',
+                      koasCount: university.koasCount,
+                      onTap: () => Get.to(
+                        () => const PostWithSpecificUniversity(),
+                        arguments: university,
+                      ),
+                    );
+                  },
+                );
+              }),
             ],
           ),
         ),
       ],
     );
   }
+
 }
 
 class UniversityCard extends StatelessWidget {

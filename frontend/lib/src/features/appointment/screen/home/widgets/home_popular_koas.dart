@@ -60,7 +60,10 @@ class HomePopularKoasSection extends StatelessWidget {
                     rating: popularKoas.koasProfile!.stats!.averageRating,
                     totalReviews: popularKoas.koasProfile!.stats!.totalReviews,
                     image: TImages.userProfileImage3,
-                    onTap: () => Get.to(() => const KoasDetailScreen()),
+                    onTap: () => Get.to(
+                      () => const KoasDetailScreen(),
+                      arguments: popularKoas,
+                    ),
                   );
                 },
               );

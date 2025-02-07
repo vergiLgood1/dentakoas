@@ -69,9 +69,10 @@ class HomeUpcomingScheduleSection extends StatelessWidget {
                     timestamp:
                         controller.getAppointmentTimestampRange(appointment),
                   );
-                });
-          })
-          
+                },
+              );
+            },
+          )
           // const UpcomingScheduleShimmer(),
         ],
       ),
