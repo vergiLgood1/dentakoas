@@ -63,6 +63,33 @@ class TFormatter {
     return formattedNumber.toString();
   }
 
+  static String formatDateToFullDayName(DateTime? dateTime) {
+    if (dateTime == null) {
+      return 'Unknown date';
+    }
+    // Formatting the date (e.g., "Monday, 5 January")
+    return DateFormat('EEEE, d MMMM').format(dateTime);
+  }
+
+  static String formatTimeToLocal(DateTime? dateTime) {
+    if (dateTime == null) {
+      return 'Unknown';
+    }
+
+    // Konversi ke waktu lokal (WIB = UTC+7)
+    DateTime localTime = dateTime.toUtc().add(const Duration(hours: 7));
+
+    // Formatting the timestamp (e.g., "10:00 AM")
+    String hour = (localTime.hour % 12 == 0 ? 12 : localTime.hour % 12)
+        .toString()
+        .padLeft(2, '0');
+    String minute = localTime.minute.toString().padLeft(2, '0');
+    String period = localTime.hour >= 12 ? 'PM' : 'AM';
+
+    return '$hour:$minute $period';
+  }
+
+
 
 
 
