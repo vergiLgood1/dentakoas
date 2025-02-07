@@ -12,7 +12,7 @@ class ChangeAccountScreen extends StatelessWidget {
     final controller = AppointmentsController.instance;
     return const Scaffold(
       appBar: DAppBar(
-        title: Text('Privacy Account'),
+        title: Text('Change Account'),
         showBackArrow: true,
         centerTitle: true,
       ),

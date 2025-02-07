@@ -71,7 +71,7 @@ class ProfileScreen extends StatelessWidget {
               ),
 
                 const SizedBox(
-                  height: TSizes.spaceBtwItems,
+                  height: TSizes.spaceBtwItems / 4,
                 ),
                 Container(
                 width: double.infinity,

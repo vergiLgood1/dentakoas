@@ -30,10 +30,10 @@ class MyOngoingAppointmentsScreen extends StatelessWidget {
             }
             if (controller.ongoingAppointments.isEmpty) {
               return const StateScreen(
-                image: TImages.emptyMyOngoingAppointments,
+                image: TImages.emptyCalendar,
                 title: 'No Appointments Found',
                 subtitle: "You don't have ongoing appointment for today",
-                isLottie: true,
+                isLottie: false,
               );
             }
             return DGridLayout(

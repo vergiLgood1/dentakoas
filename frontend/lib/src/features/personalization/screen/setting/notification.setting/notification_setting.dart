@@ -12,7 +12,7 @@ class NotificationSettingScreen extends StatelessWidget {
     final controller = AppointmentsController.instance;
     return const Scaffold(
       appBar: DAppBar(
-        title: Text('Privacy Account'),
+        title: Text('Notification Setting'),
         showBackArrow: true,
         centerTitle: true,
       ),

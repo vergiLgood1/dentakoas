@@ -139,6 +139,10 @@ class SettingsScreen extends StatelessWidget {
                                   ),
                                   actions: <Widget>[
                                     TextButton(
+                                      style: TextButton.styleFrom(
+                                        overlayColor:
+                                            TColors.primary.withOpacity(0.1),
+                                      ),
                                       child: const Text(
                                         'OK',
                                         style: TextStyle(
