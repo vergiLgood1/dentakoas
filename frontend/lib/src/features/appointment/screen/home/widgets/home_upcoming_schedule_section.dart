@@ -41,10 +41,7 @@ class HomeUpcomingScheduleSection extends StatelessWidget {
                 crossAxisCount: 1,
                 mainAxisExtent: 200,
                 itemBuilder: (_, index) {
-                  const ScheduleCardShimmer(
-                    itemCount: 1,
-                  );
-                  return null;
+                    return const ScheduleCardShimmer();
                 },
               );
             }
