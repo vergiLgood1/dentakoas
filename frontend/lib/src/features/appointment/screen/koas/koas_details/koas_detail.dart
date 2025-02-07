@@ -5,6 +5,7 @@ import 'package:denta_koas/src/commons/widgets/shimmer/card_showcase_shimmer.dar
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/commons/widgets/text/title_with_verified.dart';
 import 'package:denta_koas/src/features/appointment/controller/explore.controller/explore_post_controller.dart';
+import 'package:denta_koas/src/features/appointment/controller/verification_koas_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/koas_post/post_with_specific_koas.dart';
@@ -78,8 +79,10 @@ class KoasDetailScreen extends StatelessWidget {
               // Koas upcoming event
 
               // const KoasUpcomingEvent(),
-
-              const BookAppointmentButton(),
+              FooterButton(
+                userKoasId: koas.koasProfile?.id,
+                koasId: koas.id,
+              ),
             ],
           ),
         )
@@ -302,14 +305,26 @@ class PersonalInformationSection extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    info['label'] as String,
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                  Expanded(
+                    child: Text(
+                      info['label'] as String,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
-                  Text(
-                    info['value'] as String,
-                    style: const TextStyle(
-                        fontSize: 14, color: TColors.textPrimary),
+                  Expanded(
+                    child: Text(
+                      info['value'] as String,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: TColors.textPrimary,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
                   ),
                 ],
               ),
@@ -487,29 +502,91 @@ class KoasUpcomingEvent extends StatelessWidget {
   }
 }
 
-class BookAppointmentButton extends StatelessWidget {
-  const BookAppointmentButton({super.key});
+class FooterButton extends StatelessWidget {
+  const FooterButton({super.key, this.userKoasId, this.koasId});
+
+  final String? userKoasId;
+  final String? koasId;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(VerificationKoasController());
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: TColors.primary,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+      child: Obx(
+        () {
+          if (UserController.instance.user.value.role == 'Fasilitator') {
+            return Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () =>
+                        controller.rejectConfirmation(userKoasId!, koasId!),
+                    style: ElevatedButton.styleFrom(
+                      overlayColor: TColors.primary.withOpacity(0.1),
+                      side: BorderSide(color: Colors.blue.shade50),
+                      backgroundColor: Colors.blue.shade50,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                    ),
+                    child: const Text(
+                      'Reject',
+                      style: TextStyle(
+                        fontSize: TSizes.fontSizeMd,
+                        fontWeight: FontWeight.bold,
+                        color: TColors.primary,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () =>
+                        controller.approveConfirmation(userKoasId!, koasId!),
+                    style: ElevatedButton.styleFrom(
+                      side: const BorderSide(color: TColors.primary),
+                      backgroundColor: TColors.primary,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                    ),
+                    child: const Text(
+                      'Approve',
+                      style: TextStyle(
+                        fontSize: TSizes.fontSizeMd,
+                        fontWeight: FontWeight.bold,
+                        color: TColors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+          return SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: TColors.primary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: () => Get.to(() => const PostWithSpecificKoas()),
+              child: const Text(
+                'Book Appointment',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
-          ),
-          onPressed: () => Get.to(() => const PostWithSpecificKoas()),
-          child: const Text(
-            'Book Appointment',
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -32,7 +32,7 @@ class TabUpcomingAppointments extends StatelessWidget {
                       child: Column(
                     children: [
                       Image(
-                        image: const AssetImage(TImages.emptyPost),
+                        image: const AssetImage(TImages.emptyCalendar),
                         width: THelperFunctions.screenWidth(),
                       ),
                       const SizedBox(height: TSizes.spaceBtwSections),

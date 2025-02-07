@@ -35,7 +35,7 @@ class TabPendingKoas extends StatelessWidget {
                       child: Column(
                     children: [
                       Image(
-                        image: const AssetImage(TImages.emptyPost),
+                        image: const AssetImage(TImages.emptyCalendar),
                         width: THelperFunctions.screenWidth(),
                       ),
                       const SizedBox(height: TSizes.spaceBtwSections),
@@ -74,7 +74,10 @@ class TabPendingKoas extends StatelessWidget {
                         onSecondaryBtnPressed: () =>
                             controller.rejectConfirmation(
                                 koas.id!, koas.koasProfile!.id!),
-                        onTap: () => Get.to(() => const KoasDetailScreen()),
+                        onTap: () => Get.to(
+                          () => const KoasDetailScreen(),
+                          arguments: koas,
+                        ),
                       );
                     },
                   );
