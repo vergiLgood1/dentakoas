@@ -1,10 +1,11 @@
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/schedule_card_shimmer.dart';
+import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/features/appointment/controller/appointment.controller/appointments_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/my_appointment/my_appointment.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
-import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,28 +26,25 @@ class TabCancelAppointments extends StatelessWidget {
             children: [
               Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return DGridLayout(
+                    itemCount: controller.canceledAppointments.length,
+                    mainAxisExtent: 230,
+                    crossAxisCount: 1,
+                    itemBuilder: (_, index) {
+                      return const ScheduleCardShimmer();
+                    },
+                  );
                 }
                 if (controller.canceledAppointments.isEmpty) {
-                  return Center(
-                      child: Column(
-                    children: [
-                      Image(
-                        image: const AssetImage(TImages.emptyCalendar),
-                        width: THelperFunctions.screenWidth(),
-                      ),
-                      const SizedBox(height: TSizes.spaceBtwSections),
-                      Text(
-                        'Empty canceled koas',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: TSizes.spaceBtwSections),
-                      Text(
-                        'You don\'t have any canceled koas yet.',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ));
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: const StateScreen(
+                      image: TImages.emptyCalendar,
+                      title: "Empty Cancelled Appointments",
+                      subtitle:
+                          "Oppss. You don't have any cancelled appointments yet.",
+                    ),
+                  );
                 }
                 {
                   return DGridLayout(
