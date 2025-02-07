@@ -18,17 +18,17 @@ class OnBoardingScreen extends StatelessWidget {
     // Data untuk onboarding pages
     final List<Map<String, String>> onBoardingData = [
       {
-        "image": TImages.onBoardingImage4,
+        "image": TImages.onBoardingImage1,
         "title": TTexts.onBoardingTitle1,
         "subTitle": TTexts.onBoardingSubTitle1,
       },
       {
-        "image": TImages.onBoardingImage5,
+        "image": TImages.onBoardingImage2,
         "title": TTexts.onBoardingTitle2,
         "subTitle": TTexts.onBoardingSubTitle2,
       },
       {
-        "image": TImages.onBoardingImage6,
+        "image": TImages.onBoardingImage3,
         "title": TTexts.onBoardingTitle3,
         "subTitle": TTexts.onBoardingSubTitle3,
       },
@@ -48,6 +48,7 @@ class OnBoardingScreen extends StatelessWidget {
                 image: item["image"]!,
                 title: item["title"]!,
                 subTitle: item["subTitle"]!,
+                isLootie: true,
               );
             },
           ),

@@ -71,6 +71,10 @@ class SigninController extends GetxController {
       // Stop loading
       TFullScreenLoader.stopLoading();
 
+      // Refresh user data
+      final updatedUser = await UserRepository.instance.getUserDetailById();
+      UserController.instance.user.value = updatedUser;
+
       // Redirect to home screen
       AuthenticationRepository.instance.screenRedirect();
     } catch (e) {

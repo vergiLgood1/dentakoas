@@ -57,15 +57,20 @@ class TImages {
  
 
   // -- OnBoarding Texts
-  static const String onBoardingImage1 = "assets/images/on_boarding_images/sammy-line-searching.gif";
-  static const String onBoardingImage2 = "assets/images/on_boarding_images/sammy-line-shopping.gif";
-  static const String onBoardingImage3 = "assets/images/on_boarding_images/sammy-line-delivery.gif";
+  // static const String onBoardingImage1 = "assets/images/on_boarding_images/sammy-line-searching.gif";
+  // static const String onBoardingImage2 = "assets/images/on_boarding_images/sammy-line-shopping.gif";
+  // static const String onBoardingImage3 = "assets/images/on_boarding_images/sammy-line-delivery.gif";
+  static const String onBoardingImage1 = "assets/images/animations/onboarding-1.json";
+  static const String onBoardingImage2 = "assets/images/animations/onboarding-2.json";
+  static const String onBoardingImage3 = "assets/images/animations/onboarding-3.json";
   static const String onBoardingImage4 =
       "assets/images/on_boarding_images/Deadline--Streamline-Brooklyn.png";
   static const String onBoardingImage5 =
       "assets/images/on_boarding_images/Create-Account-1--Streamline-Brooklyn.png";
   static const String onBoardingImage6 =
       "assets/images/on_boarding_images/Frontline-Worker--Streamline-Brooklyn (1).png";
+  static const String onBoardingImage7 =
+      "assets/images/on_boarding_images/Frontline-Worker--Streamline-Brooklyn-tes.png";
 
   static const String welcomeImage1 =
       "assets/images/on_boarding_images/Video-Conference-4--Streamline-Brooklyn.png";
@@ -90,6 +95,9 @@ class TImages {
 
   static const String successCreatePost =
       "assets/images/on_boarding_images/High-Five-1--Streamline-Brooklyn.png";
+
+  static const String emptyCalendar =
+      "assets/images/states/empty/calendar_empty.png";
  
 
   // -- Products
