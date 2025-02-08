@@ -17,7 +17,6 @@ import 'package:logger/logger.dart';
 class PostRepository extends GetxController {
   static PostRepository get instance => Get.find();
 
-
   Future<List<Post>> getPosts() async {
     try {
       final response = await DioClient().get(Endpoints.posts);

@@ -20,7 +20,7 @@ class Post {
   final List<dynamic> likes;
   final int? likeCount;
   final int totalCurrentParticipants;
-  final List<Review>? reviews;
+  final List<ReviewModel>? reviews;
 
 
   Post({
@@ -73,8 +73,8 @@ class Post {
       likes: json['likes'] is List ? json['likes'] : [],
       likeCount: json['likeCount'] ?? 0,
       totalCurrentParticipants: json['totalCurrentParticipants'] ?? 0,
-      reviews: (json['Review'] as List?)
-              ?.map((item) => Review.fromJson(item))
+      reviews: (json['ReviewModel'] as List?)
+              ?.map((item) => ReviewModel.fromJson(item))
               .toList() ??
           [],
     );

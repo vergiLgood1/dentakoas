@@ -1,6 +1,21 @@
 
 class TValidator {
 
+static String? validateUserInput(
+      String? fieldName, String? value, int? maxLength) {
+    String? emptyTextValidation = validateEmptyText(fieldName, value);
+    if (emptyTextValidation != null) {
+      return emptyTextValidation;
+    }
+
+    String? lengthValidation = validateLength(value, maxLength!);
+    if (lengthValidation != null) {
+      return lengthValidation;
+    }
+
+    return null;
+  }
+
 static String? validateEmptyText(String? fieldName, String? value) {
     if (value == null || value.isEmpty) {
       return '$fieldName is required.';
@@ -9,7 +24,19 @@ static String? validateEmptyText(String? fieldName, String? value) {
     return null;
   }
 
-  static String? validateEmail(String? value) {
+static String? validateLength(String? value, int maxLength) {
+    if (value == null || value.isEmpty) {
+      return 'Value is required.';
+    }
+
+    if (value.length > maxLength) {
+      return 'Value must be no more than $maxLength characters long.';
+    }
+
+    return null;
+  }
+
+static String? validateEmail(String? value) {
     if (value == null || value.isEmpty || value.trim().isEmpty || value == '') {
       return 'Email is required.';
     }
@@ -24,7 +51,7 @@ static String? validateEmptyText(String? fieldName, String? value) {
     return null;
   }
 
-  static String? validatePassword(String? value) {
+static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is required.';
     }
@@ -52,7 +79,7 @@ static String? validateEmptyText(String? fieldName, String? value) {
     return null;
   }
 
-  static String? validateConfirmPassword(
+static String? validateConfirmPassword(
       String? password, String? confirmPassword) {
     if (confirmPassword == null || confirmPassword.isEmpty) {
       return 'Confirm password is required.';
@@ -65,7 +92,7 @@ static String? validateEmptyText(String? fieldName, String? value) {
     return null;
   }
 
-  static String? validatePhoneNumber(String? value) {
+static String? validatePhoneNumber(String? value) {
     if (value == null || value.isEmpty) {
       return 'Phone number is required.';
     }
@@ -80,5 +107,10 @@ static String? validateEmptyText(String? fieldName, String? value) {
     return null;
   }
 
-// Add more custom validators as needed for your specific requirements.
+static String? validateRating(double rating) {
+    if (rating == 0) {
+      return 'Rating is required.';
+    }
+    return null;
+  }
 }

@@ -56,13 +56,13 @@ export async function GET(
 
       const totalReviews = await db.review.count({
         where: {
-          userId,
+          koasId: userId,
         },
       });
 
       const patientCount = await db.appointment.count({
         where: {
-          koasId: profile.id,
+          koasId: userId,
           status: "Completed",
         },
       });
@@ -72,7 +72,7 @@ export async function GET(
           rating: true,
         },
         where: {
-          userId,
+          koasId: userId,
         },
       });
 

@@ -29,7 +29,6 @@ export async function GET(
         KoasProfile: true,
         PasienProfile: true,
         FasilitatorProfile: true,
-        Review: true,
       },
     });
 
@@ -42,7 +41,7 @@ export async function GET(
       if (user.role === Role.Koas) {
         const totalReviews = await db.review.count({
           where: {
-            userId: user.id,
+            koasId: user.KoasProfile!.userId,
           },
         });
 
@@ -51,14 +50,20 @@ export async function GET(
             rating: true,
           },
           where: {
-            userId: user.id,
+            koasId: user.KoasProfile!.userId,
           },
         });
 
         const patientCount = await db.appointment.count({
           where: {
-            koasId: user.KoasProfile!.id,
+            koasId: user.KoasProfile!.userId,
             status: "Completed",
+          },
+        });
+
+        const review = await db.review.findMany({
+          where: {
+            koasId: user.KoasProfile!.userId,
           },
         });
 
@@ -76,6 +81,7 @@ export async function GET(
               ),
               patientCount,
             },
+            review,
             createdAt,
             updateAt,
           },

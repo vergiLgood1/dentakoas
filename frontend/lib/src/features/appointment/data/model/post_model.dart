@@ -21,7 +21,7 @@ class PostModel {
   bool? published;
   List<SchedulesModel>? schedule;
   SchedulesModel? scheduleDetail;
-  List<Review>? review;
+  List<ReviewModel>? review;
   List<LikesModel>? likes;
   DateTime? createdAt;
   DateTime? updatedAt;
@@ -100,7 +100,7 @@ class PostModel {
       'status': status.toString().split('.').last,
       'published': published,
       'Schedule': schedule?.map((e) => e.toJson()).toList(),
-      'Review': review?.map((e) => e.toJson()).toList(),
+      'ReviewModel': review?.map((e) => e.toJson()).toList(),
       'likes': likes?.map((e) => e.toJson()).toList(),
       'createdAt': createdAt?.toIso8601String(),
       'updateAt': updatedAt?.toIso8601String(),

@@ -54,6 +54,8 @@ class TImages {
   static const String loadingHealth = "assets/images/animations/email.json";
   static const String setupProfileSuccess =
       "assets/images/animations/setup-profile.json";
+  static const String successAddReview =
+      "assets/images/animations/success_add_review.json";
  
 
   // -- OnBoarding Texts

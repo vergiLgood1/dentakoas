@@ -3,101 +3,36 @@ import db from "@/lib/db";
 
 export async function GET(req: Request) {
   try {
-    // Mengambil semua appointment untuk user tertentu dengan data terkait
+    // Mengambil semua appointment dengan semua relasi yang terkait
     const appointments = await db.appointment.findMany({
-      select: {
-        id: true,
-        pasienId: true,
-        koasId: true,
-        scheduleId: true,
-        timeslotId: true,
-        date: true,
-        status: true, // Status digunakan untuk filter
+      include: {
         pasien: {
-          select: {
-            id: true,
-            age: true,
-            gender: true,
-            user: {
-              select: {
-                id: true,
-                name: true,
-                phone: true,
-              },
-            },
+          include: {
+            user: true, // Mengambil semua field dari user yang terkait dengan pasien
           },
         },
         koas: {
-          select: {
-            id: true,
-            koasNumber: true,
-            user: {
-              select: {
-                id: true,
-                name: true,
-                phone: true,
-              },
-            },
+          include: {
+            user: true, // Mengambil semua field dari user yang terkait dengan koas
           },
         },
         schedule: {
-          select: {
-            id: true,
-            dateStart: true,
-            dateEnd: true,
+          include: {
             post: {
-              select: {
-                id: true,
-                title: true,
-                requiredParticipant: true,
-                treatment: {
-                  select: {
-                    id: true,
-                    name: true,
-                    alias: true,
-                  },
-                },
+              include: {
+                treatment: true, // Mengambil semua field dari treatment
               },
             },
-            timeslot: {
-              select: {
-                id: true,
-                startTime: true,
-                endTime: true,
-                maxParticipants: true,
-                currentParticipants: true, // Akan diperbarui
-                isAvailable: true,
-              },
-            },
+            timeslot: true, // Mengambil semua field dari timeslot
           },
         },
       },
     });
 
-    // Menggabungkan data pasien dan user, serta koas dan user
+    // Hitung jumlah peserta "Confirmed" untuk setiap timeslot
     const updatedAppointments = appointments.map((appointment) => {
-      const { pasien, koas, schedule, timeslotId, date, status } = appointment;
+      const { schedule, timeslotId, date, status } = appointment;
 
-      // Gabungkan pasien dan user
-      const mergedPasien = {
-        id: pasien.id,
-        userId: pasien.user.id,
-        name: pasien.user.name,
-        phone: pasien.user.phone,
-        age: pasien.age,
-        gender: pasien.gender,
-      };
-
-      // Gabungkan koas dan user
-      const mergedKoas = {
-        id: koas.id,
-        userId: koas.user.id,
-        name: koas.user.name,
-        phone: koas.user.phone,
-        koasNumber: koas.koasNumber,
-      };
-
-      // Hitung jumlah peserta "Confirmed" untuk timeslot tertentu
       const currentParticipants = appointments.filter(
         (a) =>
           a.schedule?.id === schedule?.id &&
@@ -110,20 +45,8 @@ export async function GET(req: Request) {
         (slot) => slot.id === timeslotId
       );
 
-      // Perbarui timeslot terkait
-      // const updatedTimeslots = schedule.timeslot.map((timeslot) => ({
-      //   ...timeslot,
-      //   currentParticipants:
-      //     timeslot.id === timeslotId
-      //       ? currentParticipants // Update currentParticipants untuk timeslot tertentu
-      //       : timeslot.currentParticipants,
-      // }));
-
-      // Kembalikan data appointment yang telah diperbarui
       return {
         ...appointment,
-        // pasien: mergedPasien,
-        // koas: mergedKoas,
         schedule: {
           ...schedule,
           timeslot: {
@@ -134,23 +57,22 @@ export async function GET(req: Request) {
       };
     });
 
-    // Mengembalikan data ke klien
     return NextResponse.json(
       {
-        appointments: updatedAppointments, // Return updated appointments
+        appointments: updatedAppointments,
       },
       { status: 200 }
     );
   } catch (error) {
     console.error("Error getting appointments:", error);
 
-    // Mengembalikan respons error ke klien
     return NextResponse.json(
       { status: "Error", message: "Internal Server Error" },
       { status: 500 }
     );
   }
 }
+
 
 export async function POST(req: Request) {
   const body = await req.json();

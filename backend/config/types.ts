@@ -174,4 +174,19 @@ export interface PostQueryString {
     | undefined;
 }
 
+export interface ReviewQueryString {
+  postId?: string;
+  pasienId?: string;
+  rating?: number;
+  comment?: string;
+  createdAt?: { gte: string; lte: string };
+  updatedAt?: { gte: string; lte: string };
+  [key: string]:
+    | string
+    | { gte: string; lte: string }
+    | number
+    | boolean
+    | undefined;
+}
+
 export type TableName = keyof typeof prismaModels;

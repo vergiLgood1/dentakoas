@@ -51,9 +51,9 @@ class AllPostScreen extends StatelessWidget {
                 );
               }
               return SortableField(
-                itemCount: controller.posts.length,
                 crossAxisCount: 1,
                 mainAxisExtent: 400,
+                showSearchBar: true,
                 itemBuilder: (_, index) {
                   final post = controller.posts[index];
                   return PostCard(

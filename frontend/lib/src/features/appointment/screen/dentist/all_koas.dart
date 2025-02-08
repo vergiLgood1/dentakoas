@@ -1,5 +1,4 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
-import 'package:denta_koas/src/commons/widgets/koas/sortable/sortable_koas.dart';
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/koas_card_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
@@ -54,8 +53,7 @@ class AllKoasScreen extends StatelessWidget {
                 ),
               );
             }
-            return SortableField(
-              showDropdownMenu: false,
+            return DGridLayout(
               itemCount: controller.allKoas.length,
               crossAxisCount: 1,
               mainAxisExtent: 200,

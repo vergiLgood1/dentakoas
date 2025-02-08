@@ -215,7 +215,7 @@ model Post {
   koasId              String     @map("koas_id")
   treatmentId         String     @map("treatment_id")
   title               String
-  desc                String
+  desc                String     @db.VarChar(500)
   patientRequirement  Json?      @map("patient_requirement")
   requiredParticipant Int        @default(0) @map("required_participant")
   status              StatusPost @default(Pending) // enum dapat ditambahkan jika ada daftar nilai yang terbatas
@@ -314,18 +314,19 @@ model Timeslot {
 model Review {
   id        String   @id @default(cuid())
   postId    String   @map("post_id")
-  userId    String   @map("user_id")
+  pasienId  String   @map("user_id")
+  koasId    String?  @map("koas_id")
   rating    Decimal  @default(0) // Skala 1-5
-  comment   String?
+  comment   String?  @db.VarChar(500)
   createdAt DateTime @default(now()) @map("created_at")
 
-  post          Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user          User         @relation(fields: [userId], references: [id])
-  KoasProfile   KoasProfile? @relation(fields: [koasProfileId], references: [id])
-  koasProfileId String
+  post        Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [pasienId], references: [id])
+  KoasProfile KoasProfile? @relation(fields: [koasId], references: [userId])
 
   @@index([postId], name: "post_id")
-  @@index([userId], name: "user_id")
+  @@index([pasienId], name: "pasien_Id")
+  @@index([koasId], name: "koas_id")
   @@map("reviews")
 }
 

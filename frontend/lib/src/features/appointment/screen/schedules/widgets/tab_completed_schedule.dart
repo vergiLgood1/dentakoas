@@ -2,7 +2,8 @@ import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/schedule_card_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/features/appointment/controller/appointment.controller/appointments_controller.dart';
-import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
+import 'package:denta_koas/src/features/appointment/screen/koas_reviews/add_review/add_review.dart';
+import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/my_appointment/my_appointment.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -63,9 +64,24 @@ class TabCompletedAppointments extends StatelessWidget {
                         timestamp: controller
                             .getAppointmentTimestampRange(appointment),
                         primaryBtnText: 'Details',
-                        onPrimaryBtnPressed: () {},
-                        onSecondaryBtnPressed: () {},
-                        onTap: () => Get.to(() => const KoasReviewsScreen()),
+                        secondaryBtnText: 'Review',
+                        showSecondaryBtn: true,
+                        onPrimaryBtnPressed: () {
+                          Get.to(
+                            () => const MyAppointmentScreen(),
+                            arguments: appointment,
+                          );
+                        },
+                        onSecondaryBtnPressed: () {
+                          Get.to(
+                            () => const KoasAddReviewScreen(),
+                            arguments: appointment,
+                          );
+                        },
+                        onTap: () => Get.to(
+                          () => const MyAppointmentScreen(),
+                          arguments: appointment,
+                        ),
                       );
                     },
                   );

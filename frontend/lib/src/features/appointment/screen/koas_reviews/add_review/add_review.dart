@@ -1,17 +1,22 @@
-import 'package:denta_koas/navigation_menu.dart';
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
-import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
+import 'package:denta_koas/src/commons/widgets/shimmer/rating_bar_shimmer.dart';
+import 'package:denta_koas/src/features/appointment/controller/reviews_controller.dart';
+import 'package:denta_koas/src/features/appointment/data/model/appointments_model.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
+import 'package:denta_koas/src/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 class KoasAddReviewScreen extends StatelessWidget {
   const KoasAddReviewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ReviewsController());
+    AppointmentsModel appointment = Get.arguments;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const DAppBar(
@@ -27,32 +32,39 @@ class KoasAddReviewScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 20),
                   // Profile Image and Name
-                  const Center(
+                  Center(
                     child: Column(
                       children: [
-                        CircleAvatar(
+                        const CircleAvatar(
                           radius: 50,
                           backgroundImage:
                               AssetImage(TImages.userProfileImage3),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Dr. Jonny Wilson',
-                              style: TextStyle(
+                              appointment.koas?.user?.fullName ?? 'N/A',
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(width: 5),
-                            Icon(Icons.verified, color: Colors.blue, size: 20),
                           ],
                         ),
-                        Text(
-                          'Dentist',
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              appointment.koas?.university ?? 'N/A',
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.grey),
+                            ),
+                            const SizedBox(width: 5),
+                            const Icon(Icons.verified,
+                                color: Colors.blue, size: 20),
+                          ],
                         ),
                       ],
                     ),
@@ -75,23 +87,33 @@ class KoasAddReviewScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      RatingBar(
-                        initialRating: 0,
-                        minRating: 0,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        ratingWidget: RatingWidget(
-                          full: const Icon(Icons.star, color: TColors.primary),
-                          half: const Icon(Icons.star_half,
-                              color: TColors.primary),
-                          empty: const Icon(Icons.star_border,
-                              color: TColors.primary),
-                        ),
-                        onRatingUpdate: (rating) {
-                          print(rating);
-                        },
-                      )
+                      Obx(() {
+                        if (controller.isLoading.value) {
+                          return const RatingBarShimmer();
+                        }
+                        // Key digunakan untuk memaksa rebuild widget
+                        return RatingBar(
+                          initialRating: controller.rating.value,
+                          minRating: 0,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          ratingWidget: RatingWidget(
+                            full:
+                                const Icon(Icons.star, color: TColors.primary),
+                            half: const Icon(Icons.star_half,
+                                color: TColors.primary),
+                            empty: const Icon(Icons.star_border,
+                                color: TColors.primary),
+                          ),
+                          onRatingUpdate: (rating) {
+                            Logger().i(rating);
+                            controller.updateRating(rating);
+                          },
+                          ignoreGestures:
+                              controller.userReview.isEmpty ? false : true,
+                        );
+                      }),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -117,15 +139,53 @@ class KoasAddReviewScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        TextField(
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                            hintText: 'Enter here',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                        Form(
+                          key: controller.reviewsFormKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Obx(
+                                () => Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '${controller.commentLength.value}/500',
+                                      style: TextStyle(
+                                        color:
+                                            controller.commentLength.value > 500
+                                                ? Colors.red
+                                                : Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Obx(() {
+                                if (controller.isLoading.value) {
+                                  return const CommentFieldShimmer();
+                                }
+                                return TextFormField(
+                                  controller: controller.comment,
+                                  validator: (value) =>
+                                      TValidator.validateUserInput(
+                                          "Comment", value, 500),
+                                  maxLines: 5,
+                                  enabled: controller.userReview.isEmpty
+                                      ? true
+                                      : false,
+                                  decoration: InputDecoration(
+                                    hintText: 'Enter here',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ],
                           ),
                         ),
+                        
                       ],
                     ),
                   ),
@@ -135,48 +195,65 @@ class KoasAddReviewScreen extends StatelessWidget {
             ),
           ),
           // Submit Button
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Get.to(() => const SuccessAddReview()),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+          // Di KoasAddReviewScreen, modifikasi button Submit
+          Obx(() {
+            if (controller.isLoading.value) {
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                    ),
+                    child: const Text(
+                      '',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
-                child: const Text(
-                  'Submit',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: controller.userReview.isEmpty
+                      ? () {
+                          controller.addReviewConfirmation(
+                            appointment.schedule!.post.id,
+                            appointment.koas!.user!.id!,
+                          );
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: controller.userReview.isEmpty
+                        ? Colors.blue
+                        : Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: controller.userReview.isEmpty
+                          ? const BorderSide(color: Colors.blue)
+                          : const BorderSide(color: Colors.grey),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  child: const Text(
+                    'Submit Review',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SuccessAddReview extends StatelessWidget {
-  const SuccessAddReview({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        
-        children: [
-          StateScreen(
-            image: TImages.staticSuccessIllustration,
-            title: 'Review Added Successfully',
-            subtitle:
-                'Thank you for your feedback! Your review helps others learn more about our services and helps us improve.',
-            onPressed: () => Get.offAll(() => const NavigationMenu()),
-          ),
+            );
+          } 
+),
         ],
       ),
     );

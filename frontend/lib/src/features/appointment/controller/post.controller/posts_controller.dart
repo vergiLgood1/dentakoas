@@ -31,12 +31,15 @@ class PostController extends GetxController {
   final inputController = InputController();
 
   RxList<Post> posts = <Post>[].obs;
-  RxList<Post> featurePost = <Post>[].obs;
   RxList<Post> postUser = <Post>[].obs;
   RxList<Post> postWithSpecificTreatment = <Post>[].obs;
-
+  RxList<Post> lastChangePost = <Post>[].obs;
+  RxList<Post> newestPosts = <Post>[].obs;
+  RxList<Post> openPosts = <Post>[].obs;
+  RxList<Post> featuredPosts = <Post>[].obs;
 
   final isLoading = false.obs;
+  final today = DateTime.now();
 
   final postRepository = Get.put(PostRepository());
 
@@ -59,24 +62,13 @@ class PostController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchPostUser();
+    fetchPosts();
   }
-
-  Future<void> fetchAllPosts() async {
+  
+  Future<void> initializePost() async {
     try {
       isLoading.value = true;
-      final postsData = await postRepository.getPosts();
-
-      posts.assignAll(postsData);
-
-      // filter
-      featurePost.assignAll(
-        posts.where((post) => post.status == StatusPost.Open.name).toList(),
-      );
-
-      // postWithSpecificTreatment.assignAll(
-      //   posts.where((post) => post.treatment.alias == treatment.alias).toList(),
-      // );
+      await fetchPosts();
 
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
@@ -85,18 +77,51 @@ class PostController extends GetxController {
     }
   }
 
-  Future<void> fetchPostUser() async {
+  Future<void> fetchPosts() async {
     try {
-      isLoading.value = true; // Replace with actual post ID
-      final postsData = await postRepository.getPostByUser2();
-      posts.assignAll(postsData);
+      isLoading.value = true;
+      final fetchedPosts = await postRepository.getPosts();
 
-      // filter
-      postUser.assignAll(
-        posts.where((post) => post.status != "Closed").toList(),
+      // Filter status post "Open" dan hanya yang memiliki schedule yang masih berlaku
+      final postWithStatusOpen = fetchedPosts
+          .where((post) =>
+              post.status == StatusPost.Open.name &&
+              post.schedule.any((schedule) => schedule.dateEnd.isAfter(today)))
+          .toList();
+
+      // Assign ke berbagai list
+      posts.assignAll(postWithStatusOpen);
+      openPosts.assignAll(postWithStatusOpen);
+
+      // Featured posts berdasarkan jumlah like terbanyak
+      featuredPosts.assignAll(
+        (List.of(postWithStatusOpen)
+              ..sort((a, b) => b.likes.length.compareTo(a.likes.length)))
+            .sublist(0,
+                postWithStatusOpen.length < 3 ? postWithStatusOpen.length : 3),
       );
-      
-      postUser(postsData);
+
+      // Newest posts (3 post terbaru berdasarkan createdAt)
+      newestPosts.assignAll(
+        (List.of(postWithStatusOpen)
+              ..sort((a, b) => b.createdAt.compareTo(a.createdAt)))
+            .sublist(0,
+                postWithStatusOpen.length < 3 ? postWithStatusOpen.length : 3),
+      );
+
+      // Last changed posts (3 post terlama berdasarkan createdAt)
+      lastChangePost.assignAll(
+        (List.of(postWithStatusOpen)
+              ..sort((a, b) => a.createdAt.compareTo(b.createdAt)))
+            .sublist(0,
+                postWithStatusOpen.length < 3 ? postWithStatusOpen.length : 3),
+      );
+
+      postUser.assignAll(
+        posts.where((post) => post.status != StatusPost.Closed.name).toList(),
+      );
+
+      postUser(fetchedPosts);
 
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
@@ -104,25 +129,6 @@ class PostController extends GetxController {
       isLoading.value = false;
     }
   }
-
-  // fetchPostUser() async {
-  //   try {
-  //     isLoading.value = true;
-  //     final postsData = await postRepository.getPostCurrentUser();
-  //     posts.assignAll(postsData);
-
-  //     // filter
-  //     postUser.assignAll(
-  //       posts.where((post) => post.status != StatusPost.Closed).toList(),
-  //     );
-
-  //     Logger().i('Post : $postUser');
-  //   } catch (e) {
-  //     TLoaders.errorSnackBar(title: 'Error', message: e.toString());
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
 
   void createPost() async {
     try {
@@ -252,10 +258,10 @@ class PostController extends GetxController {
       );
 
       // Refresh post list
-      await fetchPostUser();
+      await fetchPosts();
 
       // Navigate to next screen but remove routes until CreateGeneralInformation
-      Get.offAll(
+      Get.to(
           () => StateScreen(
                 key: UniqueKey(),
                 image: TImages.successCreatePost,
@@ -264,10 +270,9 @@ class PostController extends GetxController {
                     'Congratulations! Your post is now live and ready for participants.',
                 showButton: true,
                 primaryButtonTitle: 'Go to Dashboard',
-                onPressed: () => Get.off(() => const NavigationMenu()),
+          onPressed: () => Get.offAll(() => const NavigationMenu()),
               ),
-          predicate: (route) =>
-              route.settings.name != '/CreateGeneralInformation');
+      );
     } catch (e) {
       TFullScreenLoader.stopLoading();
       Logger().e(
@@ -309,7 +314,7 @@ class PostController extends GetxController {
       );
 
       // Refresh post list
-      await fetchPostUser();
+      await fetchPosts();
 
       // Navigate to next screen
       Get.to(() => const NavigationMenu());

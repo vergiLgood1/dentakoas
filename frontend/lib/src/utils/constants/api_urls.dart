@@ -1,6 +1,6 @@
 class Endpoints {
   // Base URL
-  static const String baseUrl = 'http://172.16.0.2:3000/api';
+  static const String baseUrl = 'http://172.16.0.2:3001/api';
 
   static const String baseAuthUrl = '$baseUrl/auth';
   static const String baseAuthSignin = '$baseAuthUrl/signin';
@@ -67,6 +67,15 @@ class Endpoints {
   static String appointment(String id) => '$baseUrl/appointments/$id';
   static String appointmentWithSpecificUser(String userId) =>
       '$baseUrl/users/$userId/appointments';
+
+
+  // Review Endpoints
+  static const String reviews = '$baseUrl/reviews';
+  static String review(String id) => '$baseUrl/reviews/$id';
+  static String reviewWithSpecificUser(String userId) =>
+      '$baseUrl/users/$userId/reviews';
+  // static String reviewWithSpecificUserAndPost(String userId, String postId) =>
+  //     '$baseUrl/review/$userId/post/$postId';
 
   // Notification Endpoints
   static String notificationsUser(String id) => '$baseUrl/users/$id/notifications';

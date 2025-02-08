@@ -109,7 +109,7 @@ class TabParnert extends StatelessWidget {
                     },
                   );
                 }
-                if (controller.featuredUniversities.isNotEmpty) {
+                if (controller.featuredUniversities.isEmpty) {
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.7,
                     child: const StateScreen(
@@ -162,12 +162,11 @@ class UniversityCard extends StatelessWidget {
     required this.distance,
     this.time = '0 min',
     this.koasCount = 0,
-    this.int,
     this.onTap,
   });
 
   final String image, title, subtitle, address, distance, time;
-  final int, koasCount;
+  final int koasCount;
   final bool isNetworkImage;
   final GestureTapCallback? onTap;
 
