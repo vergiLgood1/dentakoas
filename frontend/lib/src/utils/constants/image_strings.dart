@@ -232,6 +232,9 @@ class TImages {
   static const String comingSoon = "assets/images/animations/coming-soon1.json";
   static const String comingSoon2 =
       "assets/images/animations/coming-soon2.json";
+
+  // Treatment
+  static const String treatmentImage1 = "assets/images/products/tooth.png";
 }
 
 

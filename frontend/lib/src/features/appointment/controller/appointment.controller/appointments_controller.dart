@@ -92,6 +92,7 @@ class AppointmentsController extends GetxController {
             .toList(),
       );
 
+
       // All ongoing appointments
       ongoingAppointments.assignAll(
         appointmentsByUserData
@@ -122,18 +123,24 @@ class AppointmentsController extends GetxController {
     String date,
   ) async {
     try {
+      Logger().d('Starting createAppointment process');
+      Logger().d(
+          'Parameters: koasId=$koasId, scheduleId=$scheduleId, timeslotId=$timeslotId, date=$date');
+
       // Start loading
       TFullScreenLoader.openLoadingDialog(
           'Processing your action....', TImages.loadingHealth);
 
       // Check connection
       final isConected = await NetworkManager.instance.isConnected();
+      Logger().d('Network connection status: $isConected');
       if (!isConected) {
         TFullScreenLoader.stopLoading();
         return;
       }
 
       final pasienDetail = await UserRepository.instance.getUserDetailById();
+      Logger().d('Fetched pasienDetail: $pasienDetail');
       final pasienId = pasienDetail.pasienProfile!.id;
 
       // Initiate the request
@@ -143,11 +150,14 @@ class AppointmentsController extends GetxController {
         scheduleId: scheduleId,
         timeslotId: timeslotId,
         date: date,
+        status: StatusAppointment.Pending,
       );
+      Logger().d('Created newAppointment: $newAppointment');
 
       // Save the appointment
       final appointmentRepository = Get.put(AppointmentsRepository());
       await appointmentRepository.createAppointment(newAppointment);
+      Logger().d('Appointment created successfully');
 
       // Stop loading
       TFullScreenLoader.stopLoading();
@@ -158,7 +168,7 @@ class AppointmentsController extends GetxController {
           message: 'Check your schedule for more details.');
 
       // Fetch appointments
-      // fetchAppointments();
+      fetchAppointments();
 
       // Close the dialog
       Get.offAll(
@@ -175,7 +185,7 @@ class AppointmentsController extends GetxController {
       );
     } catch (e) {
       TFullScreenLoader.stopLoading();
-      Logger().e(['Failed to create appointment: $e']);
+      Logger().e('Failed to create appointment: $e');
       TLoaders.errorSnackBar(
           title: 'Failed to create appointment',
           message: 'Something went wrong. Please try again later.');
@@ -274,12 +284,17 @@ class AppointmentsController extends GetxController {
     timeslotId,
   ) async {
     try {
+      Logger().d('Starting rejectAppointment process');
+      Logger().d(
+          'Parameters: appointmentId=$appointmentId, pasienId=$pasienId, koasId=$koasId, scheduleId=$scheduleId, timeslotId=$timeslotId');
+
       // Start loading
       TFullScreenLoader.openLoadingDialog(
           'Processing your action....', TImages.loadingHealth);
 
       // Check connection
       final isConected = await NetworkManager.instance.isConnected();
+      Logger().d('Network connection status: $isConected');
       if (!isConected) {
         TFullScreenLoader.stopLoading();
         return;
@@ -293,23 +308,27 @@ class AppointmentsController extends GetxController {
         timeslotId: timeslotId,
         status: StatusAppointment.Rejected,
       );
+      Logger().d('Created updateAppointmentStatus: $updateAppointmentStatus');
 
       final newNotification = NotificationsModel(
         senderId: UserController.instance.user.value.id,
-        userId: pasienId,
+        userId: UserController.instance.user.value.id,
         koasId: koasId,
         title: 'Appointment Rejected',
         message:
             'Your appointment has been rejected. Please check your schedule for more details',
         status: StatusNotification.Read,
       );
+      Logger().d('Created newNotification: $newNotification');
 
       // send the request to update the appointment
       await AppointmentsRepository.instance
           .updateAppointment(appointmentId, updateAppointmentStatus);
+      Logger().d('Appointment updated successfully');
 
       // send the notification
       await NotificationRepository.instance.createNotification(newNotification);
+      Logger().d('Notification sent successfully');
 
       // Stop loading
       TFullScreenLoader.stopLoading();
@@ -324,6 +343,7 @@ class AppointmentsController extends GetxController {
 
       // Close the dialog
       Navigator.of(Get.overlayContext!).pop();
+
     } catch (e) {
       TFullScreenLoader.stopLoading();
       Logger().e(['Failed to reject appointment: $e']);
@@ -364,7 +384,7 @@ class AppointmentsController extends GetxController {
 
       final newNotification = NotificationsModel(
         senderId: UserController.instance.user.value.id,
-        userId: pasienId,
+        userId: UserController.instance.user.value.id,
         koasId: koasId,
         title: 'Appointment Confirmed',
         message:
@@ -414,8 +434,10 @@ class AppointmentsController extends GetxController {
       title: 'Confirm Appointment',
       middleText: 'Are you sure want to choose this appointment?',
       confirm: ElevatedButton(
-        onPressed: () =>
-            createAppointment(koasId, scheduleId, timeslotId, date),
+        onPressed: () {
+          Get.back();
+          createAppointment(koasId, scheduleId, timeslotId, date);
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: TColors.primary,
           side: const BorderSide(color: TColors.primary),
@@ -479,9 +501,11 @@ class AppointmentsController extends GetxController {
       title: 'Reject Appointment',
       middleText: 'Are you sure want to reject this appointment?',
       confirm: ElevatedButton(
-        onPressed: () =>
-            rejectAppointment(
-            appointmentId, pasienId, koasId, scheduleId, timeslotId),
+        onPressed: () {
+          Get.back();
+          rejectAppointment(
+              appointmentId, pasienId, koasId, scheduleId, timeslotId);
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: TColors.error,
           side: const BorderSide(color: TColors.error),

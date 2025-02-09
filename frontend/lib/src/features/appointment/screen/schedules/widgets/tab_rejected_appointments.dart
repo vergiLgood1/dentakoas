@@ -4,6 +4,8 @@ import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/features/appointment/controller/appointment.controller/appointments_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/my_appointment/my_appointment.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -54,9 +56,14 @@ class TabRejectedAppointments extends StatelessWidget {
                     itemBuilder: (_, index) {
                       final appointment =
                           controller.rejectedAppointments[index];
+                      final role = UserController.instance.user.value.role;
                       return ScheduleCard(
-                        imgUrl: TImages.user,
-                        name: appointment.koas?.user?.fullName ?? '',
+                        imgUrl: role == Role.Koas.name
+                            ? appointment.pasien!.user!.image ?? TImages.user
+                            : appointment.koas!.user!.image ?? TImages.user,
+                        name: role == Role.Koas.name
+                            ? appointment.pasien?.user?.fullName ?? ''
+                            : appointment.koas?.user?.fullName ?? '',
                         category: appointment.schedule!.post.treatment.alias,
                         date:
                             controller.formatAppointmentDate(appointment.date),

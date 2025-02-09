@@ -25,7 +25,7 @@ class UserModel {
   final KoasProfileModel? koasProfile;
   final PasienProfileModel? pasienProfile;
   final FasilitatorProfileModel? fasilitatorProfile;
-  final ReviewModel? review;
+  final List<ReviewModel>? review;
   final DateTime? createdAt;
   final DateTime? updateAt;
 
@@ -87,7 +87,7 @@ class UserModel {
       koasProfile: KoasProfileModel.empty(),
       pasienProfile: PasienProfileModel.empty(),
       fasilitatorProfile: FasilitatorProfileModel.empty(),
-      review: ReviewModel.empty(),
+      review: [],
     );
   }
 
@@ -194,9 +194,9 @@ class UserModel {
       fasilitatorProfile: json['FasilitatorProfile'] != null
           ? FasilitatorProfileModel.fromJson(json['FasilitatorProfile'])
           : FasilitatorProfileModel.empty(),
-      // review: json['ReviewModel'] != null
-      //     ? ReviewModel.fromJson(json['ReviewModel'])
-      //     : ReviewModel.empty(),
+      review: json['Review'] != null
+          ? List<ReviewModel>.from(json['Review'].map((x) => ReviewModel.fromJson(x)))
+          : null,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,

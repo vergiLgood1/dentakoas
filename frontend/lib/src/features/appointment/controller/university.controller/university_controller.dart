@@ -10,6 +10,7 @@ class UniversityController extends GetxController {
 
   RxList<UniversityModel> newestUniversities = <UniversityModel>[].obs;
   RxList<UniversityModel> popularUniversities = <UniversityModel>[].obs;
+  RxList<UniversityModel> universityWithImages = <UniversityModel>[].obs;
 
   final universitiesRepository = Get.put(UniversitiesRepository());
 
@@ -34,8 +35,14 @@ class UniversityController extends GetxController {
 
       universities.assignAll(fetchedUniversities);
 
+      universityWithImages.assignAll(
+        fetchedUniversities
+            .where((university) => university.image != '')
+            .toList(),
+      );
+      
       // Universitas terbaru berdasarkan `createdAt`
-      newestUniversities.assignAll(fetchedUniversities
+      newestUniversities.assignAll(universityWithImages
           .where((university) => university.createdAt != null)
           .toList()
         ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!))
@@ -43,7 +50,7 @@ class UniversityController extends GetxController {
 
       // Universitas populer berdasarkan jumlah `koasCount`
       popularUniversities.assignAll(
-        fetchedUniversities
+        universityWithImages
             .where((university) => (university.koasCount) > 0)
           .toList()
         ..sort((a, b) => b.koasCount.compareTo(a.koasCount))
@@ -51,7 +58,7 @@ class UniversityController extends GetxController {
       );
 
       // Featured universities (bisa diubah ke kriteria tertentu jika diperlukan)
-      featuredUniversities.assignAll(fetchedUniversities.take(2).toList());
+      featuredUniversities.assignAll(universityWithImages.take(2).toList());
     } catch (e) {
       print("Error fetching universities: ${e.toString()}");
     } finally {

@@ -1,5 +1,6 @@
 import 'package:denta_koas/src/commons/controller/options.dart';
 import 'package:denta_koas/src/commons/widgets/buttons/like_button.dart';
+import 'package:denta_koas/src/commons/widgets/images/circular_image.dart';
 import 'package:denta_koas/src/commons/widgets/text/title_with_verified.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,11 +27,12 @@ class HeaderSection extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CircleAvatar(
+        CircularImage(
           radius: 24,
-          backgroundImage: image.startsWith('http')
-              ? NetworkImage(image)
-              : AssetImage(image) as ImageProvider,
+          padding: 0,
+          width: 48,
+          height: 48,
+          image: image,
         ),
         const SizedBox(width: 12),
         Expanded(

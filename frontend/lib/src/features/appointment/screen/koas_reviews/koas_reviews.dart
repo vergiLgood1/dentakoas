@@ -1,10 +1,11 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
 import 'package:denta_koas/src/commons/widgets/koas/rating/rating_bar_indicator.dart';
-import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/koas_reply.dart';
+import 'package:denta_koas/src/features/appointment/data/model/review_model.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/overal_koas_rating.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
-import 'package:denta_koas/src/features/personalization/model/user_model.dart';
+import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
+import 'package:denta_koas/src/utils/formatters/formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,12 +14,16 @@ class KoasReviewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel koasReviews = Get.arguments;
+    // Mengambil arguments dalam bentuk list
+    final List<dynamic> args = Get.arguments;
+
+    // Memisahkan arguments
+    final List<ReviewModel> reviews = args[0];
+    final double averageRating = args[1];
+
     return Scaffold(
       appBar: const DAppBar(
-        title: Text(
-          'Reviews & Ratings',
-        ),
+        title: Text('Reviews & Ratings'),
         showBackArrow: true,
         centerTitle: true,
       ),
@@ -29,49 +34,43 @@ class KoasReviewsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Rating and comments are verifed and are based on the feedback of the patients who visited the clinic.',
+                'Rating and comments are verified and are based on patient feedback.',
               ),
               const SizedBox(height: TSizes.spaceBtwItems),
-              // Overall Rating
+              
+              // Overall Rating Section
               const OverallKoasRating(),
-              const DRatingBarIndicator(
-                rating: 4.8,
+              DRatingBarIndicator(
+                rating: averageRating,
               ),
               Text(
-                '143',
+                '${reviews.length} reviews',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: TSizes.spaceBtwSections),
-
-              // User Reviews
-              // const UserReviewsCard(),
-              // const KoasReplyCard(),
-              // const UserReviewsCard(),
-              // const UserReviewsCard(),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      // UserReviewsCard(
-                      //   image: image,
-                      //   name: name,
-                      //   rating: rating,
-                      //   date: date,
-                      //   comment: comment,
-                      // ),
-                      // KoasReplyCard(
-                      //   image: image,
-                      //   name: name,
-                      //   date: date,
-                      //   comment: comment,
-                      // ),
-                    ],
-                  );
-                },
-              ),
+              
+              // List Reviews
+              if (reviews.isNotEmpty)
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: reviews.length,
+                  itemBuilder: (context, index) {
+                    final review = reviews[index];
+                    return UserReviewsCard(
+                      image: review.user?.image ?? TImages.user,
+                      name: review.user?.fullName ?? 'Anonim',
+                      rating: review.rating,
+                      comment: review.comment ?? '',
+                      date:
+                          TFormatter.formatDateToFullDayName(review.createdAt),
+                    );
+                  },
+                )
+              else
+                const Center(
+                  child: Text("Belum ada review"),
+                ),
             ],
           ),
         ),

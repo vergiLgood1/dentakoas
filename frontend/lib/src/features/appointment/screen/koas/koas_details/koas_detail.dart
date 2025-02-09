@@ -6,6 +6,7 @@ import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/commons/widgets/text/title_with_verified.dart';
 import 'package:denta_koas/src/features/appointment/controller/explore.controller/explore_post_controller.dart';
 import 'package:denta_koas/src/features/appointment/controller/verification_koas_controller.dart';
+import 'package:denta_koas/src/features/appointment/data/model/review_model.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/user_reviews_card.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/koas_post/post_with_specific_koas.dart';
@@ -16,6 +17,7 @@ import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/enums.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
+import 'package:denta_koas/src/utils/formatters/formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
@@ -31,74 +33,80 @@ class KoasDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = UserController.instance;
     final UserModel koas = Get.arguments;
+
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: DAppBar(
-          showBackArrow: true,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.more_vert),
-              onPressed: () {},
+      backgroundColor: Colors.white,
+      appBar: DAppBar(
+        showBackArrow: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Koas profile
+            KoasProfileSection(
+              imageUrl: koas.image ?? TImages.user,
+              name: koas.fullName,
+              university: koas.koasProfile?.university ?? 'N/A',
+            ),
+            const SizedBox(height: TSizes.spaceBtwSections),
+
+            // Doctor stats
+            DoctorStatsSection(
+              totalPatients: koas.koasProfile?.stats?.patientCount ?? 0,
+              experience: koas.koasProfile?.experience ?? 0,
+              ratings: koas.koasProfile?.stats?.averageRating ?? 0,
+            ),
+            const SizedBox(height: TSizes.spaceBtwSections),
+
+            // Doctor description
+            BioSection(
+              bio: koas.koasProfile?.bio ?? 'N/A',
+            ),
+            const SizedBox(height: TSizes.spaceBtwSections),
+
+            // Address user
+            AddressSection(
+              address: koas.address ?? 'N/A',
+            ),
+            const SizedBox(height: TSizes.spaceBtwSections),
+
+            // Personal Information
+            PersonalInformationSection(
+              koasNumber: koas.koasProfile?.koasNumber ?? 'N/A',
+              status: koas.koasProfile?.status ?? 'N/A',
+              departement: koas.koasProfile?.departement ?? 'N/A',
+              age: koas.koasProfile?.age?.toString() ?? 'N/A',
+              gender: koas.koasProfile?.gender ?? 'N/A',
+              phone: koas.phone ?? 'N/A',
+            ),
+            const SizedBox(height: TSizes.spaceBtwSections),
+
+            // Map section
+            const MapSection(),
+            const SizedBox(height: TSizes.spaceBtwSections),
+
+            // User Reviews
+            UserReviewSection(
+              reviews: koas.koasProfile?.review ?? [],
+              averageRating: koas.koasProfile?.stats?.averageRating ?? 0,
+            ),
+
+            const SizedBox(height: TSizes.spaceBtwSections),
+
+            // Footer Button
+            FooterButton(
+              userKoasId: koas.koasProfile?.id,
+              koasId: koas.id,
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Koas profile
-              KoasProfileSection(
-                imageUrl: koas.image ?? TImages.user,
-                name: koas.fullName,
-                university: koas.koasProfile?.university ?? 'N/A',
-              ),
-              const SizedBox(height: TSizes.spaceBtwSections),
-
-              // Doctor stats
-              DoctorStatsSection(
-                totalPatients: koas.koasProfile?.stats?.patientCount ?? 0,
-                experience: koas.koasProfile?.experience ?? 0,
-                ratings: koas.koasProfile?.stats?.averageRating ?? 0,
-              ),
-              const SizedBox(height: TSizes.spaceBtwSections),
-
-              // Doctor description
-              BioSection(
-                bio:
-                   koas.koasProfile?.bio ?? 'N/A',
-              ),
-              const SizedBox(height: TSizes.spaceBtwSections),
-
-              // Address user 
-              AddressSection(
-                address: koas.address ?? 'N/A',
-              ),
-              const SizedBox(height: TSizes.spaceBtwSections),
-
-              // Working time
-              PersonalInformationSection(
-                koasNumber: koas.koasProfile?.koasNumber ?? 'N/A',
-                status: koas.koasProfile?.status ?? 'N/A',
-                departement: koas.koasProfile?.departement ?? 'N/A',
-                age: koas.koasProfile?.age.toString() ?? 'N/A',
-                gender: koas.koasProfile?.gender ?? 'N/A',
-                phone: koas.phone ?? 'N/A',
-              ),
-              const SizedBox(height: TSizes.spaceBtwSections),
-
-              // Koas upcoming event
-              // const KoasUpcomingEvent(),
-
-              // Map section
-              const MapSection(),
-
-              const SizedBox(height: TSizes.spaceBtwSections),
-              FooterButton(
-                userKoasId: koas.koasProfile?.id,
-                koasId: koas.id,
-              ),
-            ],
-          ),
-        )
+      ),
     );
   }
 }
@@ -122,7 +130,7 @@ class KoasProfileSection extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 50,
-          backgroundImage: isNetworkImage
+          backgroundImage: imageUrl.startsWith('http')
               ? NetworkImage(imageUrl)
               : AssetImage(imageUrl), // Replace with real image URL
         ),
@@ -605,25 +613,16 @@ class FullscreenMap extends StatelessWidget {
   }
 }
 
+// Widget untuk menampilkan daftar review
 class UserReviewSection extends StatelessWidget {
-  const UserReviewSection({
-    super.key,
-    required this.image,
-    required this.name,
-    required this.rating,
-    required this.comment,
-    required this.date,
-  });
+  const UserReviewSection(
+      {super.key, required this.reviews, required this.averageRating});
 
-  final String image;
-  final String name;
-  final double rating;
-  final String comment;
-  final String date;
+  final List<ReviewModel> reviews;
+  final double averageRating;
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
       child: Column(
@@ -631,23 +630,37 @@ class UserReviewSection extends StatelessWidget {
         children: [
           SectionHeading(
             title: 'Rating & Review',
-            onPressed: () => Get.to(() => const KoasReviewsScreen()),
+            onPressed: () => Get.to(
+              () => const KoasReviewsScreen(),
+              arguments: [reviews, averageRating],
+            ),
           ),
           const SizedBox(height: TSizes.spaceBtwItems),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 2,
-            itemBuilder: (context, index) {
-              return   UserReviewsCard(
-                image: image,
-                name: name,
-                rating: rating,
-                date: date,
-                comment: comment,
-              );
-            },
-          ),
+
+          // Cek apakah ada review atau tidak
+          if (reviews.isEmpty)
+            Center(
+              child: Text(
+                "Belum ada review",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            )
+          else
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: reviews.length > 2 ? 2 : reviews.length,
+              itemBuilder: (context, index) {
+                final review = reviews[index];
+                return UserReviewsCard(
+                  image: review.user?.image ?? TImages.user,
+                  name: review.user?.fullName ?? 'Anonim',
+                  rating: review.rating,
+                  comment: review.comment ?? '',
+                  date: TFormatter.formatDateToFullDayName(review.createdAt),
+                );
+              },
+            ),
         ],
       ),
     );

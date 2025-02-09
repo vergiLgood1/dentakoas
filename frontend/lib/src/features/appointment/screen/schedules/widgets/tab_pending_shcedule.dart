@@ -5,6 +5,7 @@ import 'package:denta_koas/src/features/appointment/controller/appointment.contr
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/my_appointment/my_appointment.dart';
 import 'package:denta_koas/src/features/appointment/screen/schedules/widgets/schedule_card.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class TabPendingAppointments extends StatelessWidget {
                     itemBuilder: (_, index) {
                       final appointment = controller.pendingAppointments[index];
                       return ScheduleCard(
-                        imgUrl: TImages.user,
+                        imgUrl: appointment.koas!.user!.image ?? TImages.user,
                         name: appointment.koas!.user!.fullName,
                         category: appointment.schedule!.post.treatment.alias,
                         date:
@@ -83,9 +84,14 @@ class TabPendingAppointments extends StatelessWidget {
                     mainAxisExtent: 230,
                     itemBuilder: (_, index) {
                       final appointment = controller.pendingAppointments[index];
+                      final role = UserController.instance.user.value.role;
                       return ScheduleCard(
-                        imgUrl: TImages.user,
-                        name: appointment.koas!.user!.fullName,
+                        imgUrl: role == Role.Koas.name
+                            ? appointment.pasien!.user!.image ?? TImages.user
+                            : appointment.koas!.user!.image ?? TImages.user,
+                        name: role == Role.Koas.name
+                            ? appointment.pasien?.user?.fullName ?? ''
+                            : appointment.koas?.user?.fullName ?? '',
                         category: appointment.schedule!.post.treatment.alias,
                         date:
                             controller.formatAppointmentDate(appointment.date),

@@ -59,9 +59,15 @@ Widget partnertTopKoasWidget(String image, context) {
           ? TColors.darkGrey
           : TColors.light,
       margin: const EdgeInsets.only(right: TSizes.sm),
-      child: Image(
-        image: AssetImage(image),
-        fit: BoxFit.cover,
+   
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(TSizes.md),
+        child: Image(
+          image: image.startsWith('http')
+              ? NetworkImage(image)
+              : AssetImage(image),
+          fit: BoxFit.cover,
+        ),
       ),
     ),
   );

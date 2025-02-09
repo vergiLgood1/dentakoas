@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/commons/widgets/images/circular_image.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -42,9 +43,9 @@ class AppointmentCards extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Avatar Dokter
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage(imgUrl),
+                    CircularImage(
+                      padding: 0,
+                      image: imgUrl,
                     ),
                     const SizedBox(
                       width: TSizes.spaceBtwInputFields,

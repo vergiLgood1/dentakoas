@@ -57,7 +57,7 @@ class TabPendingKoas extends StatelessWidget {
                     itemBuilder: (_, index) {
                       final koas = controller.pendingKoas[index];
                       return ScheduleCard(
-                        imgUrl: TImages.user,
+                        imgUrl: koas.image ?? TImages.user,
                         name: koas.name!,
                         category: koas.koasProfile!.university!,
                         date:

@@ -49,15 +49,18 @@ factory AppointmentsModel.fromJson(Map<String, dynamic> json) {
       timeslotId: json['timeslotId'] ?? '',
       date: json['date'] ?? '',
       status: parseStatusAppointment(json['status']),
-      pasien: PasienProfileModel.fromJson(json['pasien'] ?? {}),
-      koas: KoasProfileModel.fromJson(json['koas'] ?? {}),
-      schedule: Schedule.fromJson(json['schedule'] ?? {}),
+      pasien: json['pasien'] != null
+          ? PasienProfileModel.fromJson(json['pasien'])
+          : null,
+      koas:
+          json['koas'] != null ? KoasProfileModel.fromJson(json['koas']) : null,
+      schedule:
+          json['schedule'] != null ? Schedule.fromJson(json['schedule']) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'pasienId': pasienId,
       'koasId': koasId,
       'scheduleId': scheduleId,

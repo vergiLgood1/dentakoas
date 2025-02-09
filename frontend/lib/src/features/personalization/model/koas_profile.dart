@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/features/appointment/data/model/review_model.dart';
 import 'package:denta_koas/src/features/personalization/model/stats_model.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 
@@ -20,6 +21,7 @@ class KoasProfileModel {
   final String? status;
   final Stats? stats;
   final UserModel? user;
+  final List<ReviewModel>? review;
   final DateTime? createdAt;
   final DateTime? updateAt;
 
@@ -37,6 +39,7 @@ class KoasProfileModel {
     this.status,
     this.stats,
     this.user,
+    this.review,
     this.createdAt,
     this.updateAt,
   });
@@ -85,6 +88,9 @@ class KoasProfileModel {
       status: json['status'] ?? 'Pending',
       stats: json['stats'] != null ? Stats.fromJson(json['stats']) : null,
       user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
+      review: json['Review'] != null
+          ? List<ReviewModel>.from(json['Review'].map((x) => ReviewModel.fromJson(x)))
+          : null,
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'])
           : null,

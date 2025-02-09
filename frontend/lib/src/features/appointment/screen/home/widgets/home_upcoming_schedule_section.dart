@@ -3,6 +3,8 @@ import 'package:denta_koas/src/commons/widgets/shimmer/schedule_card_shimmer.dar
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/appointment.controller/appointments_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/home/widgets/cards/appointment_card.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +19,7 @@ class HomeUpcomingScheduleSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(AppointmentsController());
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: TSizes.defaultSpace),
+      padding: const EdgeInsets.symmetric(horizontal: TSizes.md),
       child: Column(
         // Heading
         children: [
@@ -58,9 +60,15 @@ class HomeUpcomingScheduleSection extends StatelessWidget {
                 mainAxisExtent: 165,
                 itemBuilder: (_, index) {
                   final appointment = controller.confirmedAppointments[index];
+                  final role = UserController.instance.user.value.role;
                   return AppointmentCards(
-                    imgUrl: TImages.user,
-                    name: appointment.koas?.user?.fullName ?? '',
+                    key: ValueKey(appointment.id),
+                    imgUrl: role == Role.Koas.name
+                        ? appointment.pasien!.user!.image ?? TImages.user
+                        : appointment.koas!.user!.image ?? TImages.user,
+                    name: role == Role.Koas.name
+                        ? appointment.pasien?.user?.fullName ?? ''
+                        : appointment.koas?.user?.fullName ?? '',
                     category: appointment.schedule?.post.treatment.alias ?? '',
                     date: controller.formatAppointmentDate(appointment.date),
                     timestamp:

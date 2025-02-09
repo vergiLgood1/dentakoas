@@ -37,7 +37,7 @@ class CircularImage extends StatelessWidget {
         color: backgroundColor ?? (dark ? TColors.black : TColors.light),
         borderRadius: BorderRadius.circular(radius),
       ),
-      child: isNetworkImage
+      child: image.startsWith('http') || isNetworkImage
           ? ClipOval(
               child: Image.network(
                 image,

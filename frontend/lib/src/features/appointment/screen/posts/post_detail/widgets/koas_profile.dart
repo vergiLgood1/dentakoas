@@ -32,7 +32,9 @@ class KoasProfileCard extends StatelessWidget {
             height: 100,
             color: Colors.grey[200], // Placeholder color for missing image
             child: Image(
-              image: isNetworkImage ? NetworkImage(image) : AssetImage(image),
+              image: image.startsWith('http')
+                  ? NetworkImage(image)
+                  : AssetImage(image),
               fit: BoxFit.cover,
             ),
           ),

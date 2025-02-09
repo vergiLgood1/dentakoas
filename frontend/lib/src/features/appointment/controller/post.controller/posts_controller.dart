@@ -118,10 +118,16 @@ class PostController extends GetxController {
       );
 
       postUser.assignAll(
-        posts.where((post) => post.status != StatusPost.Closed.name).toList(),
+        posts
+            .where(
+              (post) =>
+                  post.status != StatusPost.Closed.name &&
+                  UserController.instance.user.value.id == post.user.id,
+            )
+            .toList(),
       );
 
-      postUser(fetchedPosts);
+      // postUser(fetchedPosts);
 
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());

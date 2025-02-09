@@ -25,7 +25,6 @@ export async function GET(
     const existingUser = await getUserById(userId, undefined, {
       id: true,
       email: true,
-
       password: true,
       role: true,
     });

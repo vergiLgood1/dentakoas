@@ -61,11 +61,14 @@ class KoasCard extends StatelessWidget {
                     color:
                         Colors.grey[200], // Placeholder color for missing image
                     child: image.startsWith('http')
-                        ? Image.network(image)
+                        ? Image.network(
+                            image,
+                            fit: BoxFit.cover,
+                          )
                         : Image.asset(
                       image,
                       fit: BoxFit.cover,
-                    ),
+                          ),
                   ),
                 ),
                 const SizedBox(width: TSizes.spaceBtwItems),

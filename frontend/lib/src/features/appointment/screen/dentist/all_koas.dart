@@ -65,7 +65,7 @@ class AllKoasScreen extends StatelessWidget {
                   distance: '2 km',
                   rating: koas.koasProfile!.stats!.averageRating,
                   totalReviews: koas.koasProfile!.stats!.totalReviews,
-                  image: TImages.userProfileImage4,
+                  image: koas.image ?? TImages.user,
                   onTap: () =>
                       Get.to(() => const KoasDetailScreen(), arguments: koas),
                 );

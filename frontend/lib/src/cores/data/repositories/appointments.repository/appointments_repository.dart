@@ -130,8 +130,10 @@ Future<List<AppointmentsModel>> getAppointmentByUser() async {
         data: appointment.toJson(),
       );
 
-      if (response.data == 200) {
+      if (response.statusCode == 200) {
         return AppointmentsModel.fromJson(response.data);
+      } else {
+        throw 'Failed to update appointment.';
       }
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
@@ -147,7 +149,6 @@ Future<List<AppointmentsModel>> getAppointmentByUser() async {
       Logger().e(['Error updating appointment: $e']);
       throw 'Something went wrong. Please try again later.';
     }
-    throw 'Failed to update appointment.';
   }
 
   Future<void> deleteAppointment(String appointmentId) async {

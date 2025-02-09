@@ -1,9 +1,12 @@
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
+
 class ReviewModel {
   String? id;
   String postId;
   String pasienId;
   String koasId;
   double rating; // Scale 1-5
+  UserModel? user;
   String? comment;
   DateTime? createdAt;
 
@@ -12,6 +15,7 @@ class ReviewModel {
     required this.postId,
     required this.pasienId,
     required this.koasId,
+    this.user,
     this.rating = 0.0,
     this.comment,
     this.createdAt,
@@ -27,17 +31,25 @@ class ReviewModel {
           ? double.parse(json['rating'])
           : json['rating'] ?? 0.0,
       comment: json['comment'] ?? '',
-      createdAt: DateTime.parse(json['createdAt']),
+      user: json['user'] != null
+          ? UserModel.fromJson(json['user'])
+          : null,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'postId': postId,
       'pasienId': pasienId,
       'koasId': koasId,
       'rating': rating,
       'comment': comment,
+      'user': user?.toJson(),
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 
@@ -53,13 +65,12 @@ class ReviewModel {
     );
   }
 
-static List<ReviewModel> reviewsFromJson(dynamic data) {
-    // Pastikan data adalah Map dan memiliki key "treatments".
-    if (data is Map<String, dynamic> && data.containsKey("reviews")) {
-      final reviews = data["reviews"] as List;
+  static List<ReviewModel> reviewsFromJson(dynamic data) {
+    if (data is Map<String, dynamic> && data.containsKey("Review")) {
+      final reviews = data["Review"] as List;
       return reviews.map((item) => ReviewModel.fromJson(item)).toList();
     }
-    throw Exception('Invalid data format for treatments');
+    throw Exception('Invalid data format for reviews');
   }
   
 }

@@ -1,3 +1,4 @@
+import 'package:denta_koas/src/commons/widgets/images/circular_image.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -73,11 +74,11 @@ class ScheduleCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: isNetworkImage
-                          ? NetworkImage(imgUrl)
-                          : AssetImage(imgUrl),
+                    CircularImage(
+                      padding: 0,
+                      width: 60,
+                      height: 60,
+                      image: imgUrl,
                     ),
                     const SizedBox(
                       width: TSizes.spaceBtwInputFields,

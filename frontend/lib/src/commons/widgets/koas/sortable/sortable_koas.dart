@@ -149,7 +149,6 @@ class SortableField extends StatelessWidget {
   final double? mainAxisExtent;
   final bool showDropdownMenu;
   final bool showSearchBar;
-
   final SearchPostController searchController = Get.put(SearchPostController());
 
   SortableField({
@@ -177,6 +176,7 @@ class SortableField extends StatelessWidget {
               'Newest',
               'Oldest'
             ],
+            selectedItem: searchController.selectedSort.value,
             hintText: 'Sort by...',
             prefixIcon: Iconsax.sort,
             onChanged: (value) {
@@ -194,10 +194,13 @@ class SortableField extends StatelessWidget {
           ),
         if (showDropdownMenu) const SizedBox(height: TSizes.spaceBtwSections),
         Obx(() {
-          final sortedPosts = searchController.getSortedPosts();
+          final posts = searchController.filteredPosts;
           return DGridLayout(
-            itemCount: sortedPosts.length,
-            itemBuilder: (context, index) => itemBuilder(context, index),
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              final post = posts[index];
+              return itemBuilder(context, index);
+            },
             crossAxisCount: crossAxisCount,
             mainAxisExtent: mainAxisExtent,
           );

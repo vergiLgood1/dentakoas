@@ -30,22 +30,17 @@ class ReviewsController extends GetxController {
 
   final GlobalKey<FormState> reviewsFormKey = GlobalKey<FormState>();
 
-  // Tambahkan isInitialized untuk memastikan data sudah siap
   final isInitialized = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchReviews();
+    comment.addListener(() => commentLength.value = comment.text.length);
 
-    comment.addListener(() {
-      commentLength.value = comment.text.length;
-    });
-
-    // Get postId from arguments jika tersedia
-    if (Get.arguments != null && Get.arguments.schedule?.post?.id != null) {
-      initializeReview(Get.arguments.schedule!.post.id);
-    }
+    // if (Get.arguments?.schedule.post.reviews != null || Get.arguments?.schedule.post.reviews!.isNotEmpty) {
+    //   initializeReview(Get.arguments.schedule!.post.id);
+    // }
   }
 
   @override
@@ -54,7 +49,6 @@ class ReviewsController extends GetxController {
     super.onClose();
   }
 
-  // Initialize the reviews
   Future<void> initializeReview(String postId) async {
     try {
       isLoading.value = true;
@@ -67,14 +61,9 @@ class ReviewsController extends GetxController {
       );
 
       userReview.assignAll([existingReview]);
-
-      // update rating
-      rating.value = existingReview.rating;
-
-      // update comment
-      comment.text = existingReview.comment!;
+      rating.value = existingReview.rating ?? 0.0;
+      comment.text = existingReview.comment ?? "";
       commentLength.value = comment.text.length;
-
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
       Logger().e('Error initializing review: $e');
@@ -84,10 +73,13 @@ class ReviewsController extends GetxController {
   }
 
   Future<void> fetchReviews() async {
+    if (isLoading.value) return;
     try {
       isLoading.value = true;
       final fetchedReviews = await reviewsRepository.getReviews();
-      reviews.assignAll(fetchedReviews);
+      if (fetchedReviews.isNotEmpty) {
+        reviews.assignAll(fetchedReviews);
+      }
     } catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.toString());
     } finally {
@@ -97,6 +89,7 @@ class ReviewsController extends GetxController {
   }
 
   Future<void> fetchReviewById(String id) async {
+    if (isLoading.value) return;
     try {
       isLoading.value = true;
       final fetchedReview = await reviewsRepository.getReviewById(id);
@@ -110,22 +103,16 @@ class ReviewsController extends GetxController {
 
   Future<void> addReview(String postId, String koasId) async {
     try {
-      // Start loading
       TFullScreenLoader.openLoadingDialog(
-          'Proceccing your action....', TImages.loadingHealth);
+          'Processing your action....', TImages.loadingHealth);
 
-      // Check connection
-      final isConected = await NetworkManager.instance.isConnected();
-      if (!isConected) {
+      if (!await NetworkManager.instance.isConnected()) {
         TFullScreenLoader.stopLoading();
         return;
       }
 
       if (rating.value == 0.0) {
-        TLoaders.errorSnackBar(
-          title: 'Error',
-          message: 'Please give a rating',
-        );
+        TLoaders.errorSnackBar(title: 'Error', message: 'Please give a rating');
         TFullScreenLoader.stopLoading();
         return;
       }
@@ -135,7 +122,6 @@ class ReviewsController extends GetxController {
         return;
       }
 
-      // Initialize the reviews
       final newReview = ReviewModel(
         postId: postId,
         pasienId: UserController.instance.user.value.id!,
@@ -144,40 +130,30 @@ class ReviewsController extends GetxController {
         comment: comment.text.trim(),
       );
 
-      // Send the reviews
-      Logger().i(newReview.toJson());
-      final review = await reviewsRepository.addReview(newReview);
+      await reviewsRepository.addReview(newReview);
 
-      // Close loading
       TFullScreenLoader.stopLoading();
-
-      // Success message
       TLoaders.successSnackBar(
         title: 'Success',
         message: 'Your review has been submitted successfully',
       );
+      
+      // Refresh data
+      await fetchReviews();
+      await UserController.instance.fetchUserDetail();
 
-      // Refresh the data
-      fetchReviews();
-
-      // Redirect to the reviews page
-      Get.to(
-        () => StateScreen(
-          image: TImages.successAddReview,
-          isLottie: true,
-          title: "Thank you for your review",
-          subtitle: "Your review has been submitted successfully",
-          showButton: true,
-          primaryButtonTitle: 'Back to Home',
-          onPressed: () => Get.offAll(() => const NavigationMenu()),
-        ),
-      );
+      Get.to(() => StateScreen(
+            image: TImages.successAddReview,
+            isLottie: true,
+            title: "Thank you for your review",
+            subtitle: "Your review has been submitted successfully",
+            showButton: true,
+            primaryButtonTitle: 'Back to Home',
+            onPressed: () => Get.offAll(() => const NavigationMenu()),
+          ));
     } catch (e) {
       TFullScreenLoader.stopLoading();
-      TLoaders.errorSnackBar(
-        title: 'Error',
-        message: e.toString(),
-      );
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
     }
   }
 

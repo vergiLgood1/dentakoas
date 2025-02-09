@@ -378,6 +378,12 @@ setStatusColor() {
       // Update UI
       profileImageUrl.value = response.secureUrl!;
 
+      // Optional: Delete old image from Cloudinary
+      // await deleteOldImage(user.value.image!);
+
+      // refresh database
+      await fetchUserDetail();
+
       TFullScreenLoader.stopLoading();
       TLoaders.successSnackBar(
         title: 'Success',

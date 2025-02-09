@@ -39,7 +39,7 @@ class HomeCategories extends StatelessWidget {
             itemBuilder: (context, index) {
               final treatment = controller.featuredTreatments[index];
               return VerticalImageText(
-                image: TImages.appleLogo,
+                image: TImages.treatmentImage1,
                 title: treatment.alias!,
                 textColor: TColors.textPrimary,
                 onTap: () => Get.to(

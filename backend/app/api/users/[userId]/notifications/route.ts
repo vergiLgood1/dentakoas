@@ -6,7 +6,9 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { senderId, userId, koasId, title, message } = body;
+    const { senderId, userId, koasId, title, message, status } = body;
+
+    console.log("Received Body:", body);
 
     const newNotification = await db.notification.create({
       data: {
@@ -15,6 +17,7 @@ export async function POST(req: Request) {
         koasId,
         title,
         message,
+        status,
         createdAt: new Date(),
       },
     });
@@ -28,6 +31,9 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
+    if (error instanceof Error) {
+      console.log("Error: ", error.stack);
+    }
     console.error("Error creating notification:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },

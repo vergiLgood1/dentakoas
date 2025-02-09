@@ -4,7 +4,8 @@ import 'package:denta_koas/src/commons/widgets/koas/sortable/sortable_koas.dart'
 import 'package:denta_koas/src/commons/widgets/layouts/grid_layout.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/post_library_shimmer.dart';
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
-import 'package:denta_koas/src/features/appointment/controller/explore.controller/explore_post_controller.dart';
+import 'package:denta_koas/src/features/appointment/controller/post.controller/posts_controller.dart';
+import 'package:denta_koas/src/features/appointment/controller/search_controller.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
@@ -18,11 +19,13 @@ class AllPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ExplorePostController());
+    final controller = Get.put(PostController());
+    final searchController = Get.put(SearchPostController());
     return Scaffold(
       appBar: const DAppBar(
-        title: Text('All Koas'),
+        title: Text('All Post'),
         showBackArrow: true,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -32,7 +35,9 @@ class AllPostScreen extends StatelessWidget {
               if (controller.isLoading.value) {
                 return DGridLayout(
                   itemCount:
-                      controller.posts.isNotEmpty ? controller.posts.length : 3,
+                      searchController.filteredPosts.isNotEmpty
+                      ? controller.posts.length
+                      : 3,
                   mainAxisExtent: 240,
                   crossAxisCount: 1,
                   itemBuilder: (_, index) {
@@ -40,14 +45,22 @@ class AllPostScreen extends StatelessWidget {
                   },
                 );
               }
-              if (controller.posts.isEmpty) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.7,
-                  child: const StateScreen(
-                    image: TImages.emptySearch2,
-                    title: "Post not found",
-                    subtitle: "Oppss. There is no post found.",
-                  ),
+              if (searchController.filteredPosts.isEmpty) {
+                return SortableField(
+                  crossAxisCount: 1,
+                  mainAxisExtent: 400,
+                  showSearchBar: true,
+                  itemBuilder: (_, index) {
+                    final post = searchController.filteredPosts[index];
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: const StateScreen(
+                        image: TImages.emptySearch2,
+                        title: "Post not found",
+                        subtitle: "Oppss. There is no post found.",
+                      ),
+                );
+                  },
                 );
               }
               return SortableField(
@@ -55,11 +68,11 @@ class AllPostScreen extends StatelessWidget {
                 mainAxisExtent: 400,
                 showSearchBar: true,
                 itemBuilder: (_, index) {
-                  final post = controller.posts[index];
+                  final post = searchController.filteredPosts[index];
                   return PostCard(
                     postId: post.id,
                     name: post.user.fullName,
-                    image: TImages.userProfileImage2,
+                    image: post.user.image ?? TImages.userProfileImage2,
                     university: post.user.koasProfile!.university!,
                     title: post.title,
                     description: post.desc,

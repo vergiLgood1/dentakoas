@@ -1,4 +1,4 @@
-import 'package:denta_koas/src/utils/constants/image_strings.dart';
+
 
 class UniversityModel {
   final String id;
@@ -61,7 +61,7 @@ class UniversityModel {
       name: universityJson['name'] ?? '',
       alias: universityJson['alias'] ?? '',
       location: universityJson['location'] ?? '',
-      image: universityJson['image'] ?? TImages.appleLogo,
+      image: universityJson['image'] ?? '',
       koasCount: universityJson['koasCount'] ?? 0,
       createdAt: universityJson['createdAt'] ?? '',
       updatedAt: universityJson['updatedAt'] ?? '',

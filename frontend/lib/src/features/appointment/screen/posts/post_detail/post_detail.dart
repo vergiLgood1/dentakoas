@@ -66,7 +66,7 @@ class PostDetailScreen extends StatelessWidget {
                         post.user.koasProfile!.university!,
                     koasNumber:
                         post.user.koasProfile!.koasNumber!,
-                    image: TImages.userProfileImage3,
+                    image: post.user.image ?? TImages.userProfileImage2,
                   ),
                   const SizedBox(height: TSizes.spaceBtwItems),
 

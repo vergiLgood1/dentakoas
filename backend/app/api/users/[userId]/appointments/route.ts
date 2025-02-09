@@ -44,6 +44,7 @@ export async function GET(
                 familyName: true,
                 address: true,
                 phone: true,
+                image: true,
               },
             },
           },
@@ -51,6 +52,7 @@ export async function GET(
         koas: {
           select: {
             id: true,
+            userId: true,
             koasNumber: true,
             gender: true,
             age: true,
@@ -65,6 +67,7 @@ export async function GET(
                 familyName: true,
                 address: true,
                 phone: true,
+                image: true,
               },
             },
           },
@@ -84,6 +87,16 @@ export async function GET(
                     id: true,
                     name: true,
                     alias: true,
+                  },
+                },
+                Review: {
+                  select: {
+                    id: true,
+                    pasienId: true,
+                    koasId: true,
+                    rating: true,
+                    comment: true,
+                    createdAt: true,
                   },
                 },
               },
@@ -171,7 +184,9 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error getting appointments:", error);
+    if (error instanceof Error) {
+      console.error("Error fetching appointments", error);
+    }
 
     // Mengembalikan respons error ke klien
     return NextResponse.json(

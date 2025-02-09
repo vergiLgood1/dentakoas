@@ -45,7 +45,7 @@ class TabKoas extends StatelessWidget {
                   subtitle: 'Find the best koas in your area',
                   images: controller.popularKoas
                       .take(3)
-                      .map((user) => user.image!)
+                      .map((user) => user.image ?? TImages.user)
                       .toList(),
                 );
               }),
@@ -67,7 +67,7 @@ class TabKoas extends StatelessWidget {
                   subtitle: 'Find the newest koas in your area',
                   images: controller.newestKoas
                       .take(3)
-                      .map((user) => user.image!)
+                      .map((user) => user.image ?? TImages.user)
                       .toList(),
                 );
               }),
@@ -113,7 +113,7 @@ class TabKoas extends StatelessWidget {
                       distance: '1.2 km',
                       rating: koas.koasProfile!.stats!.averageRating,
                       totalReviews: koas.koasProfile!.stats!.totalReviews,
-                      image: koas.image ?? '',
+                      image: koas.image ?? TImages.user,
                       onTap: () => Get.to(
                         () => const KoasDetailScreen(),
                         arguments: koas,

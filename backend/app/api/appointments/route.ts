@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
+import { StatusAppointment } from "@prisma/client";
 
 export async function GET(req: Request) {
   try {

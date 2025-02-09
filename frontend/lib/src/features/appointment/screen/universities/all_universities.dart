@@ -25,8 +25,8 @@ class AllUniversitiesScreen extends StatelessWidget {
       body: Obx(() {
         if (controller.isLoading.value) {
           return DGridLayout(
-            itemCount: controller.universities.isNotEmpty
-                ? controller.universities.length
+            itemCount: controller.universityWithImages.isNotEmpty
+                ? controller.universityWithImages.length
                 : 3,
             mainAxisExtent: 330,
             crossAxisCount: 1,
@@ -36,7 +36,7 @@ class AllUniversitiesScreen extends StatelessWidget {
           );
         }
 
-        if (controller.universities.isEmpty) {
+        if (controller.universityWithImages.isEmpty) {
           return SizedBox(
             height: MediaQuery.of(context).size.height * 0.7,
             child: const StateScreen(
@@ -54,11 +54,11 @@ class AllUniversitiesScreen extends StatelessWidget {
               children: [
                 // Categories
                 DGridLayout(
-                  itemCount: controller.universities.length,
+                  itemCount: controller.universityWithImages.length,
                   crossAxisCount: 1,
                   mainAxisExtent: 330,
                   itemBuilder: (_, index) {
-                    final university = controller.universities[index];
+                    final university = controller.universityWithImages[index];
                     return UniversityCard(
                       title: university.name,
                       subtitle: university.alias,

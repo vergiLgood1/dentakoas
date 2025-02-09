@@ -25,7 +25,15 @@ export async function GET(req: Request) {
         name: "asc",
       },
       include: {
-        KoasProfile: true,
+        KoasProfile: {
+          include: {
+            Review: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
         PasienProfile: true,
         FasilitatorProfile: true,
       },
@@ -36,7 +44,7 @@ export async function GET(req: Request) {
         if (user.role === Role.Koas) {
           const totalReviews = await db.review.count({
             where: {
-              koasId: user.KoasProfile!.userId, 
+              koasId: user.KoasProfile!.userId,
             },
           });
 
@@ -45,22 +53,16 @@ export async function GET(req: Request) {
               rating: true,
             },
             where: {
-              koasId: user.KoasProfile!.userId, 
+              koasId: user.KoasProfile!.userId,
             },
           });
 
           const patientCount = await db.appointment.count({
             where: {
-              koasId: user.KoasProfile!.userId,
+              koasId: user.KoasProfile!.id,
               status: "Completed",
             },
           });
-
-          const review = await db.review.findMany({
-            where: {
-              koasId: user.KoasProfile!.userId,
-            },
-          })
 
           const { createdAt, updateAt, ...koasProfileWithoutDates } =
             user.KoasProfile!;
@@ -76,7 +78,7 @@ export async function GET(req: Request) {
                 ),
                 patientCount,
               },
-              review,
+
               createdAt,
               updateAt,
             },

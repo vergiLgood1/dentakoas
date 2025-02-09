@@ -26,7 +26,15 @@ export async function GET(
         id: userId,
       } as Prisma.UserWhereUniqueInput,
       include: {
-        KoasProfile: true,
+        KoasProfile: {
+          include: {
+            Review: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
         PasienProfile: true,
         FasilitatorProfile: true,
       },
@@ -56,7 +64,7 @@ export async function GET(
 
         const patientCount = await db.appointment.count({
           where: {
-            koasId: user.KoasProfile!.userId,
+            koasId: user.KoasProfile!.id,
             status: "Completed",
           },
         });
@@ -81,7 +89,7 @@ export async function GET(
               ),
               patientCount,
             },
-            review,
+            
             createdAt,
             updateAt,
           },

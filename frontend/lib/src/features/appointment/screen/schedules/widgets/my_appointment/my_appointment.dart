@@ -1,6 +1,9 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
+import 'package:denta_koas/src/commons/widgets/images/circular_image.dart';
 import 'package:denta_koas/src/features/appointment/controller/appointment.controller/appointments_controller.dart';
 import 'package:denta_koas/src/features/appointment/data/model/appointments_model.dart';
+import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
+import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +16,7 @@ class MyAppointmentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = AppointmentsController.instance;
     final AppointmentsModel appointment = Get.arguments;
+    final role = UserController.instance.user.value.role;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const DAppBar(
@@ -30,16 +34,22 @@ class MyAppointmentScreen extends StatelessWidget {
               // Doctor Information
               Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage(TImages.userProfileImage3),
+                  CircularImage(
+                      image: role == Role.Koas.name
+                          ? appointment.pasien!.user!.image ?? TImages.user
+                          : appointment.koas!.user!.image ?? TImages.user,
+                      padding: 0,
+                      width: 80,
+                      height: 80
                   ),
                   const SizedBox(width: 15),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        appointment.koas!.user!.fullName,
+                        role == Role.Koas.name
+                            ? appointment.pasien!.user!.fullName
+                            : appointment.koas!.user!.fullName,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
