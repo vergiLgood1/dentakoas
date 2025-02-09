@@ -5,7 +5,6 @@ import 'package:denta_koas/src/features/appointment/data/model/review_model.dart
 import 'package:denta_koas/src/features/personalization/model/fasilitator_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/pasien_profile.dart';
-import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/formatters/formatter.dart';
 import 'package:logger/logger.dart';
 
@@ -184,7 +183,7 @@ class UserModel {
       confirmPassword: json['confirmPassword'] ?? '',
       phone: json['phone'] ?? '',
       address: json['address'] ?? '',
-      image: json['image'] ?? TImages.userProfileImage1,
+      image: json['image'],
       role: json['role'] ?? '',
       koasProfile: json['KoasProfile'] != null
           ? KoasProfileModel.fromJson(json['KoasProfile'])
@@ -314,3 +313,5 @@ Map<String, dynamic> filterProfileByRole(Map<String, dynamic> data) {
 
   
 }
+
+enum Role { Koas, Pasien, Fasilitator, Admin }

@@ -46,14 +46,13 @@ class TabPost extends StatelessWidget {
                               'Unfortunately, there are no last change posts',
                         );
                       }
-                      return const CardShowcase(
+                      return CardShowcase(
                         title: 'Last Chance',
                         subtitle: 'Find the best koas in your area',
-                        images: [
-                          TImages.userProfileImage4,
-                          TImages.userProfileImage4,
-                          TImages.userProfileImage4,
-                        ],
+                        images: controller.lastChangePost
+                            .take(3)
+                            .map((post) => post.user.image ?? TImages.user)
+                            .toList(),
                       );
                     },
                   ),
@@ -68,14 +67,13 @@ class TabPost extends StatelessWidget {
                           subtitle: 'Unfortunately, there are no newest posts',
                         );
                       }
-                      return const CardShowcase(
+                      return CardShowcase(
                         title: 'Newest Posts',
                         subtitle: 'Find the newest koas in your area',
-                        images: [
-                          TImages.userProfileImage4,
-                          TImages.userProfileImage4,
-                          TImages.userProfileImage4,
-                        ],
+                        images: controller.newestPosts
+                            .take(3)
+                            .map((post) => post.user.image ?? TImages.user)
+                            .toList(),
                       );
                     },
                   ),
@@ -120,7 +118,7 @@ class TabPost extends StatelessWidget {
                           postId: post.id,
                           name: post.user.fullName,
                           university: post.user.koasProfile!.university!,
-                          image: TImages.userProfileImage4,
+                          image: post.user.image ?? TImages.user,
                           timePosted: timeago.format(post.updateAt),
                           title: post.title,
                           description: post.desc,

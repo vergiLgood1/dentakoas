@@ -113,7 +113,7 @@ class TabKoas extends StatelessWidget {
                       distance: '1.2 km',
                       rating: koas.koasProfile!.stats!.averageRating,
                       totalReviews: koas.koasProfile!.stats!.totalReviews,
-                      image: TImages.userProfileImage4,
+                      image: koas.image ?? '',
                       onTap: () => Get.to(
                         () => const KoasDetailScreen(),
                         arguments: koas,

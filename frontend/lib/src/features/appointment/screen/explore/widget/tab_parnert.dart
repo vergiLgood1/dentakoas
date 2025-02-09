@@ -5,7 +5,7 @@ import 'package:denta_koas/src/commons/widgets/shimmer/university_card_shimmer.d
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/features/appointment/controller/university.controller/university_controller.dart';
-import 'package:denta_koas/src/features/appointment/screen/koas/all_koas.dart';
+import 'package:denta_koas/src/features/appointment/screen/universities/all_universities.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/parnert_post/post_with_specific_university.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';

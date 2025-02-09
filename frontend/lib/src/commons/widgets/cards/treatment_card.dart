@@ -54,7 +54,7 @@ class TreatmentCard extends StatelessWidget {
               CircleAvatar(
               radius: 24,
               backgroundColor: backgroundColor,
-                backgroundImage: isNetworkImage
+                backgroundImage: image!.startsWith('http')
                     ? NetworkImage(image!)
                     : AssetImage(image!) as ImageProvider,
               ),

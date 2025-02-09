@@ -1,4 +1,5 @@
 import 'package:denta_koas/src/commons/widgets/appbar/appbar.dart';
+import 'package:denta_koas/src/commons/widgets/images/circular_image.dart';
 import 'package:denta_koas/src/commons/widgets/notifications/notification_menu.dart';
 import 'package:denta_koas/src/commons/widgets/shimmer/home_appbar_shimmer.dart';
 import 'package:denta_koas/src/features/appointment/screen/notifications/notification.dart';
@@ -21,7 +22,13 @@ class HomeAppBar extends StatelessWidget {
         return const HomeAppBarShimmer();
       } else {
         return DAppBar(
-          avatar: Image.asset(
+          avatar: controller.user.value.image != null
+              ? CircularImage(
+                  image: controller.user.value.image!,
+                  padding: 0,
+                  isNetworkImage: true,
+                )
+              : Image.asset(
             TImages.user,
             fit: BoxFit.cover,
           ),

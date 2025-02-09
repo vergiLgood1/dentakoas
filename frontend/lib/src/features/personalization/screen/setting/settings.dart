@@ -243,12 +243,13 @@ class DProfileMenu extends StatelessWidget {
         return const SizedBox();
       } else {
         return ListTile(
-          leading: const CircularImage(
-            image: TImages.user,
-            width: 50,
-            height: 50,
-            padding: 0,
-          ),
+          leading: Obx(() => CircularImage(
+                image: controller.user.value.image ?? TImages.user,
+                isNetworkImage:
+                    controller.user.value.image != null ? true : false,
+                backgroundColor: Colors.transparent,
+                padding: 0,
+              )),
           title: Text(
             controller.user.value.fullName,
             style: Theme.of(context)

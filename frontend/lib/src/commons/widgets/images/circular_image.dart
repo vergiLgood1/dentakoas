@@ -2,6 +2,7 @@ import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
 import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CircularImage extends StatelessWidget {
   const CircularImage({
@@ -36,11 +37,36 @@ class CircularImage extends StatelessWidget {
         color: backgroundColor ?? (dark ? TColors.black : TColors.light),
         borderRadius: BorderRadius.circular(radius),
       ),
-      child: Image(
-        image: isNetworkImage ? NetworkImage(image) : AssetImage(image),
-        color: overlayColor,
-        fit: fit,
-      ),
+      child: isNetworkImage
+          ? ClipOval(
+              child: Image.network(
+                image,
+                color: overlayColor,
+                fit: BoxFit.cover,
+                width: width,
+                height: height,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        width: width,
+                        height: height,
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          : Image.asset(
+              image,
+              color: overlayColor,
+              fit: fit,
+            ),
     );
   }
 }

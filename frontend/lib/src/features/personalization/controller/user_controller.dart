@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:cloudinary/cloudinary.dart';
 import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
 import 'package:denta_koas/src/features/authentication/screen/signup/signup.dart';
@@ -14,6 +17,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
 class UserController extends GetxController {
@@ -31,6 +35,16 @@ class UserController extends GetxController {
 
   final email = TextEditingController();
   final password = TextEditingController();
+
+  // 
+  final ImagePicker _picker = ImagePicker();
+  var cloudinary = Cloudinary.signedConfig(
+    apiKey: '338626958888276',
+    apiSecret: '8SxMxVmbz4tinfex31MJtaj7x6A',
+    cloudName: 'dxw9ywgfq',
+  );
+  final Rx<String> profileImageUrl = ''.obs;
+
   final GlobalKey<FormState> reAuthFormKey = GlobalKey<FormState>();
 
   final hidePassword = true.obs;
@@ -39,6 +53,7 @@ class UserController extends GetxController {
   void onInit() {
     super.onInit();
     fetchUserDetail();
+    updateProfileImageUrl(); // Add this to load existing image
   }
 
   String updateGreetingMessage() {
@@ -263,6 +278,181 @@ setStatusColor() {
       );
     }
   }
+
+  // Function to pick image from gallery
+  // Future<void> pickAndUploadImage() async {
+  //   try {
+  //     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  //     if (image == null) return;
+
+  //     // Start loading
+  //     TFullScreenLoader.openLoadingDialog(
+  //         'Uploading image...', TImages.loadingHealth);
+
+  //     // Upload image to Supabase
+  //     final File imageFile = File(image.path);
+  //     final String fileExt = path.extension(image.path); // Get file extension
+  //     final String fileName =
+  //         '${user.value.id}$fileExt'; // Use user ID as filename
+
+  //     // Upload to Supabase storage
+  //     final String storagePath =
+  //         await uploadImageToSupabase(imageFile, fileName);
+
+  //     // Update user profile with new image URL
+  //     await updateUserProfileImage(storagePath);
+
+  //     // Fetch the new image
+  //     await fetchProfileImage();
+
+  //     TFullScreenLoader.stopLoading();
+  //     TLoaders.successSnackBar(
+  //       title: 'Success',
+  //       message: 'Profile picture updated successfully',
+  //     );
+  //   } catch (e) {
+  //     TFullScreenLoader.stopLoading();
+  //     TLoaders.errorSnackBar(
+  //       title: 'Error',
+  //       message: e.toString(),
+  //     );
+  //   }
+  // }
+
+  // // Upload image to Supabase storage
+  // Future<String> uploadImageToSupabase(File imageFile, String fileName) async {
+  //   try {
+  //     await _supabase.storage
+  //         .from('avatars') // Your bucket name
+  //         .upload(fileName, imageFile);
+
+  //     return fileName;
+  //   } catch (e) {
+  //     throw 'Failed to upload image: $e';
+  //   }
+  // }
+
+  // // Update user profile with new image URL
+  // Future<void> updateUserProfileImage(String storagePath) async {
+  //   try {
+  //     await userRepository.updateUserRecord(
+  //         user.value.id!, UserModel(image: storagePath));
+  //   } catch (e) {
+  //     throw 'Failed to update profile image: $e';
+  //   }
+  // }
+
+  // // Fetch profile image from Supabase
+  // Future<void> fetchProfileImage() async {
+  //   try {
+  //     if (user.value.image != null) {
+  //       final String imageUrl =
+  //           _supabase.storage.from('avatars').getPublicUrl(user.value.image!);
+  //       profileImageUrl.value = imageUrl;
+  //     }
+  //   } catch (e) {
+  //     Logger().e('Error fetching profile image: $e');
+  //   }
+  // }
+
+  // Function to pick and upload image
+  Future<void> pickAndUploadImage() async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 70, // Compress image quality
+      );
+
+      if (image == null) return;
+
+      // Start loading
+      TFullScreenLoader.openLoadingDialog(
+          'Uploading image...', TImages.loadingHealth);
+
+      // Upload to Cloudinary
+      final response = await uploadImageToCloudinary(File(image.path));
+
+      // Update user profile with new image URL
+      await updateUserProfileImage(response.secureUrl!);
+
+      // Update UI
+      profileImageUrl.value = response.secureUrl!;
+
+      TFullScreenLoader.stopLoading();
+      TLoaders.successSnackBar(
+        title: 'Success',
+        message: 'Profile picture updated successfully',
+      );
+    } catch (e) {
+      TFullScreenLoader.stopLoading();
+      TLoaders.errorSnackBar(
+        title: 'Error',
+        message: e.toString(),
+      );
+    }
+  }
+
+  // Upload image to Cloudinary
+  Future<CloudinaryResponse> uploadImageToCloudinary(File imageFile) async {
+    try {
+      // Upload to cloudinary with transformation
+      return await cloudinary.upload(
+          file: imageFile.path,
+          folder: 'private', // Cloudinary folder
+          fileBytes: imageFile.readAsBytesSync(),
+          resourceType: CloudinaryResourceType.image,
+          progressCallback: (count, total) {
+            Logger().i('Progress: $count / $total');
+          });
+    } catch (e) {
+      throw 'Failed to upload image: $e';
+    }
+  }
+
+  // Update user profile with new image URL in MySQL database
+  Future<void> updateUserProfileImage(String imageUrl) async {
+    try {
+      final updateUser = UserModel(
+        image: imageUrl,
+      );
+
+      Logger().i('Updating profile image: $imageUrl');
+
+      await userRepository.updateUserRecord(
+          AuthenticationRepository.instance.authUser!.uid, updateUser);
+    } catch (e) {
+      throw 'Failed to update profile image: $e';
+    }
+  }
+
+  // Update profile image URL in UI
+  void updateProfileImageUrl() {
+    if (user.value.image != null) {
+      profileImageUrl.value = user.value.image!;
+    }
+  }
+
+  // Optional: Delete old image from Cloudinary
+  Future<void> deleteOldImage(String imageUrl) async {
+    try {
+      // Extract public ID from URL
+      final Uri uri = Uri.parse(imageUrl);
+      final pathSegments = uri.pathSegments;
+      final publicId = pathSegments[pathSegments.length - 1].split('.')[0];
+
+      // Implement deletion logic here using Cloudinary API
+      // Note: This requires server-side implementation for security
+      final response = await cloudinary.destroy(
+        'public_id',
+        url: imageUrl,
+        resourceType: CloudinaryResourceType.image,
+        invalidate: false,
+      );
+    } catch (e) {
+      Logger().e('Error deleting old image: $e');
+    }
+  }
+
 
 
 }

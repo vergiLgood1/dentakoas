@@ -11,7 +11,6 @@ import 'package:denta_koas/src/features/appointment/screen/koas_reviews/widgets/
 import 'package:denta_koas/src/features/appointment/screen/posts/koas_post/post_with_specific_koas.dart';
 import 'package:denta_koas/src/features/appointment/screen/posts/post_detail/post_detail.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
-import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/enums.dart';
@@ -48,7 +47,7 @@ class KoasDetailScreen extends StatelessWidget {
             children: [
               // Koas profile
               KoasProfileSection(
-                imageUrl: TImages.userProfileImage3,
+                imageUrl: koas.image ?? TImages.user,
                 name: koas.fullName,
                 university: koas.koasProfile?.university ?? 'N/A',
               ),
@@ -735,9 +734,7 @@ class FooterButton extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Obx(
         () {
-          if (UserController.instance.user.value.role == 'Fasilitator' &&
-              UserController.instance.user.value.koasProfile?.status ==
-                  StatusKoas.Pending.name) {
+          if (UserController.instance.user.value.role == 'Fasilitator') {
             return Row(
               children: [
                 Expanded(

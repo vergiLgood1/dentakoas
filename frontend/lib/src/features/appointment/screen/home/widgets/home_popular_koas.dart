@@ -66,7 +66,7 @@ class HomePopularKoasSection extends StatelessWidget {
                     distance: '1 KM',
                     rating: popularKoas.koasProfile!.stats!.averageRating,
                     totalReviews: popularKoas.koasProfile!.stats!.totalReviews,
-                    image: TImages.userProfileImage3,
+                    image: popularKoas.image ?? TImages.user,
                     onTap: () => Get.to(
                       () => const KoasDetailScreen(),
                       arguments: popularKoas,

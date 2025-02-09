@@ -54,6 +54,9 @@ dependencies:
   timeago: ^3.7.0
   flutter_map: ^8.0.0
   latlong2: ^0.9.1
+  flutter_dotenv: ^5.2.1
+  path: ^1.9.0
+  cloudinary: ^1.2.0
 
   # Icons
   iconsax: ^0.0.8

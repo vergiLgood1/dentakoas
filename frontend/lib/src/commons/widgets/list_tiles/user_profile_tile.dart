@@ -16,7 +16,7 @@ class UserProfileTile extends StatelessWidget {
         image: TImages.user,
         width: 50,
         height: 50,
-        padding: 0,
+      
       ),
       title: Text(
         'Denta App',
