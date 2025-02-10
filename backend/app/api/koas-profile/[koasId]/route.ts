@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 
-export async function GET(req: Request, props: { params: { koasId: string } }) {
-  const { koasId } = props.params; // Ambil langsung dari params
+export async function GET(
+  req: Request,
+  props: { params: Promise<{ koasId: string }> }
+) {
+  const params = await props.params;
   const { searchParams } = new URL(req.url);
-  const id = searchParams.get("koasId") || koasId; // Gunakan koasId sebagai fallback
+  const id = searchParams.get("koasId") || params.koasId;
 
   try {
     const koasProfile = await db.koasProfile.findUnique({
