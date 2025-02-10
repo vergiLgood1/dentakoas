@@ -168,7 +168,7 @@ class AppointmentsController extends GetxController {
           message: 'Check your schedule for more details.');
 
       // Fetch appointments
-      fetchAppointments();
+      await fetchAppointments();
 
       // Close the dialog
       Get.offAll(
@@ -262,7 +262,7 @@ class AppointmentsController extends GetxController {
           message: 'Check your schedule for more details.');
 
       // Fetch appointments
-      fetchAppointments();
+      await fetchAppointments();
 
       // Close the dialog
       Navigator.of(Get.overlayContext!).pop();
@@ -339,7 +339,7 @@ class AppointmentsController extends GetxController {
           message: 'Check your schedule for more details.');
 
       // Fetch appointments
-      fetchAppointments();
+      await fetchAppointments();
 
       // Close the dialog
       Navigator.of(Get.overlayContext!).pop();
@@ -408,7 +408,7 @@ class AppointmentsController extends GetxController {
           message: 'Check your schedule for more details.');
 
       // Fetch appointments
-      fetchAppointments();
+      await fetchAppointments();
 
       // Close the dialog
       Navigator.of(Get.overlayContext!).pop();
