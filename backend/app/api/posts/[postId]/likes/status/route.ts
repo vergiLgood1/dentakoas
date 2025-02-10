@@ -3,9 +3,11 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { postId: string } }
+  props: { params: Promise<{ postId: string }> }
 ) {
-  const { postId } = params;
+  const params = await props.params;
+  const { searchParams } = new URL(req.url);
+  const postId = searchParams.get("postId") || params.postId;
 
   // Mengambil userId dari body request (pastikan body parsing diaktifkan jika diperlukan)
   let body;
