@@ -198,6 +198,9 @@ class TImages {
   static const String promoBanner1 = "assets/images/products/promo-banner-1.png";
   static const String promoBanner2 = "assets/images/products/promo-banner-2.png";
   static const String promoBanner3 = "assets/images/products/promo-banner-3.png";
+  static const String promoBanner4 = "assets/images/banners/banner-9.png";
+  static const String promoBanner5 = "assets/images/banners/banner-10.png";
+  static const String promoBanner6 = "assets/images/banners/banner-11.png";
   static const String banner1 = "assets/images/banners/banner_1.jpg";
   static const String banner2 = "assets/images/banners/banner_2.jpg";
   static const String banner3 = "assets/images/banners/banner_3.jpg";

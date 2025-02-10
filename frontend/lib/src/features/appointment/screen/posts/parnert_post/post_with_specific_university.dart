@@ -60,7 +60,7 @@ class PostWithSpecificUniversity extends StatelessWidget {
                       return PostCard(
                         postId: post.id,
                         name: post.user.fullName,
-                        image: TImages.userProfileImage2,
+                        image: post.user.image ?? TImages.user,
                         university: post.user.koasProfile!.university!,
                         title: post.title,
                         description: post.desc,

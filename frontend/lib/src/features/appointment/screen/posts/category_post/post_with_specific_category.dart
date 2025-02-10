@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
 class PostWithSpecificCategory extends StatelessWidget {
   const PostWithSpecificCategory({super.key});
 
@@ -65,11 +64,14 @@ class PostWithSpecificCategory extends StatelessWidget {
                 }
 
                 if (filteredPosts.isEmpty) {
-                  return const SliverToBoxAdapter(
-                    child: StateScreen(
-                      image: TImages.emptySearch2,
-                      title: "Post not found",
-                      subtitle: "Oppss. There is no post with this category",
+                  return SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: const StateScreen(
+                        image: TImages.emptySearch2,
+                        title: "Post not found",
+                        subtitle: "Oppss. There is no post with this category",
+                      ),
                     ),
                   );
                 }
