@@ -58,7 +58,7 @@ export async function GET(req: Request, props: { params: Promise<{ id: string }>
               where: {
                 scheduleId,
                 timeslotId: slot.id,
-                date: new Date(dateString),
+                date: dateString,
                 status: "Confirmed", // Only count confirmed participants
                 AND: {
                   schedule: {
