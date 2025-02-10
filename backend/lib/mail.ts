@@ -14,6 +14,6 @@ export const sendOtpResetPassword = async (email: string, otp: string) => {
     from: "Denta Koas <onboarding@resend.dev>",
     to: email,
     subject: "Reset Password",
-    react: OTPEmailTemplate({ OTP: otp }),
+    react: await OTPEmailTemplate({ OTP: otp }),
   });
 };
