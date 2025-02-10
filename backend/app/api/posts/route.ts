@@ -178,65 +178,6 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const body = await req.json();
-  const {
-    title,
-    desc,
-    patientRequirement,
-    requiredParticipant,
-    dateRangeStart,
-    dateRangeEnd,
-    published,
-    status,
-    koasStartTime, // Waktu mulai koas
-    koasEndTime, // Waktu selesai koas
-  } = body;
-
-  try {
-    const post = await db.post.update({
-      where: { id: params.id },
-      data: {
-        title,
-        desc,
-        patientRequirement,
-        requiredParticipant,
-        status,
-        published,
-      } as Prisma.PostUpdateInput,
-    });
-
-    // // Generate jadwal berdasarkan dateRangeStart hingga dateRangeEnd
-    // const scheduleDates = genSchedules(
-    //   new Date(dateRangeStart),
-    //   new Date(dateRangeEnd)
-    // );
-
-    // // Create schedules first using createMany
-    // const schedulesData = scheduleDates.map((scheduleDate) => ({
-    //   date: scheduleDate,
-    //   postId: post.id,
-    // }));
-
-    // await db.schedule.createMany({
-    //   data: schedulesData,
-    // });
-
-    return NextResponse.json(
-      {
-        post,
-      },
-      { status: 200 }
-    );
-  } catch (error) {
-    if (error instanceof Error) {
-      console.log("Error: ", error.stack);
-    }
-  }
-}
 
 export async function DELETE() {
   try {
