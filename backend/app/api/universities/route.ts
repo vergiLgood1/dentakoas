@@ -45,7 +45,6 @@ export async function GET(req: Request) {
 
 export async function POST(
   req: Request,
-  props: { body: Promise<{ name: string }> }
 ) {
   const { body } = await req.json();
   const { name, alias, location } = body;

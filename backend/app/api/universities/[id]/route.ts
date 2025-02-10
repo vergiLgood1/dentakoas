@@ -1,8 +1,14 @@
 import db from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request, { id }: { id: string }) {
+export async function GET(
+  req: Request,
+  props: { params: Promise<{ id: string }> }
+) {
   try {
+    const params = await props.params;
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id") || params.id;
     const university = await db.university.findUnique({
       where: {
         id: id,
