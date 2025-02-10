@@ -345,4 +345,6 @@ model Appointment {
   koas     KoasProfile   @relation(fields: [koasId], references: [id])
   schedule Schedule      @relation(fields: [scheduleId], references: [id])
   timeslot Timeslot      @relation(fields: [timeslotId], references: [id])
+
+  @@map("appointment")
 }

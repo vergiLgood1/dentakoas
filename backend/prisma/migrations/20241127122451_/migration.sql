@@ -1,8 +1,8 @@
 /*
   Warnings:
 
-  - You are about to drop the column `user_id` on the `appointment` table. All the data in the column will be lost.
-  - You are about to alter the column `status` on the `appointment` table. The data in that column could be lost. The data in that column will be cast from `VarChar(191)` to `Enum(EnumId(4))`.
+  - You are about to drop the column `user_id` on the `Appointment` table. All the data in the column will be lost.
+  - You are about to alter the column `status` on the `Appointment` table. The data in that column could be lost. The data in that column will be cast from `VarChar(191)` to `Enum(EnumId(4))`.
   - You are about to drop the column `date_range_end` on the `posts` table. All the data in the column will be lost.
   - You are about to drop the column `date_range_start` on the `posts` table. All the data in the column will be lost.
   - You are about to drop the column `date` on the `schedules` table. All the data in the column will be lost.
@@ -14,10 +14,10 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `appointment` DROP FOREIGN KEY `Appointment_user_id_fkey`;
+ALTER TABLE `Appointment` DROP FOREIGN KEY `Appointment_user_id_fkey`;
 
 -- AlterTable
-ALTER TABLE `appointment` DROP COLUMN `user_id`,
+ALTER TABLE `Appointment` DROP COLUMN `user_id`,
     ADD COLUMN `date` DATETIME(3) NOT NULL,
     ADD COLUMN `pasien_id` VARCHAR(191) NOT NULL,
     MODIFY `status` ENUM('Pending', 'Confirmed', 'Ongoing', 'Completed', 'Canceled') NOT NULL DEFAULT 'Pending';
