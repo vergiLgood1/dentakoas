@@ -1,8 +1,8 @@
 // This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// learn more about it in the docs: https://pris.ly/d/prisma_schema
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate_init
 
 generator client {
   provider = "prisma-client-js"
@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL_DEV")
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -34,7 +34,7 @@ enum StatusPost {
   Open
   Closed
 
-  @@map("status-post")
+  @@map("status_post")
 }
 
 enum StatusKoas {
@@ -42,7 +42,7 @@ enum StatusKoas {
   Pending
   Approved
 
-  @@map("status-koas")
+  @@map("status_koas")
 }
 
 enum StatusAppointment {
@@ -53,7 +53,7 @@ enum StatusAppointment {
   Ongoing
   Completed
 
-  @@map("status-appointment")
+  @@map("status_appointment")
 }
 
 enum StatusNotification {
@@ -168,7 +168,7 @@ model KoasProfile {
   Review       Review[]
   University   University?    @relation(fields: [universityId], references: [id])
 
-  @@map("koas-profile")
+  @@map("koas_profile")
 }
 
 model PasienProfile {
@@ -183,7 +183,7 @@ model PasienProfile {
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   Appointment Appointment[]
 
-  @@map("pasien-profile")
+  @@map("pasien_profile")
 }
 
 model FasilitatorProfile {
@@ -192,7 +192,7 @@ model FasilitatorProfile {
   university String?
   user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("fasilitator-profile")
+  @@map("fasilitator_profile")
 }
 
 model University {
@@ -276,7 +276,7 @@ model TreatmentType {
   updateAt  DateTime @updatedAt @map("updated_at")
   Post      Post[]
 
-  @@map("treatment-types")
+  @@map("treatment_types")
 }
 
 model Schedule {
@@ -316,7 +316,7 @@ model Review {
   postId    String   @map("post_id")
   pasienId  String   @map("user_id")
   koasId    String?  @map("koas_id")
-  rating    Decimal  @default(0) // Skala 1-5
+  rating    Decimal  @default(0) // Skala 1_5
   comment   String?  @db.VarChar(500)
   createdAt DateTime @default(now()) @map("created_at")
 
