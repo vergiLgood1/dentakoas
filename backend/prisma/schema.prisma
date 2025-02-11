@@ -142,6 +142,7 @@ model Otp {
   updatedAt DateTime @updatedAt
 
   @@unique([email, otp])
+  @@map("otps")
 }
 
 model KoasProfile {
@@ -346,5 +347,5 @@ model Appointment {
   schedule Schedule      @relation(fields: [scheduleId], references: [id])
   timeslot Timeslot      @relation(fields: [timeslotId], references: [id])
 
-  @@map("appointment")
+  @@map("appointments")
 }

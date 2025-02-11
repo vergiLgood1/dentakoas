@@ -72,9 +72,9 @@ static String? validatePassword(String? value) {
     }
 
     // Check for special characters
-    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return 'Password must contain at least one special character.';
-    }
+    // if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+    //   return 'Password must contain at least one special character.';
+    // }
 
     return null;
   }
@@ -94,14 +94,32 @@ static String? validateConfirmPassword(
 
 static String? validatePhoneNumber(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Phone number is required.';
+      return 'Nomor telepon wajib diisi';
     }
 
-    // Regular expression for phone number validation (assuming an Indonesian phone number format)
-    final phoneRegExp = RegExp(r'^(\+62|62|0)8[1-9][0-9]{6,9}$');
+    // Bersihkan nomor dari spasi dan karakter khusus
+    value = value.replaceAll(RegExp(r'[\s\-()]'), '');
+
+    // Regular expression untuk format nomor Indonesia:
+    // - Bisa dimulai dengan +62, 62, atau 0
+    // - Diikuti dengan 8
+    // - Diikuti dengan 1-9 untuk digit ketiga (kode provider)
+    // - Total panjang 10-13 digit setelah kode negara
+    final phoneRegExp = RegExp(r'^(?:(?:\+62|62)|0)8[1-9][0-9]{8,10}$');
 
     if (!phoneRegExp.hasMatch(value)) {
-      return 'Invalid phone number format (10 digits required).';
+      return 'Format nomor telepon tidak valid. Contoh: 081234567890';
+    }
+
+    // Validasi panjang nomor (10-13 digit)
+    int length = value.startsWith('0')
+        ? value.length
+        : value.startsWith('62')
+            ? value.length - 2
+            : value.length - 3;
+
+    if (length < 10 || length > 13) {
+      return 'Nomor telepon harus terdiri dari 10-13 digit';
     }
 
     return null;
