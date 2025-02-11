@@ -55,6 +55,7 @@ class PostWithSpecificUniversity extends StatelessWidget {
                     itemCount: filteredPosts.length,
                     crossAxisCount: 1,
                     mainAxisExtent: 400,
+                    showDropdownMenu: false,
                     itemBuilder: (_, index) {
                       final post = filteredPosts[index];
                       return PostCard(

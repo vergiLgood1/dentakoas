@@ -20,13 +20,14 @@ export function startCronJobs() {
   });
 }
 
-export async function oneTimeCronJobs() {
-  console.log("Running one-time cron jobs...");
 
-  await updateExpiredPosts();
-  await updateExpiredAppointments();
-  await updateOngoingAppointments();
-  await updateCompletedAppointments();
+// export async function oneTimeCronJobs() {
+//   console.log("Running one-time cron jobs...");
 
-  console.log("One-time cron jobs completed.");
-}
+//   await updateExpiredPosts();
+//   await updateExpiredAppointments();
+//   await updateOngoingAppointments();
+//   await updateCompletedAppointments();
+
+//   console.log("One-time cron jobs completed.");
+// }

@@ -25,6 +25,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:logger/logger.dart';
+import 'package:lottie/lottie.dart' as lottie;
 import 'package:readmore/readmore.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -101,8 +102,6 @@ class KoasDetailScreen extends StatelessWidget {
             // Map section
             MapSection(
               koasUniversity: koas.koasProfile?.university ?? '',
-              lat: universityController.lat.value,
-              lng: universityController.lng.value,
             ),
             const SizedBox(height: TSizes.spaceBtwSections),
 
@@ -423,17 +422,13 @@ class PersonalInformationSection extends StatelessWidget {
   }
 }
 
-class MapSection extends StatelessWidget {
+class MapSection extends GetView<UniversityController> {
   const MapSection({
     super.key,
     required this.koasUniversity,
-    required this.lat,
-    required this.lng,
   });
 
   final String koasUniversity;
-  final double lat;
-  final double lng;
 
   @override
   Widget build(BuildContext context) {
@@ -464,49 +459,80 @@ class MapSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               child: Stack(
                 children: [
-                  FlutterMap(
-                    options: const MapOptions(
-                      initialCenter: LatLng(-6.200000, 106.816666),
-                      initialZoom: 14,
-                      interactionOptions: InteractionOptions(
-                        enableMultiFingerGestureRace: false,
-                      ),
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate:
-                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.example.app',
-                      ),
-                      MarkerLayer(
-                        markers: [
-                          Marker(
-                            point: LatLng(lat, lng),
-                            width: 80,
-                            height: 80,
-                            child: const Icon(Icons.location_pin,
-                                color: Colors.red),
+                  Obx(() {
+                    if (controller.lat.value == 0.0 &&
+                        controller.lng.value == 0.0) {
+                      return SizedBox(
+                        height:
+                            200, // Match the container height from MapSection
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height:
+                                    120, // Constrain the Lottie animation size
+                                child: lottie.Lottie.asset(
+                                  TImages.emptyAddress,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Location not available',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: TColors.textSecondary,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
+                      );
+                    }
+                    return FlutterMap(
+                      options: MapOptions(
+                        initialCenter:
+                            LatLng(controller.lat.value, controller.lng.value),
+                        initialZoom: 14,
+                        interactionOptions: const InteractionOptions(
+                          enableMultiFingerGestureRace: true,
+                        ),
                       ),
-                      // Custom Zoom Controls
-                      RichAttributionWidget(
-                        attributions: [
-                          TextSourceAttribution(
-                            'OpenStreetMap contributors',
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  // Custom Controls Overlay
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName: 'com.example.app',
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: LatLng(
+                                  controller.lat.value, controller.lng.value),
+                              width: 80,
+                              height: 80,
+                              child: const Icon(Icons.location_pin,
+                                  color: Colors.red),
+                            ),
+                          ],
+                        ),
+                        RichAttributionWidget(
+                          attributions: [
+                            TextSourceAttribution(
+                              'OpenStreetMap contributors',
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
                   Positioned(
                     right: 8,
                     top: 8,
                     child: Column(
                       children: [
-                        // Fullscreen Button
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -523,13 +549,7 @@ class MapSection extends StatelessWidget {
                           child: IconButton(
                             icon: const Icon(Icons.fullscreen),
                             onPressed: () {
-                              // Navigate to fullscreen map
-                              Get.to(
-                                () => FullscreenMap(
-                                  lat: lat,
-                                  lng: lng,
-                                ),
-                              );
+                              Get.to(() => const FullscreenMapView());
                             },
                             constraints: const BoxConstraints(
                               minHeight: 40,
@@ -537,50 +557,7 @@ class MapSection extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         const SizedBox(height: TSizes.spaceBtwSections),
-                        // Zoom Controls
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //     color: Colors.white,
-                        //     borderRadius: BorderRadius.circular(8),
-                        //     boxShadow: [
-                        //       BoxShadow(
-                        //         color: Colors.black.withOpacity(0.1),
-                        //         spreadRadius: 1,
-                        //         blurRadius: 3,
-                        //         offset: const Offset(0, 1),
-                        //       ),
-                        //     ],
-                        //   ),
-                        //   child: Column(
-                        //     children: [
-                        //       // Zoom In Button
-                        //       IconButton(
-                        //         icon: const Icon(Icons.add),
-                        //         onPressed: () {
-                        //           // Add zoom in functionality
-                        //         },
-                        //         constraints: const BoxConstraints(
-                        //           minHeight: 40,
-                        //           minWidth: 40,
-                        //         ),
-                        //       ),
-                        //       const Divider(height: 1),
-                        //       // Zoom Out Button
-                        //       IconButton(
-                        //         icon: const Icon(Icons.remove),
-                        //         onPressed: () {
-                        //           // Add zoom out functionality
-                        //         },
-                        //         constraints: const BoxConstraints(
-                        //           minHeight: 40,
-                        //           minWidth: 40,
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
@@ -594,13 +571,8 @@ class MapSection extends StatelessWidget {
   }
 }
 
-// Fullscreen Map Widget
-class FullscreenMap extends StatelessWidget {
-  const FullscreenMap({super.key, required this.lat, required this.lng});
-
-  final double lat;
-  final double lng;
-
+class FullscreenMapView extends GetView<UniversityController> {
+  const FullscreenMapView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -610,39 +582,65 @@ class FullscreenMap extends StatelessWidget {
         centerTitle: true,
         showBackArrow: true,
       ),
-      body: FlutterMap(
-        options: MapOptions(
-          initialCenter: LatLng(lat, lng),
-          initialZoom: 14,
-          interactionOptions: const InteractionOptions(
-            enableMultiFingerGestureRace: true,
+      body: Obx(() {
+        if (controller.lat.value == 0.0 && controller.lng.value == 0.0) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 400, // Constrain the Lottie animation size
+                  child: lottie.Lottie.asset(
+                    TImages.emptyAddress,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Location not available',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: TColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        return FlutterMap(
+          options: MapOptions(
+            initialCenter: LatLng(controller.lat.value, controller.lng.value),
+            initialZoom: 14,
+            interactionOptions: const InteractionOptions(
+              enableMultiFingerGestureRace: true,
+            ),
           ),
-        ),
-        children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.example.app',
-          ),
-          MarkerLayer(
-            markers: [
-              Marker(
-                point: LatLng(lat, lng),
-                width: 80,
-                height: 80,
-                child: const Icon(Icons.location_pin, color: Colors.red),
-              ),
-            ],
-          ),
-          RichAttributionWidget(
-            attributions: [
-              TextSourceAttribution(
-                'OpenStreetMap contributors',
-                onTap: () {},
-              ),
-            ],
-          ),
-        ],
-      ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.example.app',
+            ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: LatLng(controller.lat.value, controller.lng.value),
+                  width: 80,
+                  height: 80,
+                  child: const Icon(Icons.location_pin, color: Colors.red),
+                ),
+              ],
+            ),
+            RichAttributionWidget(
+              attributions: [
+                TextSourceAttribution(
+                  'OpenStreetMap contributors',
+                  onTap: () {},
+                ),
+              ],
+            ),
+          ],
+        );
+      }),
     );
   }
 }

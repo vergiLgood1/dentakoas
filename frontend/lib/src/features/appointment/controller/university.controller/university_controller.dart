@@ -86,8 +86,11 @@ class UniversityController extends GetxController {
       final coordinates =
           await universitiesRepository.getUniversityCoordinates(universityName);
 
-      lat.value = coordinates['lat'] ?? 0.0;
-      lng.value = coordinates['lng'] ?? 0.0;
+      lat.value = coordinates['latitude'] ?? 0.0;
+      lng.value = coordinates['longitude'] ?? 0.0;
+
+      Logger().i('University coordinates: $lat, $lng');
+
     } catch (e) {
       Logger().e('Error fetching university coordinates: $e');
     }

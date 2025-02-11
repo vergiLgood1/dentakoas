@@ -9,6 +9,7 @@ import 'package:denta_koas/src/features/personalization/screen/profile/widgets/p
 import 'package:denta_koas/src/utils/constants/colors.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/sizes.dart';
+import 'package:denta_koas/src/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -177,13 +178,16 @@ class ProfileScreen extends StatelessWidget {
                           title: 'User ID',
                           value: controller.user.value.id!,
                           icon: Iconsax.copy,
-                          onTap: () {},
+                          onTap: () => THelperFunctions.copyToClipboard(
+                              'User Id', controller.user.value.id!),
                         ),
                         ProfileMenu(
                           title: 'Koas Number',
                           value: controller.user.value.profile!.koasNumber!,
                           icon: Iconsax.copy,
-                          onTap: () {},
+                          onTap: () => THelperFunctions.copyToClipboard(
+                              'Koas Number',
+                              controller.user.value.profile!.koasNumber!),
                         ),
                         ProfileMenu(
                           title: 'University',

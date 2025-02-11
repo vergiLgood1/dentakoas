@@ -1,4 +1,6 @@
+import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -109,5 +111,13 @@ class THelperFunctions {
       wrappedList.add(Row(children: rowChildren));
     }
     return wrappedList;
+  }
+
+  static void copyToClipboard(String title, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    TLoaders.successSnackBar(
+      title: 'Copied',
+      message: '$title copied to clipboard',
+    );
   }
 }

@@ -15,6 +15,7 @@ import 'package:denta_koas/src/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -56,18 +57,19 @@ class UserController extends GetxController {
     updateProfileImageUrl(); // Add this to load existing image
   }
 
-  String updateGreetingMessage() {
+String updateGreetingMessage() {
     final hour = DateTime.now().hour;
-    if (hour < 12) {
+  
+    if (hour >= 5 && hour < 12) {
       greetingMsg.value = 'Good Morning';
-    } else if (hour < 18) {
+    } else if (hour >= 12 && hour < 17) {
       greetingMsg.value = 'Good Afternoon';
     } else {
       greetingMsg.value = 'Good Evening';
     }
+  
     return greetingMsg.value;
   }
-
   Future<void> fetchAuthUserRecord() async {
     try {
       profileLoading.value = true;

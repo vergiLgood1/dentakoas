@@ -1,17 +1,14 @@
-import { oneTimeCronJobs, startCronJobs } from "@/lib/cron-scheduler";
+import { updateCompletedAppointments, updateOngoingAppointments } from "@/helpers/appointments";
+import { startCronJobs } from "@/lib/cron-scheduler";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 
 let cronStarted = false;
 export async function GET(req: Request) {
   try {
-    if (!cronStarted) {
-      // startCronJobs();
-      oneTimeCronJobs();
-      cronStarted = true;
-    }
-
-    return NextResponse.json({ message: "Cron jobs started" });
+    await updateOngoingAppointments();
+    await updateCompletedAppointments();
+    return NextResponse.json({ message: "Cron jobs update appointments execute" });
   } catch (error) {
     console.error("Error fetching Timeslots", error);
     return NextResponse.json(
