@@ -90,7 +90,21 @@ class TFormatter {
   }
 
 
+  static String formatWhatsAppNumber(String phone) {
+    // Bersihkan dari karakter khusus
+    var cleanPhone = phone.replaceAll(RegExp(r'[\s\+\-()]'), '');
 
+    // Jika dimulai dengan 0, hapus 0 dan tambahkan 62
+    if (cleanPhone.startsWith('0')) {
+      cleanPhone = '62${cleanPhone.substring(1)}';
+    }
+    // Jika belum ada kode negara, tambahkan 62
+    else if (!cleanPhone.startsWith('62')) {
+      cleanPhone = '62$cleanPhone';
+    }
+  
+    return cleanPhone;
+  }
 
 
 }

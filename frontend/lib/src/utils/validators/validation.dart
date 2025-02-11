@@ -79,6 +79,7 @@ static String? validatePassword(String? value) {
     return null;
   }
 
+
 static String? validateConfirmPassword(
       String? password, String? confirmPassword) {
     if (confirmPassword == null || confirmPassword.isEmpty) {

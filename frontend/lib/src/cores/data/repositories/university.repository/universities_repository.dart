@@ -69,4 +69,32 @@ class UniversitiesRepository extends GetxController {
       throw Exception('Failed to fetch universities');
     }
   }
+
+Future<Map<String, double>> getUniversityCoordinates(String name) async {
+    try {
+      final response = await DioClient().get(Endpoints.universities);
+
+      if (response.statusCode == 200) {
+        final universities = response.data['universities'] as List;
+
+        final university = universities.firstWhere(
+          (u) => u['name'] == name,
+          orElse: () => null,
+        );
+
+        if (university != null) {
+          return {
+            'latitude': university['latitude'],
+            'longitude': university['longitude'],
+          };
+        } else {
+          throw Exception('University not found');
+        }
+      }
+    } catch (e) {
+      throw Exception(
+          'Failed to fetch university coordinates: ${e.toString()}');
+    }
+    throw Exception('Failed to fetch university coordinates');
+  }
 }

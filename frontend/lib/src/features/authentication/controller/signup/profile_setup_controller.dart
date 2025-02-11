@@ -2,11 +2,9 @@ import 'dart:async';
 
 import 'package:denta_koas/src/commons/widgets/state_screeen/state_screen.dart';
 import 'package:denta_koas/src/cores/data/repositories/authentication.repository/authentication_repository.dart';
-import 'package:denta_koas/src/cores/data/repositories/notifications.repository/notification_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/university.repository/universities_repository.dart';
 import 'package:denta_koas/src/cores/data/repositories/user.repository/user_repository.dart';
 import 'package:denta_koas/src/features/appointment/controller/university.controller/university_controller.dart';
-import 'package:denta_koas/src/features/appointment/data/model/notifications_model.dart';
 import 'package:denta_koas/src/features/personalization/controller/user_controller.dart';
 import 'package:denta_koas/src/features/personalization/model/fasilitator_profile.dart';
 import 'package:denta_koas/src/features/personalization/model/koas_profile.dart';
@@ -14,6 +12,7 @@ import 'package:denta_koas/src/features/personalization/model/pasien_profile.dar
 import 'package:denta_koas/src/features/personalization/model/user_model.dart';
 import 'package:denta_koas/src/utils/constants/image_strings.dart';
 import 'package:denta_koas/src/utils/constants/text_strings.dart';
+import 'package:denta_koas/src/utils/formatters/formatter.dart';
 import 'package:denta_koas/src/utils/helpers/network_manager.dart';
 import 'package:denta_koas/src/utils/popups/full_screen_loader.dart';
 import 'package:denta_koas/src/utils/popups/loaders.dart';
@@ -119,6 +118,9 @@ class ProfileSetupController extends GetxController {
       // Hapus temp role
       localStorage.remove('TEMP_ROLE');
 
+      // refresh user data 
+      await UserController.instance.fetchUserDetail();
+
       // Get.off(() => AuthenticationRepository.instance.screenRedirect());
       Get.off(() => StateScreen(
             image: TImages.successfullySignedUp,
@@ -188,6 +190,9 @@ class ProfileSetupController extends GetxController {
 
   // Update user profile
   void updateNewKoasProfile(String userId) async {
+    final waPhone = TFormatter.formatWhatsAppNumber(
+        UserController.instance.user.value.phone!);
+
     final updateUser = UserModel(
       koasProfile: KoasProfileModel(
         koasNumber: koasNumber.text.trim(),
@@ -196,7 +201,7 @@ class ProfileSetupController extends GetxController {
         departement: departement.text.trim(),
         university: selectedUniversity,
         bio: bio.text.trim(),
-        whatsappLink: whatsappLink.text.trim(),
+        whatsappLink: 'https://wa.me/$waPhone',
       ),
     );
 
@@ -236,8 +241,10 @@ class ProfileSetupController extends GetxController {
       // Ambil data universitas dari API
       final universities = await universitiesRepository.getUniversityNames();
 
-      // Pastikan untuk memetakan hanya nama universitas
-      universitiesData.value = universities;
+      // Filter universities to include only "Universitas Negeri Jember"
+      universitiesData.value = universities
+          .where((university) => university == 'Universitas Negeri Jember')
+          .toList();
     } catch (e) {
       // Tangani error
       Logger().e('Error while fetching universities: $e');

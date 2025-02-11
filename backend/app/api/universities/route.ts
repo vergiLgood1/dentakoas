@@ -22,6 +22,8 @@ export async function GET(req: Request) {
       name: university.name,
       alias: university.alias,
       location: university.location,
+      latitude: university.latitude,
+      longitude: university.longitude,
       image: university.image,
       koasCount: university._count.koasProfile,
       createdAt: university.createdAt,

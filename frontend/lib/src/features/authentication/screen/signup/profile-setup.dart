@@ -107,16 +107,16 @@ class ProfileSetupScreen extends StatelessWidget {
                         ],
                         if (role == 'Koas') ...[
                           // Koas-specific field
-                          TextFormField(
-                            controller: controller.whatsappLink,
-                            validator: (value) => TValidator.validateEmptyText(
-                                "WhatsApp Link", value),
-                            decoration: const InputDecoration(
-                              labelText: 'WhatsApp Link',
-                              prefixIcon: Icon(Icons.phone_android_outlined),
-                            ),
-                          ),
-                          const SizedBox(height: TSizes.spaceBtwInputFields),
+                          // TextFormField(
+                          //   controller: controller.whatsappLink,
+                          //   validator: (value) => TValidator.validateEmptyText(
+                          //       "WhatsApp Link", value),
+                          //   decoration: const InputDecoration(
+                          //     labelText: 'WhatsApp Link',
+                          //     prefixIcon: Icon(Icons.phone_android_outlined),
+                          //   ),
+                          // ),
+                          // const SizedBox(height: TSizes.spaceBtwInputFields),
                         ],
                         if (role == 'Koas' || role == 'Pasien') ...[
                           TextFormField(

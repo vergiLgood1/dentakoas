@@ -1,16 +1,22 @@
 import 'package:denta_koas/src/cores/data/repositories/university.repository/universities_repository.dart';
 import 'package:denta_koas/src/features/appointment/screen/universities/data/model/university_model.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 class UniversityController extends GetxController {
   static UniversityController get instance => Get.find();
 
   RxList<UniversityModel> universities = <UniversityModel>[].obs;
   RxList<UniversityModel> featuredUniversities = <UniversityModel>[].obs;
+  RxList<UniversityModel> availableUniversity = <UniversityModel>[].obs;
 
   RxList<UniversityModel> newestUniversities = <UniversityModel>[].obs;
   RxList<UniversityModel> popularUniversities = <UniversityModel>[].obs;
   RxList<UniversityModel> universityWithImages = <UniversityModel>[].obs;
+
+  var lat = 0.0.obs; // Variabel untuk latitude
+  var lng = 0.0.obs; // Variabel untuk lngitude
+
 
   final universitiesRepository = Get.put(UniversitiesRepository());
 
@@ -40,6 +46,13 @@ class UniversityController extends GetxController {
             .where((university) => university.image != '')
             .toList(),
       );
+
+      availableUniversity.assignAll(
+        fetchedUniversities
+            .where(
+                (university) => university.name == "Universitas Negeri Jember")
+            .toList(),
+      );
       
       // Universitas terbaru berdasarkan `createdAt`
       newestUniversities.assignAll(universityWithImages
@@ -59,10 +72,24 @@ class UniversityController extends GetxController {
 
       // Featured universities (bisa diubah ke kriteria tertentu jika diperlukan)
       featuredUniversities.assignAll(universityWithImages.take(2).toList());
+
+      
     } catch (e) {
       print("Error fetching universities: ${e.toString()}");
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  void fetchUniversityCoordinates(String universityName) async {
+    try {
+      final coordinates =
+          await universitiesRepository.getUniversityCoordinates(universityName);
+
+      lat.value = coordinates['lat'] ?? 0.0;
+      lng.value = coordinates['lng'] ?? 0.0;
+    } catch (e) {
+      Logger().e('Error fetching university coordinates: $e');
     }
   }
 

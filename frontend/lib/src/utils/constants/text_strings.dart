@@ -29,7 +29,7 @@ class TTexts {
   static const String confirmPassword = "Confirm Password";
   static const String newPassword = "New Password";
   static const String username = "Username";
-  static const String phoneNo = "Phone Number";
+  static const String phoneNo = "WhatsApp Number";
   static const String rememberMe = "Remember Me";
   static const String forgetPassword = "Forgot Password?";
   static const String signIn = "Sign In";

@@ -5,6 +5,7 @@ import 'package:denta_koas/src/commons/widgets/shimmer/card_showcase_shimmer.dar
 import 'package:denta_koas/src/commons/widgets/text/section_heading.dart';
 import 'package:denta_koas/src/commons/widgets/text/title_with_verified.dart';
 import 'package:denta_koas/src/features/appointment/controller/explore.controller/explore_post_controller.dart';
+import 'package:denta_koas/src/features/appointment/controller/university.controller/university_controller.dart';
 import 'package:denta_koas/src/features/appointment/controller/verification_koas_controller.dart';
 import 'package:denta_koas/src/features/appointment/data/model/review_model.dart';
 import 'package:denta_koas/src/features/appointment/screen/koas_reviews/koas_reviews.dart';
@@ -23,6 +24,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:logger/logger.dart';
 import 'package:readmore/readmore.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -32,7 +34,16 @@ class KoasDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = UserController.instance;
+    final universityController = Get.put(UniversityController());
     final UserModel koas = Get.arguments;
+
+    final universityCoordinate =
+        universityController.fetchUniversityCoordinates(
+      koas.koasProfile?.university ?? '',
+    );
+
+    Logger().i(
+        'University Coordinate: $universityController.lat.value, $universityController.lng.value');
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -88,7 +99,11 @@ class KoasDetailScreen extends StatelessWidget {
             const SizedBox(height: TSizes.spaceBtwSections),
 
             // Map section
-            const MapSection(),
+            MapSection(
+              koasUniversity: koas.koasProfile?.university ?? '',
+              lat: universityController.lat.value,
+              lng: universityController.lng.value,
+            ),
             const SizedBox(height: TSizes.spaceBtwSections),
 
             // User Reviews
@@ -409,7 +424,16 @@ class PersonalInformationSection extends StatelessWidget {
 }
 
 class MapSection extends StatelessWidget {
-  const MapSection({super.key});
+  const MapSection({
+    super.key,
+    required this.koasUniversity,
+    required this.lat,
+    required this.lng,
+  });
+
+  final String koasUniversity;
+  final double lat;
+  final double lng;
 
   @override
   Widget build(BuildContext context) {
@@ -454,13 +478,14 @@ class MapSection extends StatelessWidget {
                             'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                         userAgentPackageName: 'com.example.app',
                       ),
-                      const MarkerLayer(
+                      MarkerLayer(
                         markers: [
                           Marker(
-                            point: LatLng(-6.200000, 106.816666),
+                            point: LatLng(lat, lng),
                             width: 80,
                             height: 80,
-                            child: Icon(Icons.location_pin, color: Colors.red),
+                            child: const Icon(Icons.location_pin,
+                                color: Colors.red),
                           ),
                         ],
                       ),
@@ -499,7 +524,12 @@ class MapSection extends StatelessWidget {
                             icon: const Icon(Icons.fullscreen),
                             onPressed: () {
                               // Navigate to fullscreen map
-                              Get.to(() => const FullscreenMap());
+                              Get.to(
+                                () => FullscreenMap(
+                                  lat: lat,
+                                  lng: lng,
+                                ),
+                              );
                             },
                             constraints: const BoxConstraints(
                               minHeight: 40,
@@ -566,7 +596,11 @@ class MapSection extends StatelessWidget {
 
 // Fullscreen Map Widget
 class FullscreenMap extends StatelessWidget {
-  const FullscreenMap({super.key});
+  const FullscreenMap({super.key, required this.lat, required this.lng});
+
+  final double lat;
+  final double lng;
+
 
   @override
   Widget build(BuildContext context) {
@@ -577,10 +611,10 @@ class FullscreenMap extends StatelessWidget {
         showBackArrow: true,
       ),
       body: FlutterMap(
-        options: const MapOptions(
-          initialCenter: LatLng(-6.200000, 106.816666),
+        options: MapOptions(
+          initialCenter: LatLng(lat, lng),
           initialZoom: 14,
-          interactionOptions: InteractionOptions(
+          interactionOptions: const InteractionOptions(
             enableMultiFingerGestureRace: true,
           ),
         ),
@@ -589,13 +623,13 @@ class FullscreenMap extends StatelessWidget {
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.example.app',
           ),
-          const MarkerLayer(
+          MarkerLayer(
             markers: [
               Marker(
-                point: LatLng(-6.200000, 106.816666),
+                point: LatLng(lat, lng),
                 width: 80,
                 height: 80,
-                child: Icon(Icons.location_pin, color: Colors.red),
+                child: const Icon(Icons.location_pin, color: Colors.red),
               ),
             ],
           ),

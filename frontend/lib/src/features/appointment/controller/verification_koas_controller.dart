@@ -34,13 +34,13 @@ class VerificationKoasController extends GetxController {
 
   Future<void> initializeVerificationKoas() async {
     try {
-      if (UserController.instance.user.value.role != 'Facilitator') {
+      if (UserController.instance.user.value.role != Role.Fasilitator.name) {
         return;
       }
       
       isLoading.value = true;
       final fetchedKoas =
-          await UserRepository.instance.fetchUsersByRole('Koas');
+          await UserRepository.instance.fetchUsersByRole(Role.Koas.name);
       allKoas.assignAll(fetchedKoas);
 
       final facilitatorUniversity =

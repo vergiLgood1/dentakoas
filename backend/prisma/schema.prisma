@@ -201,6 +201,8 @@ model University {
   name      String
   alias     String
   location  String
+  latitude  Float?
+  longitude Float?
   image     String?
   createdAt DateTime @default(now()) @map("created_at")
   updateAt  DateTime @updatedAt @map("updated_at")
