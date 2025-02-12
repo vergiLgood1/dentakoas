@@ -45,7 +45,6 @@ export async function updateExpiredAppointments() {
     // Kirim notifikasi
     const sendNotification = await db.notification.createMany({
       data: expiredAppointments.map((appointment) => ({
-        type: "appointment",
         title: "Appointment Expired",
         message: `Your appointment on ${appointment.date} has expired and automatically rejected.`,
         userId: appointment.pasienId,
@@ -135,7 +134,6 @@ export async function updateOngoingAppointments() {
     // Kirim notifikasi
     const sendNotification = await db.notification.createMany({
       data: ongoingAppointments.map((appointment) => ({
-        type: "appointment",
         title: "Appointment Ongoing",
         message: `Your appointment on ${appointment.date} at ${appointment.schedule.timeslot[0].startTime} is now ongoing.`,
         userId: appointment.pasienId,
@@ -223,7 +221,6 @@ export async function updateCompletedAppointments() {
     // Kirim notifikasi
     const sendNotification = await db.notification.createMany({
       data: completedAppointments.map((appointment) => ({
-        type: "appointment",
         title: "Appointment Completed",
         message: `Your appointment on ${appointment.date} at ${appointment.schedule.timeslot[0].endTime} has been completed.`,
         userId: appointment.pasienId,
